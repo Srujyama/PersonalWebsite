@@ -181,7 +181,7 @@ const timelineData = [
         type: 'education',
     },
     {
-        title: 'Research Intern',
+        title: 'Machine Learning Engineer Intern',
         org: 'Cornell University - Hein Lab',
         location: 'Remote',
         date: 'Mar 2024 – Aug 2024',
@@ -195,7 +195,7 @@ const timelineData = [
         type: 'work',
     },
     {
-        title: 'Assistant Bioinformatician',
+        title: 'Data Science Intern',
         org: "Children’s Hospital of Philadelphia - Moustafa Lab",
         location: 'Philadelphia, PA',
         date: 'Nov 2023 – Aug 2025',
@@ -208,7 +208,7 @@ const timelineData = [
         type: 'work',
     },
     {
-        title: 'Research Assistant',
+        title: 'Software Development Intern',
         org: 'University of Delaware - Shao Lab',
         location: 'Newark, DE',
         date: 'Jun 2023 – Aug 2024',
@@ -223,7 +223,7 @@ const timelineData = [
         type: 'work',
     },
     {
-        title: 'Research Trainee',
+        title: 'Research Assistant',
         org: 'Perelman School of Medicine - Gupta Lab',
         location: 'Philadelphia, PA',
         date: 'Jul 2023 – Aug 2023',
@@ -292,21 +292,22 @@ function ResumeTimeline() {
         if (org.includes('cornell')) return '/Cornell_University_seal.png'
         if (org.includes('princeton')) return '/Princeton_seal.png'
         if (org.includes('berkeley')) return '/Seal_of_University_of_California_Berkeley.png'
-        if (org.includes('delaware')) return '/ud-seal-ocm.png'
+        if (org.includes('delaware')) return '/Udel.png'
         if (org.includes('mercor')) return '/Mercor_Logo.png'
+        if (org.includes('visa')) return '/visa.png'
         return null
     }
 
     const palette = {
         work: {
-            iconBg: 'rgba(14,165,233,0.25)',
+            iconBg: 'rgba(255,255,255,0.45)',
             iconBorder: '1px solid rgba(14,165,233,0.45)',
             contentBg: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(14,165,233,0.06))',
             contentBorder: '1px solid rgba(14,165,233,0.25)',
             accent: '#0ea5e9',
         },
         education: {
-            iconBg: 'rgba(34,197,94,0.25)',
+            iconBg: 'rgba(255,255,255,0.45)',
             iconBorder: '1px solid rgba(34,197,94,0.45)',
             contentBg: 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(34,197,94,0.06))',
             contentBorder: '1px solid rgba(34,197,94,0.25)',
