@@ -114,7 +114,7 @@ const projectsData = [
 const papersData = [
     {
         authors: "R. Oliver, S. Yamali, S. Knox, T. Dadyala, L. Shao",
-        title: "High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila",
+        title: "High-Throughput Behavioral Assay Unveils Female Courtship Behaviors in Drosophila",
         venue: "International Behavioral & Neural Genetics Society (IBANGS), Western University, London, ON, Canada",
         year: "2024",
         links: [
@@ -123,7 +123,7 @@ const papersData = [
     },
     {
         authors: "R. Oliver, S. Yamali, S. Knox, T. Dadyala, L. Shao",
-        title: "High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila",
+        title: "High-Throughput Behavioral Assay Unveils Female Courtship Behaviors in Drosophila",
         venue: "Sexually Dimorphic Circuits & Behaviors, Janelia Research Campus (HHMI), Ashburn, VA",
         year: "2024",
         links: []
@@ -140,92 +140,97 @@ const papersData = [
     }
 ]
 
-const awardsData = [
-    { title: "Semi-Finalist: USA Biology Olympiad", org: "USABO Committee", date: "Mar 2024" },
-    { title: "First Place Category — Delaware Valley Science Fair (Behavior)", org: "Delaware Valley University", date: "Apr 2024" },
-    { title: "First Place in Zoology", org: "Del-Tech Stanton Campus", date: "Nov 2022" },
-    { title: "Second Place — Healthcare Administration (State)", org: "Business Professionals of America", date: "Feb 2023" },
-    { title: "Second Place — Digital Communication (Nationals)", org: "Business Professionals of America", date: "Apr 2023" },
-    { title: "Finalist — Information Technology Concepts (Nationals)", org: "Business Professionals of America", date: "Apr 2023" },
-    { title: "First Place — Website Design (State)", org: "Business Professionals of America", date: "Feb 2023", note: "$1,500 scholarship" },
-    { title: "Third Place — Technology Problem Solving", org: "Technology Student Association", date: "Apr 2023" },
-    { title: "Tenth Place — Agricultural Science", org: "Science Olympiad", date: "Mar 2023" },
-]
-
-
-
 /* ────────────────────────────────────────────────────────────────────────── */
 /* Timeline data                                                             */
 /* ────────────────────────────────────────────────────────────────────────── */
 const timelineData = [
     {
+        title: 'Software Engineer Intern',
+        org: 'Visa',
+        location: 'Remote',
+        date: 'Nov 2025 - Present',
+        bullets: [
+            'Developed internal LLM-powered enterprise automation tools supporting Visa’s risk and product teams.',
+            'Designed an AI-generated Statement of Work pipeline helping automate 10,000 client implementation projects annually',
+            'Built scalable cloud infrastructure and data ingestion pipelines to support real-time sensor streaming and model execution.',
+        ],
+        type: 'work',
+    },
+    {
+        title: 'Software Engineer',
+        org: 'Mercor',
+        location: 'Remote',
+        date: 'Aug 2025 - Present',
+        bullets: [
+            'Automated multimodal data ingestion, fine-tuning, and continuous deployment pipelines using Prefect, MLflow, and\n' +
+            'Kubernetes clusters—reducing enterprise experiment-to-production cycle time by 40%.',
+            'Engineered enterprise-scale AI/ML developer tooling powering model evaluation, safety benchmarking, and data labeling\n' +
+            'workflows across top AI labs production environments',
+            'Designed and implemented internal developer tooling to accelerate AI/ML workflow automation.',
+        ],
+        type: 'work',
+    },
+    {
+        title: 'Bachelors in Computer Science',
+        org: 'University of California, Berkeley',
+        location: 'Berkeley, CA',
+        date: 'Aug 2025 – May 2027',
+        bullets: [
+            'Coursework: Machine Learning, Data Structures, Algorithms, Linear Algebra, Calculus, Differential Equations',
+        ],
+        type: 'education',
+    },
+    {
+        title: 'Research Intern',
+        org: 'Cornell University - Hein Lab',
+        location: 'Remote',
+        date: 'Mar 2024 – Aug 2024',
+        bullets: [
+            'Applied YOLO-based object detection to automate identification and tracking of fish behaviors under predation, achieving\n' +
+            '85%+ accuracy across 500+ hours of field video footage of behaviors with little discrepancy of each other.',
+            'Applied deep learning techniques, including YOLO-based object detection, to automate the identification and tracking of\n' +
+            'individual and group fish behaviors due to predation from field video data.',
+            'Assisted in inferring decision-making rules via stochastic models.',
+        ],
+        type: 'work',
+    },
+    {
         title: 'Assistant Bioinformatician',
-        org: "Children’s Hospital of Philadelphia · Moustafa Lab",
+        org: "Children’s Hospital of Philadelphia - Moustafa Lab",
         location: 'Philadelphia, PA',
         date: 'Nov 2023 – Aug 2025',
         bullets: [
             'Designed program to analyze evolutionary relationships in bacterial proteomic data using time-series analysis and data structures.',
             'Integrated kernel-based probabilistic changepoint analysis to identify recombination breakpoints across 75,000+ genomes (~37TB).',
-            'Validated on known recombination events; produced high-resolution visualizations for comparative genomics.',
+            'Developed a parallelized framework with Python multiprocessing, enabling large-scale genomic region analysis and\n' +
+            'accelerating runtime through statistical comparisons and clustering logic.',
         ],
         type: 'work',
     },
     {
         title: 'Research Assistant',
-        org: 'University of Delaware · Shao Lab',
+        org: 'University of Delaware - Shao Lab',
         location: 'Newark, DE',
         date: 'Jun 2023 – Aug 2024',
         bullets: [
-            'Used OpenCV to analyze D. melanogaster mating behaviors across 730GB of data; studied effects of addictive agents.',
+            'Developed a PyQt6/OpenCV application to automate analysis of 730 GB of Drosophila video, reducing manual annotation\n' +
+            'time by 90% and saving hundreds of hours; Delivered automated tracking of behaviors impossible to detect manually.',
+            'Built an ROI-tracking engine using blob tracking and centroid calculations to monitor behavioral dynamics, achieving 99.7%\n' +
+            'accuracy in mating trial analysis, streaming real-time signals to a GUI overlay for behavior classification and role tracking.',
             'Investigated NPF signaling and reward perception; explored reduction of addiction.',
             'Built high-throughput thigmotaxis capture/analysis pipeline for anxiety-modeling studies.',
         ],
         type: 'work',
     },
     {
-        title: 'Research Intern',
-        org: 'Cornell University · Hein Lab',
-        location: 'Remote',
-        date: 'Mar 2024 – Aug 2024',
-        bullets: [
-            'Developed ML models to analyze ecological interactions in coral reef fish populations.',
-            'Applied YOLO-based detection to automate identification and tracking under predation.',
-            'Assisted in inferring decision-making rules via stochastic models.',
-        ],
-        type: 'work',
-    },
-    {
         title: 'Research Trainee',
-        org: 'Perelman School of Medicine · Gupta Lab',
+        org: 'Perelman School of Medicine - Gupta Lab',
         location: 'Philadelphia, PA',
         date: 'Jul 2023 – Aug 2023',
         bullets: [
             'Protein purification/crystallization; SDS-PAGE & Western blot validation.',
             'Cell cultures using inverse PCR for point mutation in E. coli.',
             'Assisted X-ray crystallography data collection/analysis.',
-        ],
-        type: 'work',
-    },
-    {
-        title: 'Bachelors of Arts in Molecular and Cellular Biology & Computer Science',
-        org: 'University of California, Berkeley',
-        location: '',
-        date: 'Aug 2025 – May 2029',
-        bullets: [
-            'Coursework and projects spanning computational biology, algorithms, and systems.',
-        ],
-        type: 'education',
-    },
-    {
-        title: 'Software Engineer Intern',
-        org: 'Mercor',
-        location: 'Remote',
-        date: 'Aug 2025 - Present',
-        bullets: [
-            'Designed and implemented internal developer tooling to accelerate AI/ML workflow automation.',
-            'Automated end-to-end AI pipelines for data ingestion, model training, and deployment using Prefect, MLflow, and\n' +
-            'Kubernetes, reducing experiment-to-production cycle time by 40%.',
-            'Developed monitoring dashboards with Prometheus/Grafana, supporting proactive detection of model drift.',
         ],
         type: 'work',
     },
