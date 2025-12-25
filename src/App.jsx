@@ -113,7 +113,7 @@ function Modal({ open, title, onClose, children }) {
                 <div className="flex items-start justify-between gap-6 px-5 py-4 border-b border-black/10">
                     <div>
                         <div className="text-sm font-semibold text-black">{title}</div>
-                        <div className="text-xs text-black/55 mt-1">Same page — expanded view.</div>
+                        <div className="text-xs text-black/55 mt-1">All my work</div>
                     </div>
                     <button
                         type="button"
@@ -359,7 +359,7 @@ export default function App() {
                     <div className="p-6 grid gap-3">
                         <Section
                             title="Experience"
-                            hint="Full bullets (open in expanded view)"
+                            hint="Software engineering & research roles"
                             open={openKey === "experience"}
                             onToggle={() => setOpenKey(openKey === "experience" ? "" : "experience")}
                         >
@@ -394,7 +394,7 @@ export default function App() {
 
                         <Section
                             title="Education"
-                            hint="Berkeley (CS + MCB/CS)"
+                            hint="Berkeley CS + MCB"
                             open={openKey === "education"}
                             onToggle={() => setOpenKey(openKey === "education" ? "" : "education")}
                         >
@@ -443,7 +443,7 @@ export default function App() {
 
                         <Section
                             title="Publications & Conferences"
-                            hint="From research resume"
+                            hint=""
                             open={openKey === "pubs"}
                             onToggle={() => setOpenKey(openKey === "pubs" ? "" : "pubs")}
                         >
@@ -496,7 +496,7 @@ export default function App() {
             </main>
 
             {/* Expanded content modal */}
-            <Modal open={modal === "experience"} title="Experience (full bullets)" onClose={closeModal}>
+            <Modal open={modal === "experience"} title="Experience" onClose={closeModal}>
                 <div className="space-y-4">
                     {experience.map((e) => (
                         <div key={e.org} className="rounded-2xl border border-black/10 bg-white p-4">
