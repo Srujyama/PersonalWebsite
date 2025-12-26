@@ -1,5 +1,5 @@
 // App.jsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 function useClock(ms = 40) {
     const [t, setT] = useState(0);
@@ -12,15 +12,15 @@ function useClock(ms = 40) {
     return t;
 }
 
-function Pattern({ t = 0 }) {
-    // tiny parallax-like background drift (cheap + subtle)
+function Pattern() {
+    const t = useClock(40);
     const shiftX = (t % 1200) * 0.02;
     const shiftY = (t % 900) * 0.015;
 
     return (
         <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 animate-drift"
+            className="pointer-events-none absolute inset-0"
             style={{
                 backgroundPosition: `${shiftX}px ${shiftY}px, ${-shiftX}px ${shiftY}px, center, center`,
                 backgroundImage: `
@@ -55,7 +55,6 @@ function Pattern({ t = 0 }) {
 }
 
 function Noise() {
-    // very light grain; looks “paper / lab notebook”
     return (
         <div
             aria-hidden="true"
@@ -74,7 +73,7 @@ function Section({ title, hint, children, open, onToggle }) {
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full px-4 py-3 flex items-center justify-between gap-4 text-left"
+                className="w-full py-3 flex items-center justify-between gap-4 text-left"
             >
                 <div>
                     <div className="text-sm font-semibold text-black">{title}</div>
@@ -88,57 +87,71 @@ function Section({ title, hint, children, open, onToggle }) {
                     open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                 }`}
             >
-                <div className="overflow-hidden px-4 pb-4">{children}</div>
+                <div className="overflow-hidden pb-4">{children}</div>
             </div>
         </div>
     );
 }
 
 function Modal({ open, title, onClose, children }) {
+    const closeBtnRef = useRef(null);
+
     useEffect(() => {
         if (!open) return;
+
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        closeBtnRef.current?.focus();
+
         const onKey = (e) => {
             if (e.key === "Escape") onClose();
         };
         window.addEventListener("keydown", onKey);
-        return () => window.removeEventListener("keydown", onKey);
+
+        return () => {
+            document.body.style.overflow = prevOverflow;
+            window.removeEventListener("keydown", onKey);
+        };
     }, [open, onClose]);
 
     if (!open) return null;
 
+    // Not a “box”: just a blurred sheet with no border/shadow/rounding.
     return (
         <div className="fixed inset-0 z-50">
-            <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]" onClick={onClose} />
-            <div className="absolute left-1/2 top-1/2 w-[min(900px,92vw)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-black/10 bg-white shadow-[0_30px_90px_rgba(0,0,0,0.18)]">
-                <div className="flex items-start justify-between gap-6 px-5 py-4 border-b border-black/10">
-                    <div>
-                        <div className="text-sm font-semibold text-black">{title}</div>
-                        <div className="text-xs text-black/55 mt-1">All my work</div>
+            <div className="absolute inset-0 bg-black/25 backdrop-blur-[3px]" onClick={onClose} />
+            <div className="absolute inset-x-0 top-0 bottom-0 overflow-auto">
+                <div className="mx-auto w-[min(1000px,94vw)] py-8">
+                    <div className="flex items-start justify-between gap-6">
+                        <div>
+                            <div className="text-sm font-semibold text-black">{title}</div>
+                            <div className="text-xs text-black/55 mt-1">All my work</div>
+                        </div>
+                        <button
+                            ref={closeBtnRef}
+                            type="button"
+                            onClick={onClose}
+                            className="text-xs text-black/70 hover:text-black underline underline-offset-4"
+                        >
+                            Close
+                        </button>
                     </div>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="rounded-lg border border-black/10 px-3 py-1.5 text-xs text-black/70 hover:bg-black/[0.03]"
-                    >
-                        Close
-                    </button>
+
+                    <div className="mt-4 border-t border-black/10 pt-5">{children}</div>
                 </div>
-                <div className="p-5 max-h-[72vh] overflow-auto">{children}</div>
             </div>
         </div>
     );
 }
 
 export default function App() {
-    const t = useClock(40);
-
-    // ====== DATA from your resumes ======
     const profile = useMemo(
         () => ({
             name: "Srujan Yamali",
             title: "Software Engineer / Research",
             location: "Berkeley • San Francisco",
             email: "srujanyamali@berkeley.edu",
+            site: "", // optional: "srujanyamali.com"
             github: "github.com/srujyama",
             linkedin: "linkedin.com/in/srujanyamali",
         }),
@@ -152,8 +165,7 @@ export default function App() {
                 degree: "B.A. Molecular & Cellular Biology & Computer Science (GPA 4.0)",
                 dates: "Aug 2025 – May 2029",
                 extra:
-                "Coursework: ML, AI, Algorithms, Data Structures, Computer Architecture, Discrete Math & Probability, Linear Algebra, Signals & Systems, Circuits & Devices"
-            ,
+                    "Coursework: ML, AI, Algorithms, Data Structures, Computer Architecture, Discrete Math & Probability, Linear Algebra, Signals & Systems, Circuits & Devices",
             },
         ],
         []
@@ -274,7 +286,6 @@ export default function App() {
         []
     );
 
-    // ====== UI state ======
     const [openKey, setOpenKey] = useState("experience");
     const [modal, setModal] = useState(null);
 
@@ -291,84 +302,91 @@ export default function App() {
     };
 
     return (
-        <div className="relative h-full w-full overflow-hidden bg-white text-black">
-            <Pattern t={t} />
+        // scrollable page, no “card” containers
+        <div className="relative min-h-screen w-full overflow-y-auto bg-white text-black">
+            <Pattern />
             <Noise />
 
-            <main className="relative h-full w-full flex items-center justify-center px-6">
-                <section className="relative w-full max-w-6xl px-10 py-8">
-                    {/* Header */}
-                    <div className="px-6 pt-6 pb-4 border-b border-black/10">
-                        <div className="flex items-start justify-between gap-6">
-                            <div>
-                                <div className="text-[11px] tracking-[0.22em] text-black/55">
-                                    RESEARCH • SYSTEMS • ENGINEERING
+            <main className="relative w-full px-6 py-10">
+                <section className="mx-auto w-full max-w-6xl">
+                    {/* Sticky header (NOT a box): just blur + thin rule */}
+                    <div className="sticky top-0 z-20 -mx-6 px-6 backdrop-blur-md">
+                        <div className="py-6 border-b border-black/10">
+                            <div className="flex items-start justify-between gap-6">
+                                <div>
+                                    <div className="text-[11px] tracking-[0.22em] text-black/55">
+                                        RESEARCH • SYSTEMS • ENGINEERING
+                                    </div>
+                                    <h1 className="mt-2 text-3xl font-semibold tracking-tight">{profile.name}</h1>
+                                    <div className="mt-1 text-sm text-black/70">
+                                        {profile.title} · {profile.location}
+                                    </div>
                                 </div>
-                                <h1 className="mt-2 text-3xl font-semibold tracking-tight">{profile.name}</h1>
-                                <div className="mt-1 text-sm text-black/70">
-                                    {profile.title} · {profile.location}
+
+                                <div className="text-right text-xs text-black/60 space-y-1">
+                                    <div>
+                                        <a className="hover:text-black" href={linkify(profile.email)}>
+                                            {profile.email}
+                                        </a>
+                                    </div>
+
+                                    {profile.site ? (
+                                        <div>
+                                            <a
+                                                className="hover:text-black"
+                                                href={linkify(profile.site)}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                            >
+                                                {profile.site}
+                                            </a>
+                                        </div>
+                                    ) : null}
+
+                                    <div>
+                                        <a
+                                            className="hover:text-black"
+                                            href={linkify(profile.github)}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {profile.github}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a
+                                            className="hover:text-black"
+                                            href={linkify(profile.linkedin)}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            {profile.linkedin}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="text-right text-xs text-black/60 space-y-1">
-                                <div>
-                                    <a className="hover:text-black" href={linkify(profile.email)}>
-                                        {profile.email}
-                                    </a>
-                                </div>
-                                <div>
-                                    <a
-                                        className="hover:text-black"
-                                        href={linkify(profile.site)}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                    >
-                                        {profile.site}
-                                    </a>
-                                </div>
-                                <div>
-                                    <a
-                                        className="hover:text-black"
-                                        href={linkify(profile.github)}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                    >
-                                        {profile.github}
-                                    </a>
-                                </div>
-                                <div>
-                                    <a
-                                        className="hover:text-black"
-                                        href={linkify(profile.linkedin)}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                    >
-                                        {profile.linkedin}
-                                    </a>
-                                </div>
+                            <p className="mt-4 text-sm leading-relaxed text-black/75">
+                                I build evaluation-grade ML systems: robust pipelines, scalable experimentation, and
+                                high-signal measurement.
+                            </p>
+
+                            <div className="mt-3 text-[11px] text-black/55 flex items-center justify-between">
                             </div>
                         </div>
-
-                        <p className="mt-4 text-sm leading-relaxed text-black/75">
-                            I build evaluation-grade ML systems: robust pipelines, scalable experimentation, and
-                            high-signal measurement.
-                        </p>
                     </div>
 
-                    {/* Body */}
-                    <div className="p-6 grid gap-3">
+                    {/* Body: pure text + separators, NO boxes */}
+                    <div className="pt-6 grid gap-3">
                         <Section
                             title="Experience"
                             hint="Software engineering & research roles"
                             open={openKey === "experience"}
                             onToggle={() => setOpenKey(openKey === "experience" ? "" : "experience")}
                         >
-                            <div className="space-y-3">
-                                {compactList(experience, 3).map((e) => (
-                                    <div
-                                        key={e.org}
-                                        className="rounded-xl border border-black/10 bg-white px-4 py-3"
-                                    >
+                            <div className="space-y-4">
+                                {compactList(experience, 3).map((e, idx) => (
+                                    <div key={e.org} className="pb-4 border-b border-black/10 last:border-b-0">
                                         <div className="flex flex-wrap items-baseline justify-between gap-2">
                                             <div className="text-sm font-semibold">{e.org}</div>
                                             <div className="text-xs text-black/55">
@@ -382,10 +400,13 @@ export default function App() {
                                         </ul>
                                     </div>
                                 ))}
+
                                 <button
                                     type="button"
                                     onClick={() => openModal("experience")}
-                                    className="w-full rounded-xl border border-black/10 bg-black/[0.03] px-4 py-3 text-sm text-black/75 hover:bg-black/[0.05]"
+                                    aria-haspopup="dialog"
+                                    aria-expanded={modal === "experience"}
+                                    className="text-sm text-black/75 hover:text-black underline underline-offset-4"
                                 >
                                     Expand all experience →
                                 </button>
@@ -398,20 +419,18 @@ export default function App() {
                             open={openKey === "education"}
                             onToggle={() => setOpenKey(openKey === "education" ? "" : "education")}
                         >
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {education.map((ed) => (
                                     <div
                                         key={`${ed.org}-${ed.degree}`}
-                                        className="rounded-xl border border-black/10 bg-white px-4 py-3"
+                                        className="pb-4 border-b border-black/10 last:border-b-0"
                                     >
                                         <div className="flex flex-wrap items-baseline justify-between gap-2">
                                             <div className="text-sm font-semibold">{ed.org}</div>
                                             <div className="text-xs text-black/55">{ed.dates}</div>
                                         </div>
                                         <div className="mt-1 text-sm text-black/70">{ed.degree}</div>
-                                        {ed.extra ? (
-                                            <div className="mt-2 text-xs text-black/60">{ed.extra}</div>
-                                        ) : null}
+                                        {ed.extra ? <div className="mt-2 text-xs text-black/60">{ed.extra}</div> : null}
                                     </div>
                                 ))}
                             </div>
@@ -423,12 +442,9 @@ export default function App() {
                             open={openKey === "projects"}
                             onToggle={() => setOpenKey(openKey === "projects" ? "" : "projects")}
                         >
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                                 {projects.map((p) => (
-                                    <div
-                                        key={p.name}
-                                        className="rounded-xl border border-black/10 bg-white px-4 py-3"
-                                    >
+                                    <div key={p.name} className="pb-4 border-b border-black/10 last:border-b-0">
                                         <div className="text-sm font-semibold">{p.name}</div>
                                         <div className="text-xs text-black/55 mt-0.5">{p.stack}</div>
                                         <ul className="mt-2 text-sm text-black/70 list-disc pl-5 space-y-1">
@@ -447,12 +463,9 @@ export default function App() {
                             open={openKey === "pubs"}
                             onToggle={() => setOpenKey(openKey === "pubs" ? "" : "pubs")}
                         >
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 {publications.map((p, i) => (
-                                    <div
-                                        key={i}
-                                        className="rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-black/75"
-                                    >
+                                    <div key={i} className="pb-3 border-b border-black/10 last:border-b-0 text-sm text-black/75">
                                         {p.citation}
                                     </div>
                                 ))}
@@ -472,15 +485,16 @@ export default function App() {
                             </ul>
                         </Section>
 
-                        {/* Footer micro-links */}
-                        <div className="pt-2 text-[11px] text-black/55 flex items-center justify-between">
-                            <div>© {new Date().getFullYear()} {profile.name}</div>
+                        <div className="pt-6 text-[11px] text-black/55 flex items-center justify-between border-t border-black/10">
+                            <div>
+                                © {new Date().getFullYear()} {profile.name}
+                            </div>
                             <div className="flex gap-3">
                                 <a className="hover:text-black" href={`mailto:${profile.email}`}>
                                     Email
                                 </a>
                                 <a
-                                    className="hover:text-black"
+                                    className="hover:text-black underline underline-offset-4"
                                     href="#"
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -495,11 +509,11 @@ export default function App() {
                 </section>
             </main>
 
-            {/* Expanded content modal */}
+            {/* Modal (also no box) */}
             <Modal open={modal === "experience"} title="Experience" onClose={closeModal}>
-                <div className="space-y-4">
+                <div className="space-y-6">
                     {experience.map((e) => (
-                        <div key={e.org} className="rounded-2xl border border-black/10 bg-white p-4">
+                        <div key={e.org} className="pb-6 border-b border-black/10 last:border-b-0">
                             <div className="flex flex-wrap items-baseline justify-between gap-2">
                                 <div className="text-sm font-semibold">{e.org}</div>
                                 <div className="text-xs text-black/55">
