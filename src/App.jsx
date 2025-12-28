@@ -1,4 +1,5 @@
 // App.jsx
+import "./style.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 function useClock(ms = 40) {
@@ -13,46 +14,14 @@ function useClock(ms = 40) {
 }
 
 function Pattern() {
-    const t = useClock(40);
-    const shiftX = (t % 1200) * 0.02;
-    const shiftY = (t % 900) * 0.015;
-
     return (
         <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{
-                backgroundPosition: `${shiftX}px ${shiftY}px, ${-shiftX}px ${shiftY}px, center, center`,
-                backgroundImage: `
-          repeating-linear-gradient(
-            0deg,
-            rgba(0,0,0,0.035) 0px,
-            rgba(0,0,0,0.035) 1px,
-            transparent 1px,
-            transparent 28px
-          ),
-          repeating-linear-gradient(
-            90deg,
-            rgba(0,0,0,0.025) 0px,
-            rgba(0,0,0,0.025) 1px,
-            transparent 1px,
-            transparent 32px
-          ),
-          radial-gradient(
-            1200px 800px at 30% 40%,
-            rgba(0,0,0,0.06),
-            transparent 60%
-          ),
-          radial-gradient(
-            1000px 700px at 70% 60%,
-            rgba(0,0,0,0.045),
-            transparent 65%
-          )
-        `,
-            }}
+            className="pointer-events-none absolute inset-0 grid-warp"
         />
     );
 }
+
 
 function Noise() {
     return (

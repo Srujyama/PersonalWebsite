@@ -1,4 +1,3 @@
-/* index.css (or src/index.css) */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,18 +12,98 @@ body {
     margin: 0;
 }
 
-@keyframes drift {
-    0% {
-        transform: translate(0px, 0px);
-    }
-    50% {
-        transform: translate(-8px, -6px);
-    }
-    100% {
-        transform: translate(0px, 0px);
-    }
+
+/* ============================= */
+/* PERFECT SQUARE GRID + ANIMATION */
+/* ============================= */
+
+.grid-warp {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    --bg: #ffffff;
+    --cell: 36px;
+    --stroke: 1px;
+    --line: rgba(0,0,0,0.10);
+    --glow: rgba(0,0,0,0.22);
+
+    background-color: var(--bg);
+
+    /* crisp square grid */
+    background-image:
+            linear-gradient(to right, var(--line) var(--stroke), transparent var(--stroke)),
+            linear-gradient(to bottom, var(--line) var(--stroke), transparent var(--stroke));
+    background-size: var(--cell) var(--cell);
+    background-position: 0 0;
+
+    opacity: 0.55;
+    will-change: background-position;
 }
 
-.animate-drift {
-    animation: drift 22s ease-in-out infinite;
+/* animated wave energy on grid lines only */
+.grid-warp::before,
+.grid-warp::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background-image:
+            repeating-linear-gradient(
+                    45deg,
+                    var(--glow) 0px,
+                    var(--glow) 2px,
+                    transparent 2px,
+                    transparent 18px
+            );
+
+    /* mask so animation only hits grid lines */
+    -webkit-mask-image:
+            linear-gradient(to right, #000 var(--stroke), transparent var(--stroke)),
+            linear-gradient(to bottom, #000 var(--stroke), transparent var(--stroke));
+    -webkit-mask-size: var(--cell) var(--cell);
+    -webkit-mask-repeat: repeat;
+
+    mask-image:
+            linear-gradient(to right, #000 var(--stroke), transparent var(--stroke)),
+            linear-gradient(to bottom, #000 var(--stroke), transparent var(--stroke));
+    mask-size: var(--cell) var(--cell);
+    mask-repeat: repeat;
+
+    mix-blend-mode: multiply;
+    opacity: 0.35;
+
+    animation: gridWaveA 10s linear infinite;
+}
+
+.grid-warp::after {
+    background-image:
+            repeating-linear-gradient(
+                    -45deg,
+                    rgba(0,0,0,0.18) 0px,
+                    rgba(0,0,0,0.18) 2px,
+                    transparent 2px,
+                    transparent 22px
+            );
+
+    opacity: 0.25;
+    animation: gridWaveB 14s linear infinite;
+}
+
+@keyframes gridWaveA {
+    0%   { background-position: 0px 0px; }
+    100% { background-position: 240px 240px; }
+}
+
+@keyframes gridWaveB {
+    0%   { background-position: 260px 0px; }
+    100% { background-position: 0px 260px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .grid-warp::before,
+    .grid-warp::after {
+        animation: none;
+    }
 }
