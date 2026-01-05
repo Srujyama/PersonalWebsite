@@ -116,8 +116,8 @@ export default function App() {
         () => ({
             name: "Srujan Yamali",
             title: "Software Engineer, AI/ML",
-            location: "Bay Area • Philadelphia • Delaware",
-            oneLiner: "I build evaluation-grade ML systems: robust pipelines, scalable experimentation, and high-signal measurement.",
+            location: "Bay Area • Philadelphia • NYC",
+            oneLiner: "",
             phone: "(302) 509-8614",
             email: "srujanyamali@berkeley.edu",
             site: "srujanyamali.com",
@@ -321,7 +321,7 @@ export default function App() {
                     <div className="pt-10 grid gap-6">
                         {/* Education - Always visible at top, only coursework expands */}
                         <div className="border-l-4 border-black/40 pl-6 py-2">
-                            <div className="py-4">
+                            <div className="py-2">
                                 <div className="flex flex-wrap items-baseline justify-between gap-3">
                                     <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>University of California, Berkeley</div>
                                     <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>May 2027</div>
@@ -332,7 +332,7 @@ export default function App() {
                             <button
                                 type="button"
                                 onClick={() => setOpenKey(openKey === "education" ? "" : "education")}
-                                className="w-full py-3 flex items-center justify-between gap-4 text-left border-t-2 border-black/10"
+                                className="w-full py-1 flex items-center justify-between gap-4 text-left"
                             >
                                 <div className="text-sm font-bold text-black" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>Coursework</div>
                                 <div className="text-lg text-black/60 font-mono">{openKey === "education" ? "−" : "+"}</div>
@@ -344,7 +344,7 @@ export default function App() {
                                 }`}
                             >
                                 <div className="overflow-hidden">
-                                    <div className="pt-3 pb-4 text-sm text-black/90 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                    <div className="pt-1 pb-2 text-sm text-black/90 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
                                         Machine Learning, Computer Architecture, Data Structures, Algorithms, Discrete Mathematics & Probability Theory, Signals & Systems, Circuits & Devices, Linear Algebra, Artificial Intelligence, Efficient Algorithms
                                     </div>
                                 </div>
@@ -352,7 +352,7 @@ export default function App() {
                         </div>
 
                         {/* Experience - Header + expandable content */}
-                        <div className="border-l-4 border-black/40 pl-6 py-2">
+                        <div className="border-l-4 border-black/40 pl-5 py-1">
                             <button
                                 type="button"
                                 onClick={() => setOpenKey(openKey === "experience" ? "" : "experience")}
