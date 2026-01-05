@@ -13,11 +13,14 @@ function useClock(ms = 40) {
     return t;
 }
 
-function Pattern() {
+function Pattern({ paused }) {
     return (
         <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 grid-warp"
+            style={{
+                animationPlayState: paused ? 'paused' : 'running'
+            }}
         />
     );
 }
@@ -237,6 +240,7 @@ export default function App() {
 
     const [openKey, setOpenKey] = useState("");
     const [modal, setModal] = useState("");
+    const [animationPaused, setAnimationPaused] = useState(false);
 
     const compactList = (arr, n) => arr.slice(0, n);
 
@@ -245,7 +249,7 @@ export default function App() {
 
     return (
         <div className="min-h-screen relative">
-            <Pattern />
+            <Pattern paused={animationPaused} />
             <Noise />
 
             {/* Social Links - Fixed on right side with enhanced styling */}
@@ -272,8 +276,9 @@ export default function App() {
                     <a
                         key={idx}
                         href={link.href}
-                        target={link.href.startsWith('mailto') ? undefined : '_blank'}
+                        target={link.target || (link.href.startsWith('mailto') ? undefined : '_blank')}
                         rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                        download={link.download || undefined}
                         className="hover:scale-110 transition-transform block"
                         aria-label={link.alt}
                         style={{
@@ -295,6 +300,55 @@ export default function App() {
                         />
                     </a>
                 ))}
+            </div>
+
+            {/* Animation Control - Below social links */}
+            <div 
+                className="fixed z-20"
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    position: 'fixed',
+                    right: '4rem',
+                    top: 'calc(50% + 200px)',
+                    padding: '1rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '16px',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(0, 0, 0, 0.1)',
+                }}
+            >
+                <button
+                    onClick={() => setAnimationPaused(!animationPaused)}
+                    className="hover:scale-110 transition-transform"
+                    aria-label={animationPaused ? "Resume Animation" : "Pause Animation"}
+                    style={{
+                        display: 'block',
+                        width: '40px',
+                        height: '40px',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: 0,
+                    }}
+                >
+                    <img 
+                        src={animationPaused 
+                            ? 'https://cdn-icons-png.flaticon.com/512/727/727245.png' 
+                            : 'https://cdn-icons-png.flaticon.com/512/2404/2404385.png'}
+                        alt={animationPaused ? "Resume" : "Pause"}
+                        style={{
+                            width: '40px',
+                            height: '40px',
+                            objectFit: 'contain',
+                            filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
+                            display: 'block',
+                        }}
+                    />
+                </button>
             </div>
 
             <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16">
@@ -323,10 +377,10 @@ export default function App() {
                         <div className="border-l-4 border-black/40 pl-6 py-2">
                             <div className="py-2">
                                 <div className="flex flex-wrap items-baseline justify-between gap-3">
-                                    <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>University of California, Berkeley</div>
+                                    <div className="text-xl font-bold" style={{color: '#FDB515'}}>University of California, Berkeley</div>
                                     <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>May 2027</div>
                                 </div>
-                                <div className="mt-2 text-lg text-black font-semibold" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>B.S. in Computer Science</div>
+                                <div className="mt-2 text-lg font-semibold" style={{color: '#003262'}}>B.S. in Computer Science</div>
                             </div>
                             
                             <button
@@ -369,21 +423,73 @@ export default function App() {
                             >
                                 <div className="overflow-hidden">
                                     <div className="pt-3 pb-4 space-y-6">
-                                        {experience.map((e, idx) => (
-                                            <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
-                                                <div className="flex flex-wrap items-baseline justify-between gap-3">
-                                                    <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{e.org}</div>
-                                                    <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                        {e.dates} · {e.where}
+                                        {experience.map((e, idx) => {
+                                            // Split org into company and role
+                                            const parts = e.org.split(' — ');
+                                            const company = parts[0];
+                                            const role = parts[1] || '';
+                                            
+                                            return (
+                                                <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
+                                                    <div className="flex flex-wrap items-baseline justify-between gap-3">
+                                                        <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{company}</div>
+                                                        <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                            {e.where}
+                                                        </div>
                                                     </div>
+                                                    <div className="flex flex-wrap items-baseline justify-between gap-3 mt-1">
+                                                        <div className="text-base text-black/90 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{role}</div>
+                                                        <div className="text-sm text-black/70 font-medium" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                            {e.dates}
+                                                        </div>
+                                                    </div>
+                                                    <ul className="mt-3 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                        {e.bullets.map((b, i) => (
+                                                            <li key={i}>{b}</li>
+                                                        ))}
+                                                    </ul>
                                                 </div>
-                                                <ul className="mt-3 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                    {e.bullets.map((b, i) => (
-                                                        <li key={i}>{b}</li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
+                                        
+                                        {/* Resume Buttons at the bottom of experience */}
+                                        <div className="pt-4 flex gap-3">
+                                            <a
+                                                href="/public/SrujanYamaliResumeJan2026.pdf"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all"
+                                                style={{
+                                                    border: '3px solid black',
+                                                    backgroundColor: 'transparent',
+                                                    textAlign: 'center',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                            >
+                                                View Resume
+                                            </a>
+                                            <a
+                                                href="/public/SrujanYamaliResumeJan2026.pdf"
+                                                download
+                                                className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all"
+                                                style={{
+                                                    border: '3px solid black',
+                                                    backgroundColor: 'transparent',
+                                                    textAlign: 'center',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}
+                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
+                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                            >
+                                                Download Resume
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -477,26 +583,9 @@ export default function App() {
                             </div>
                         </div>
 
-                        <div className="pt-8 text-sm text-black font-medium flex items-center justify-between border-t-2 border-black/20" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                        <div className="pt-8 text-sm text-black font-medium border-t-2 border-black/20" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
                             <div>
                                 © {new Date().getFullYear()} {profile.name}
-                            </div>
-                            <div className="flex gap-4">
-                                <a
-                                    className="text-blue-600 hover:text-blue-800 underline underline-offset-2 font-semibold"
-                                    href="/public/SrujanYamaliResumeJan2026.pdf"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    View Resume
-                                </a>
-                                <a
-                                    className="text-blue-600 hover:text-blue-800 underline underline-offset-2 font-semibold"
-                                    href="/public/SrujanYamaliResumeJan2026.pdf"
-                                    download
-                                >
-                                    Download Resume
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -506,21 +595,33 @@ export default function App() {
             {/* Modal (also no box) */}
             <Modal open={modal === "experience"} title="Experience" onClose={closeModal}>
                 <div className="space-y-6">
-                    {experience.map((e) => (
-                        <div key={e.org} className="pb-6 border-b border-black/10 last:border-b-0">
-                            <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                <div className="text-sm font-bold text-black">{e.org}</div>
-                                <div className="text-xs text-black/80 font-medium">
-                                    {e.dates} · {e.where}
+                    {experience.map((e) => {
+                        const parts = e.org.split(' — ');
+                        const company = parts[0];
+                        const role = parts[1] || '';
+                        
+                        return (
+                            <div key={e.org} className="pb-6 border-b border-black/10 last:border-b-0">
+                                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                                    <div className="text-sm font-bold text-black">{company}</div>
+                                    <div className="text-xs text-black/80 font-medium">
+                                        {e.where}
+                                    </div>
                                 </div>
+                                <div className="flex flex-wrap items-baseline justify-between gap-2 mt-1">
+                                    <div className="text-sm text-black/90 font-semibold">{role}</div>
+                                    <div className="text-xs text-black/70 font-medium">
+                                        {e.dates}
+                                    </div>
+                                </div>
+                                <ul className="mt-2 text-sm text-black list-disc pl-5 space-y-1.5">
+                                    {e.bullets.map((b, i) => (
+                                        <li key={i}>{b}</li>
+                                    ))}
+                                </ul>
                             </div>
-                            <ul className="mt-2 text-sm text-black list-disc pl-5 space-y-1.5">
-                                {e.bullets.map((b, i) => (
-                                    <li key={i}>{b}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </Modal>
         </div>
