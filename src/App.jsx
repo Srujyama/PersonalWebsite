@@ -38,17 +38,16 @@ function Noise() {
 
 function Section({ title, hint, children, open, onToggle }) {
     return (
-        <div className="border-l border-black/20 pl-4">
+        <div className="border-l-2 border-black/30 pl-4">
             <button
                 type="button"
                 onClick={onToggle}
                 className="w-full py-3 flex items-center justify-between gap-4 text-left"
             >
-                <div>
-                    <div className="text-sm font-semibold text-black">{title}</div>
-                    {hint ? <div className="text-xs text-black/55 mt-0.5">{hint}</div> : null}
+                <div className="flex-1">
+                    <div className="text-sm font-bold text-black">{title}</div>
                 </div>
-                <div className="text-xs text-black/45">{open ? "—" : "+"}</div>
+                <div className="text-sm text-black/60 font-mono">{open ? "−" : "+"}</div>
             </button>
 
             <div
@@ -56,7 +55,7 @@ function Section({ title, hint, children, open, onToggle }) {
                     open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
                 }`}
             >
-                <div className="overflow-hidden pb-4">{children}</div>
+                <div className="overflow-hidden">{children}</div>
             </div>
         </div>
     );
@@ -85,7 +84,6 @@ function Modal({ open, title, onClose, children }) {
 
     if (!open) return null;
 
-    // Not a “box”: just a blurred sheet with no border/shadow/rounding.
     return (
         <div className="fixed inset-0 z-50">
             <div className="absolute inset-0 bg-black/25 backdrop-blur-[3px]" onClick={onClose} />
@@ -100,7 +98,7 @@ function Modal({ open, title, onClose, children }) {
                             ref={closeBtnRef}
                             type="button"
                             onClick={onClose}
-                            className="text-xs text-black/70 hover:text-black underline underline-offset-4"
+                            className="text-xs text-blue-600 hover:text-blue-800 underline underline-offset-4"
                         >
                             Close
                         </button>
@@ -117,28 +115,23 @@ export default function App() {
     const profile = useMemo(
         () => ({
             name: "Srujan Yamali",
-            title: "Software Engineer / Research",
-            location: "Berkeley • San Francisco",
+            title: "Software Engineer, AI/ML",
+            location: "Bay Area • Philadelphia • Delaware",
+            oneLiner: "I build evaluation-grade ML systems: robust pipelines, scalable experimentation, and high-signal measurement.",
+            phone: "(302) 509-8614",
             email: "srujanyamali@berkeley.edu",
-            site: "", // optional: "srujanyamali.com"
+            site: "srujanyamali.com",
             github: "github.com/srujyama",
             linkedin: "linkedin.com/in/srujanyamali",
         }),
         []
     );
 
-    const education = useMemo(
-        () => [
-            {
-                org: "University of California, Berkeley",
-                degree: "B.A. Molecular & Cellular Biology & Computer Science (GPA 4.0)",
-                dates: "Aug 2025 – May 2029",
-                extra:
-                    "Coursework: ML, AI, Algorithms, Data Structures, Computer Architecture, Discrete Math & Probability, Linear Algebra, Signals & Systems, Circuits & Devices",
-            },
-        ],
-        []
-    );
+    const socialLinks = [
+        { img: 'https://cdn-icons-png.flaticon.com/512/174/174857.png', alt: 'LinkedIn', href: 'https://linkedin.com/in/srujanyamali' },
+        { img: 'https://cdn-icons-png.flaticon.com/512/25/25231.png',   alt: 'GitHub',   href: 'https://github.com/srujyama' },
+        { img: 'https://cdn-icons-png.flaticon.com/512/561/561127.png', alt: 'Email',    href: 'mailto:srujanyamali@berkeley.edu' },
+    ];
 
     const experience = useMemo(
         () => [
@@ -147,9 +140,8 @@ export default function App() {
                 where: "San Francisco, CA",
                 dates: "Aug 2025 – Present",
                 bullets: [
-                    "Engineered enterprise-scale AI/ML developer tooling for model evaluation, safety benchmarking, and data labeling workflows across production environments.",
-                    "Developed LLM API pipeline for mass testing on human data.",
-                    "Automated multimodal ingestion, fine-tuning, and continuous deployment using Prefect, MLflow, and Kubernetes, reducing experiment-to-production cycle time ~40%.",
+                    "Engineered enterprise-scale AI/ML developer tooling powering model evaluation, safety benchmarking, and data labeling workflows across top AI labs production environments; Developed LLM API pipeline for mass testing on human data.",
+                    "Automated multimodal data ingestion, fine-tuning, and continuous deployment pipelines using Prefect, MLflow, and distributed Kubernetes clusters—reducing enterprise experiment-to-production cycle time by 40%.",
                 ],
             },
             {
@@ -157,46 +149,36 @@ export default function App() {
                 where: "Remote",
                 dates: "Nov 2025 – Present",
                 bullets: [
-                    "Developed internal LLM-powered enterprise automation tools for risk and product teams.",
-                    "Designed an AI-generated Statement of Work pipeline to help automate ~10,000 client implementation projects annually.",
-                    "Built scalable cloud infrastructure + ingestion pipelines for real-time sensor streaming and model execution.",
+                    "Developed internal LLM-powered enterprise automation tools supporting Visa's risk and product teams.",
+                    "Designed an AI-generated Statement of Work pipeline helping automate 10,000 client implementation projects annually.",
+                    "Built scalable cloud infrastructure and data ingestion pipelines to support real-time sensor streaming and model execution.",
                 ],
             },
             {
-                org: "Children’s Hospital of Philadelphia — Data Science Intern",
+                org: "Children's Hospital of Philadelphia — Data Science Intern",
                 where: "Philadelphia, PA",
                 dates: "Sept 2024 – Aug 2025",
                 bullets: [
-                    "Built a high-performance time-series pipeline for genomic recombination detection (KernelCPD), scaling to 75,000+ genomes (~37TB) using ruptures, KDTree, and multiprocessing.",
-                    "Developed parallelized Python framework enabling large-scale region analysis and accelerating runtime via statistical comparisons + clustering logic.",
+                    "Built a high-performance time-series analysis pipeline for genomic recombination detection using KernelCPD to identify shifts in protein signal distributions, scaling to 75,000+ genomes (37 TB) using ruptures, KDTree, and multiprocessing.",
+                    "Developed a parallelized framework with Python multiprocessing, enabling large-scale genomic region analysis and accelerating runtime through statistical comparisons and clustering logic.",
                 ],
             },
             {
-                org: "Cornell University — ML Engineer Intern / Research Intern",
+                org: "Cornell University — Machine Learning Engineer Intern",
                 where: "Remote",
-                dates: "Sept 2023 – May 2024 / Mar 2024 – Aug 2024",
+                dates: "Sept 2023 – May 2024",
                 bullets: [
-                    "Applied YOLO-based object detection to track fish behaviors under predation; 85%+ accuracy across 500+ hours of field video.",
-                    "Assisted inference of decision-making rules using stochastic models and dynamic behavioral sequences.",
+                    "Applied YOLO-based object detection to automate identification and tracking of fish behaviors under predation, achieving 85%+ accuracy across 500+ hours of field video footage.",
+                    "Applied deep learning techniques, including YOLO-based object detection, to automate the identification and tracking of individual and group fish behaviors due to predation from field video data.",
                 ],
             },
             {
-                org: "University of Delaware — Software Development Intern / Research Assistant",
+                org: "University of Delaware — Software Development Intern",
                 where: "Newark, DE",
-                dates: "Jun 2023 – Aug 2023 / Jun 2023 – Aug 2024",
+                dates: "June 2023 – Aug 2023",
                 bullets: [
-                    "Built PyQt6/OpenCV app to automate analysis of 730GB of Drosophila video; reduced manual annotation time ~90%.",
-                    "Created ROI-tracking engine with blob tracking + centroid logic; ~99.7% accuracy in mating trial analysis with real-time GUI overlays.",
-                    "Developed high-throughput capture for thigmotaxis/anxiety behavioral analysis; explored reward perception mechanisms (NPF signaling).",
-                ],
-            },
-            {
-                org: "Perelman School of Medicine — Research Trainee",
-                where: "Philadelphia, PA",
-                dates: "Jul 2023 – Aug 2023",
-                bullets: [
-                    "Protein purification/crystallization; SDS-PAGE/Western blot validation.",
-                    "Cell culturing, bacterial transformation, plasmid prep; assisted X-ray crystallography data collection/analysis.",
+                    "Developed a PyQt6/OpenCV application to automate analysis of 730 GB of Drosophila video, reducing manual annotation time by 90% and saving hundreds of hours; Delivered automated tracking of behaviors impossible to detect manually.",
+                    "Built an ROI-tracking engine using blob tracking and centroid calculations to monitor behavioral dynamics, achieving 99.7% accuracy in mating trial analysis, streaming real-time signals to a GUI overlay for behavior classification and role tracking.",
                 ],
             },
         ],
@@ -209,16 +191,16 @@ export default function App() {
                 name: "FlyFlirt — Real-Time Behavioral Detection and Tracking",
                 stack: "Python, OpenCV, PyQt6, Pandas",
                 bullets: [
-                    "Production-grade CV pipeline to detect/track Drosophila behaviors across hundreds of hours of video; reduced manual annotation ~90%.",
-                    "Real-time OpenCV/NumPy processing for high-throughput experiments with near–zero latency + automated labeling across thousands of frames.",
+                    "Developed a production-grade computer vision pipeline to automatically detect and track Drosophila behaviors across hundreds of hours of video, reducing manual annotation by 90%.",
+                    "Implemented real-time OpenCV/NumPy processing for high-throughput experiments with near–zero latency and automated labeling across thousands of frames.",
                 ],
             },
             {
                 name: "RedCarpet — Genomic Changepoint Heatmap Engine",
-                stack: "Python, ruptures, scikit-learn, Matplotlib",
+                stack: "Python, Ruptures, Scikit-learn, Matplotlib",
                 bullets: [
-                    "High-performance changepoint engine using multiprocessing + KDTree similarity search to accelerate recombination discovery.",
-                    "Automated comparative visualization via Matplotlib heatmaps for reproducible genomic analysis.",
+                    "Created a high-performance changepoint detection engine using multiprocessing and KDTree-based similarity search, accelerating large-scale recombination discovery by orders of magnitude.",
+                    "Automated visualization of comparative signals via Matplotlib heatmaps for reproducible, large-scale genomic analysis.",
                 ],
             },
         ],
@@ -245,232 +227,275 @@ export default function App() {
 
     const skills = useMemo(
         () => [
-            "Python, JavaScript, C/C++, Rust, Java, SQL, HTML/CSS",
-            "React, Flask, Django, Node.js, REST APIs",
-            "AWS (S3/EC2/RDS), GCP, Azure, Docker, Kubernetes, Linux",
-            "NumPy, Pandas, OpenCV, scikit-learn, PyTorch, TensorFlow, HuggingFace",
-            "Prefect, MLflow, LangChain, PineconeDB",
-            "Lab: PCR, gel electrophoresis, mutagenesis, cell culturing, transformation",
+            "Languages/Frameworks: Python, JavaScript, C/C++, Rust, Java, SQL, HTML/CSS, Node.js",
+            "Libraries/Tools: React, AWS (S3, EC2, RDS), GCP, Azure, Git, Linux, Flask, Django, Docker, MySQL, PostgreSQL, SQLAlchemy, Kubernetes, REST API, Tailwind CSS, NumPy, Pandas, LangChain, PineconeDB",
+            "AI/ML: PyTorch, TensorFlow, OpenCV, Scikit-Learn, HuggingFace",
+            "Lab Skills: Gel Electrophoresis, Polymerase Chain Reaction, Mutagenesis, Cell Culturing, Bacterial Transformation",
         ],
         []
     );
 
-    const [openKey, setOpenKey] = useState("experience");
-    const [modal, setModal] = useState(null);
+    const [openKey, setOpenKey] = useState("");
+    const [modal, setModal] = useState("");
+
+    const compactList = (arr, n) => arr.slice(0, n);
 
     const openModal = (key) => setModal(key);
-    const closeModal = () => setModal(null);
-
-    const compactList = (items, n = 3) => items.slice(0, n);
-
-    const linkify = (value) => {
-        if (!value) return "#";
-        if (value.startsWith("http://") || value.startsWith("https://")) return value;
-        if (value.includes("@")) return `mailto:${value}`;
-        return `https://${value}`;
-    };
+    const closeModal = () => setModal("");
 
     return (
-        // scrollable page, no “card” containers
-        <div className="relative min-h-screen w-full overflow-y-auto bg-white text-black">
+        <div className="min-h-screen relative">
             <Pattern />
             <Noise />
 
-            <main className="relative w-full px-6 py-10">
-                <section className="mx-auto w-full max-w-6xl">
-                    {/* Sticky header (NOT a box): just blur + thin rule */}
-                    <div className="sticky top-0 z-20 -mx-6 px-6 backdrop-blur-md">
-                        <div className="py-6 border-b border-black/10">
-                            <div className="flex items-start justify-between gap-6">
-                                <div>
-                                    <div className="text-[11px] tracking-[0.22em] text-black/55">
-                                        RESEARCH • SYSTEMS • ENGINEERING
-                                    </div>
-                                    <h1 className="mt-2 text-3xl font-semibold tracking-tight">{profile.name}</h1>
-                                    <div className="mt-1 text-sm text-black/70">
-                                        {profile.title} · {profile.location}
-                                    </div>
-                                </div>
+            {/* Social Links - Fixed on right side with enhanced styling */}
+            <div 
+                className="fixed z-20"
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '1.5rem',
+                    position: 'fixed',
+                    right: '4rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    padding: '1.5rem 1rem',
+                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '16px',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(0, 0, 0, 0.1)',
+                }}
+            >
+                {socialLinks.map((link, idx) => (
+                    <a
+                        key={idx}
+                        href={link.href}
+                        target={link.href.startsWith('mailto') ? undefined : '_blank'}
+                        rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
+                        className="hover:scale-110 transition-transform block"
+                        aria-label={link.alt}
+                        style={{
+                            display: 'block',
+                            width: '40px',
+                            height: '40px',
+                        }}
+                    >
+                        <img 
+                            src={link.img} 
+                            alt={link.alt}
+                            style={{
+                                width: '40px',
+                                height: '40px',
+                                objectFit: 'contain',
+                                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
+                                display: 'block',
+                            }}
+                        />
+                    </a>
+                ))}
+            </div>
 
-                                <div className="text-right text-xs text-black/60 space-y-1">
-                                    <div>
-                                        <a className="hover:text-black" href={linkify(profile.email)}>
-                                            {profile.email}
-                                        </a>
-                                    </div>
-
-                                    {profile.site ? (
-                                        <div>
-                                            <a
-                                                className="hover:text-black"
-                                                href={linkify(profile.site)}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                            >
-                                                {profile.site}
-                                            </a>
-                                        </div>
-                                    ) : null}
-
-                                    <div>
-                                        <a
-                                            className="hover:text-black"
-                                            href={linkify(profile.github)}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            {profile.github}
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <a
-                                            className="hover:text-black"
-                                            href={linkify(profile.linkedin)}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            {profile.linkedin}
-                                        </a>
-                                    </div>
-                                </div>
+            <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16">
+                <section className="p-10">
+                    {/* Header section - Enhanced and modern */}
+                    <div className="pb-12 border-b-2 border-black/20">
+                        <h1 className="text-7xl font-black text-black tracking-tight mb-6 leading-tight" style={{textShadow: '0 0 30px rgba(255,255,255,0.9)'}}>
+                            {profile.name}
+                        </h1>
+                        <div className="space-y-3">
+                            <div className="text-2xl text-black font-bold" style={{textShadow: '0 0 20px rgba(255,255,255,0.8)'}}>
+                                {profile.title}
                             </div>
-
-                            <p className="mt-4 text-sm leading-relaxed text-black/75">
-                                I build evaluation-grade ML systems: robust pipelines, scalable experimentation, and
-                                high-signal measurement.
-                            </p>
-
-                            <div className="mt-3 text-[11px] text-black/55 flex items-center justify-between">
+                            <div className="text-xl text-black/90 font-medium" style={{textShadow: '0 0 20px rgba(255,255,255,0.8)'}}>
+                                 {profile.location}
+                            </div>
+                            <div className="text-lg text-black/90 mt-6 leading-relaxed max-w-2xl font-medium" style={{textShadow: '0 0 20px rgba(255,255,255,0.8)'}}>
+                                {profile.oneLiner}
                             </div>
                         </div>
                     </div>
 
-                    {/* Body: pure text + separators, NO boxes */}
-                    <div className="pt-6 grid gap-3">
-                        <Section
-                            title="Experience"
-                            hint="Software engineering & research roles"
-                            open={openKey === "experience"}
-                            onToggle={() => setOpenKey(openKey === "experience" ? "" : "experience")}
-                        >
-                            <div className="space-y-4">
-                                {compactList(experience, 3).map((e, idx) => (
-                                    <div key={e.org} className="pb-4 border-b border-black/10 last:border-b-0">
-                                        <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                            <div className="text-sm font-semibold">{e.org}</div>
-                                            <div className="text-xs text-black/55">
-                                                {e.dates} · {e.where}
+                    {/* Body: larger text and more defined sections */}
+                    <div className="pt-10 grid gap-6">
+                        {/* Education - Always visible at top, only coursework expands */}
+                        <div className="border-l-4 border-black/40 pl-6 py-2">
+                            <div className="py-4">
+                                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                                    <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>University of California, Berkeley</div>
+                                    <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>May 2027</div>
+                                </div>
+                                <div className="mt-2 text-lg text-black font-semibold" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>B.S. in Computer Science</div>
+                            </div>
+                            
+                            <button
+                                type="button"
+                                onClick={() => setOpenKey(openKey === "education" ? "" : "education")}
+                                className="w-full py-3 flex items-center justify-between gap-4 text-left border-t-2 border-black/10"
+                            >
+                                <div className="text-sm font-bold text-black" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>Coursework</div>
+                                <div className="text-lg text-black/60 font-mono">{openKey === "education" ? "−" : "+"}</div>
+                            </button>
+                            
+                            <div
+                                className={`grid transition-all duration-200 ${
+                                    openKey === "education" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                                }`}
+                            >
+                                <div className="overflow-hidden">
+                                    <div className="pt-3 pb-4 text-sm text-black/90 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                        Machine Learning, Computer Architecture, Data Structures, Algorithms, Discrete Mathematics & Probability Theory, Signals & Systems, Circuits & Devices, Linear Algebra, Artificial Intelligence, Efficient Algorithms
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Experience - Header + expandable content */}
+                        <div className="border-l-4 border-black/40 pl-6 py-2">
+                            <button
+                                type="button"
+                                onClick={() => setOpenKey(openKey === "experience" ? "" : "experience")}
+                                className="w-full py-4 flex items-center justify-between gap-4 text-left"
+                            >
+                                <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>Experience</div>
+                                <div className="text-lg text-black/60 font-mono">{openKey === "experience" ? "−" : "+"}</div>
+                            </button>
+                            
+                            <div
+                                className={`grid transition-all duration-200 ${
+                                    openKey === "experience" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                                }`}
+                            >
+                                <div className="overflow-hidden">
+                                    <div className="pt-3 pb-4 space-y-6">
+                                        {experience.map((e, idx) => (
+                                            <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
+                                                <div className="flex flex-wrap items-baseline justify-between gap-3">
+                                                    <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{e.org}</div>
+                                                    <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                        {e.dates} · {e.where}
+                                                    </div>
+                                                </div>
+                                                <ul className="mt-3 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                    {e.bullets.map((b, i) => (
+                                                        <li key={i}>{b}</li>
+                                                    ))}
+                                                </ul>
                                             </div>
-                                        </div>
-                                        <ul className="mt-2 text-sm text-black/70 list-disc pl-5 space-y-1">
-                                            {e.bullets.slice(0, 2).map((b, i) => (
-                                                <li key={i}>{b}</li>
-                                            ))}
-                                        </ul>
+                                        ))}
                                     </div>
-                                ))}
-
-                                <button
-                                    type="button"
-                                    onClick={() => openModal("experience")}
-                                    aria-haspopup="dialog"
-                                    aria-expanded={modal === "experience"}
-                                    className="text-sm text-black/75 hover:text-black underline underline-offset-4"
-                                >
-                                    Expand all experience →
-                                </button>
+                                </div>
                             </div>
-                        </Section>
+                        </div>
 
-                        <Section
-                            title="Education"
-                            hint="Berkeley CS + MCB"
-                            open={openKey === "education"}
-                            onToggle={() => setOpenKey(openKey === "education" ? "" : "education")}
-                        >
-                            <div className="space-y-4">
-                                {education.map((ed) => (
-                                    <div
-                                        key={`${ed.org}-${ed.degree}`}
-                                        className="pb-4 border-b border-black/10 last:border-b-0"
-                                    >
-                                        <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                            <div className="text-sm font-semibold">{ed.org}</div>
-                                            <div className="text-xs text-black/55">{ed.dates}</div>
-                                        </div>
-                                        <div className="mt-1 text-sm text-black/70">{ed.degree}</div>
-                                        {ed.extra ? <div className="mt-2 text-xs text-black/60">{ed.extra}</div> : null}
+                        {/* Projects - Header + expandable content */}
+                        <div className="border-l-4 border-black/40 pl-6 py-2">
+                            <button
+                                type="button"
+                                onClick={() => setOpenKey(openKey === "projects" ? "" : "projects")}
+                                className="w-full py-4 flex items-center justify-between gap-4 text-left"
+                            >
+                                <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>Projects</div>
+                                <div className="text-lg text-black/60 font-mono">{openKey === "projects" ? "−" : "+"}</div>
+                            </button>
+                            
+                            <div
+                                className={`grid transition-all duration-200 ${
+                                    openKey === "projects" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                                }`}
+                            >
+                                <div className="overflow-hidden">
+                                    <div className="pt-3 pb-4 space-y-6">
+                                        {projects.map((p, idx) => (
+                                            <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
+                                                <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{p.name}</div>
+                                                <div className="text-sm text-black/70 mt-1 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{p.stack}</div>
+                                                <ul className="mt-3 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                    {p.bullets.map((b, i) => (
+                                                        <li key={i}>{b}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                </div>
                             </div>
-                        </Section>
+                        </div>
 
-                        <Section
-                            title="Projects"
-                            hint="FlyFlirt, RedCarpet"
-                            open={openKey === "projects"}
-                            onToggle={() => setOpenKey(openKey === "projects" ? "" : "projects")}
-                        >
-                            <div className="space-y-4">
-                                {projects.map((p) => (
-                                    <div key={p.name} className="pb-4 border-b border-black/10 last:border-b-0">
-                                        <div className="text-sm font-semibold">{p.name}</div>
-                                        <div className="text-xs text-black/55 mt-0.5">{p.stack}</div>
-                                        <ul className="mt-2 text-sm text-black/70 list-disc pl-5 space-y-1">
-                                            {p.bullets.map((b, i) => (
-                                                <li key={i}>{b}</li>
-                                            ))}
-                                        </ul>
+                        {/* Publications - Header + expandable content */}
+                        <div className="border-l-4 border-black/40 pl-6 py-2">
+                            <button
+                                type="button"
+                                onClick={() => setOpenKey(openKey === "pubs" ? "" : "pubs")}
+                                className="w-full py-4 flex items-center justify-between gap-4 text-left"
+                            >
+                                <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>Publications & Conferences</div>
+                                <div className="text-lg text-black/60 font-mono">{openKey === "pubs" ? "−" : "+"}</div>
+                            </button>
+                            
+                            <div
+                                className={`grid transition-all duration-200 ${
+                                    openKey === "pubs" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                                }`}
+                            >
+                                <div className="overflow-hidden">
+                                    <div className="pt-3 pb-4 space-y-4">
+                                        {publications.map((p, i) => (
+                                            <div key={i} className="pb-4 border-b-2 border-black/10 last:border-b-0 text-base text-black leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                {p.citation}
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                </div>
                             </div>
-                        </Section>
+                        </div>
 
-                        <Section
-                            title="Publications & Conferences"
-                            hint=""
-                            open={openKey === "pubs"}
-                            onToggle={() => setOpenKey(openKey === "pubs" ? "" : "pubs")}
-                        >
-                            <div className="space-y-3">
-                                {publications.map((p, i) => (
-                                    <div key={i} className="pb-3 border-b border-black/10 last:border-b-0 text-sm text-black/75">
-                                        {p.citation}
-                                    </div>
-                                ))}
+                        {/* Skills - Header + expandable content */}
+                        <div className="border-l-4 border-black/40 pl-6 py-2">
+                            <button
+                                type="button"
+                                onClick={() => setOpenKey(openKey === "skills" ? "" : "skills")}
+                                className="w-full py-4 flex items-center justify-between gap-4 text-left"
+                            >
+                                <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>Skills</div>
+                                <div className="text-lg text-black/60 font-mono">{openKey === "skills" ? "−" : "+"}</div>
+                            </button>
+                            
+                            <div
+                                className={`grid transition-all duration-200 ${
+                                    openKey === "skills" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                                }`}
+                            >
+                                <div className="overflow-hidden">
+                                    <ul className="pt-3 pb-4 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                        {skills.map((s, i) => (
+                                            <li key={i}>{s}</li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
-                        </Section>
+                        </div>
 
-                        <Section
-                            title="Skills"
-                            hint="Languages, ML, infra, tools, lab"
-                            open={openKey === "skills"}
-                            onToggle={() => setOpenKey(openKey === "skills" ? "" : "skills")}
-                        >
-                            <ul className="text-sm text-black/75 list-disc pl-5 space-y-1">
-                                {skills.map((s, i) => (
-                                    <li key={i}>{s}</li>
-                                ))}
-                            </ul>
-                        </Section>
-
-                        <div className="pt-6 text-[11px] text-black/55 flex items-center justify-between border-t border-black/10">
+                        <div className="pt-8 text-sm text-black font-medium flex items-center justify-between border-t-2 border-black/20" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
                             <div>
                                 © {new Date().getFullYear()} {profile.name}
                             </div>
-                            <div className="flex gap-3">
-                                <a className="hover:text-black" href={`mailto:${profile.email}`}>
-                                    Email
+                            <div className="flex gap-4">
+                                <a
+                                    className="text-blue-600 hover:text-blue-800 underline underline-offset-2 font-semibold"
+                                    href="/public/SrujanYamaliResumeJan2026.pdf"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    View Resume
                                 </a>
                                 <a
-                                    className="hover:text-black underline underline-offset-4"
-                                    href="#"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        openModal("experience");
-                                    }}
+                                    className="text-blue-600 hover:text-blue-800 underline underline-offset-2 font-semibold"
+                                    href="/public/SrujanYamaliResumeJan2026.pdf"
+                                    download
                                 >
-                                    Full CV
+                                    Download Resume
                                 </a>
                             </div>
                         </div>
@@ -484,12 +509,12 @@ export default function App() {
                     {experience.map((e) => (
                         <div key={e.org} className="pb-6 border-b border-black/10 last:border-b-0">
                             <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                <div className="text-sm font-semibold">{e.org}</div>
-                                <div className="text-xs text-black/55">
+                                <div className="text-sm font-bold text-black">{e.org}</div>
+                                <div className="text-xs text-black/80 font-medium">
                                     {e.dates} · {e.where}
                                 </div>
                             </div>
-                            <ul className="mt-2 text-sm text-black/75 list-disc pl-5 space-y-1.5">
+                            <ul className="mt-2 text-sm text-black list-disc pl-5 space-y-1.5">
                                 {e.bullets.map((b, i) => (
                                     <li key={i}>{b}</li>
                                 ))}
