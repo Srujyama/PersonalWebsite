@@ -421,7 +421,7 @@ export default function App() {
                                         {/* Resume Buttons at the bottom of experience */}
                                         <div className="pt-4 flex gap-3">
                                             <a
-                                                href="/public/SrujanYamaliResumeJan2026.pdf"
+                                                href="/SrujanYamaliResumeJan2026.pdf"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all"
@@ -439,7 +439,7 @@ export default function App() {
                                                 View Resume
                                             </a>
                                             <a
-                                                href="/public/SrujanYamaliResumeJan2026.pdf"
+                                                href="/SrujanYamaliResumeJan2026.pdf"
                                                 download
                                                 className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all"
                                                 style={{
