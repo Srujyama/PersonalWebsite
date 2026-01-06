@@ -49,3 +49,109 @@ body {
         animation: none;
     }
 }
+
+/* ============================= */
+/* DESKTOP STYLES (Default)      */
+/* ============================= */
+
+/* Social Links Container - Desktop: Right side, vertical */
+.social-links-container {
+    position: fixed;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    right: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 1.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Pause Button Container - Desktop: Below social links */
+.pause-button-container {
+    position: fixed;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    right: 4rem;
+    top: calc(50% + 200px);
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ============================= */
+/* MOBILE STYLES                 */
+/* ============================= */
+
+/* Mobile devices - max-width: 768px (tablets and phones) */
+@media (max-width: 768px) {
+    /* Social Links - Move to bottom, horizontal layout */
+    .social-links-container {
+        position: fixed;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        top: auto;
+        right: auto;
+        flex-direction: row;
+        padding: 1rem 1.5rem;
+        gap: 1.5rem;
+    }
+
+    /* Pause Button - Move to bottom right corner */
+    .pause-button-container {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        top: auto;
+        left: auto;
+        padding: 0.75rem;
+    }
+
+    /* Add bottom padding to content to prevent overlap with fixed bottom elements */
+    .mobile-content {
+        padding-bottom: 120px !important;
+    }
+}
+
+/* Extra small mobile devices - max-width: 480px (smartphones) */
+@media (max-width: 480px) {
+    /* Adjust social links spacing for smaller screens */
+    .social-links-container {
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        bottom: 0.75rem;
+    }
+
+    /* Adjust pause button for smaller screens */
+    .pause-button-container {
+        bottom: 0.75rem;
+        right: 0.75rem;
+        padding: 0.5rem;
+    }
+
+    /* Smaller icon sizes on very small screens */
+    .social-links-container a,
+    .pause-button-container button {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    .social-links-container img,
+    .pause-button-container img {
+        width: 36px !important;
+        height: 36px !important;
+    }
+}

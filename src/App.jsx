@@ -158,30 +158,13 @@ export default function App() {
                 ],
             },
             {
-                org: "Children's Hospital of Philadelphia — Data Science Intern",
-                where: "Philadelphia, PA",
-                dates: "Sept 2024 – Aug 2025",
-                bullets: [
-                    "Built a high-performance time-series analysis pipeline for genomic recombination detection using KernelCPD to identify shifts in protein signal distributions, scaling to 75,000+ genomes (37 TB) using ruptures, KDTree, and multiprocessing.",
-                    "Developed a parallelized framework with Python multiprocessing, enabling large-scale genomic region analysis and accelerating runtime through statistical comparisons and clustering logic.",
-                ],
-            },
-            {
-                org: "Cornell University — Machine Learning Engineer Intern",
+                org: "Pear VC — Machine Learning Intern",
                 where: "Remote",
-                dates: "Sept 2023 – May 2024",
+                dates: "Aug 2024 – Nov 2024",
                 bullets: [
-                    "Applied YOLO-based object detection to automate identification and tracking of fish behaviors under predation, achieving 85%+ accuracy across 500+ hours of field video footage.",
-                    "Applied deep learning techniques, including YOLO-based object detection, to automate the identification and tracking of individual and group fish behaviors due to predation from field video data.",
-                ],
-            },
-            {
-                org: "University of Delaware — Software Development Intern",
-                where: "Newark, DE",
-                dates: "June 2023 – Aug 2023",
-                bullets: [
-                    "Developed a PyQt6/OpenCV application to automate analysis of 730 GB of Drosophila video, reducing manual annotation time by 90% and saving hundreds of hours; Delivered automated tracking of behaviors impossible to detect manually.",
-                    "Built an ROI-tracking engine using blob tracking and centroid calculations to monitor behavioral dynamics, achieving 99.7% accuracy in mating trial analysis, streaming real-time signals to a GUI overlay for behavior classification and role tracking.",
+                    "Designed and deployed enterprise-grade LLM systems for automated investment deal flow analysis and due diligence across 1000+ startups",
+                    "Implemented multi-agent RAG architectures handling structured analysis of hundreds of pitch decks and investor reports monthly",
+                    "Automated portfolio monitoring pipelines processing 24/7 market data, LinkedIn signals, and press releases using LangChain and OpenAI API for portfolio companies",
                 ],
             },
         ],
@@ -191,19 +174,35 @@ export default function App() {
     const projects = useMemo(
         () => [
             {
-                name: "FlyFlirt — Real-Time Behavioral Detection and Tracking",
-                stack: "Python, OpenCV, PyQt6, Pandas",
+                name: "LLM Risk Management Compliance System",
+                stack: "Python, Anthropic Claude API, RAG, Vector Databases",
                 bullets: [
-                    "Developed a production-grade computer vision pipeline to automatically detect and track Drosophila behaviors across hundreds of hours of video, reducing manual annotation by 90%.",
-                    "Implemented real-time OpenCV/NumPy processing for high-throughput experiments with near–zero latency and automated labeling across thousands of frames.",
+                    "Architected enterprise-scale LLM compliance platform for EU AI Act and SEC regulatory requirements, processing 1000+ pages of legal documentation",
+                    "Implemented real-time risk scoring engine monitoring model outputs across 50+ compliance dimensions with automated flagging and remediation workflows",
                 ],
             },
             {
-                name: "RedCarpet — Genomic Changepoint Heatmap Engine",
-                stack: "Python, Ruptures, Scikit-learn, Matplotlib",
+                name: "Enterprise Multi-Agent Platform with MCP Integration",
+                stack: "Python, LangGraph, Model Context Protocol, AWS Bedrock",
                 bullets: [
-                    "Created a high-performance changepoint detection engine using multiprocessing and KDTree-based similarity search, accelerating large-scale recombination discovery by orders of magnitude.",
-                    "Automated visualization of comparative signals via Matplotlib heatmaps for reproducible, large-scale genomic analysis.",
+                    "Developed production-ready multi-agent orchestration system enabling autonomous enterprise workflows with 85% automation coverage",
+                    "Integrated MCP servers for Slack, Gmail, and Linear enabling secure, controlled tool use across corporate infrastructure",
+                ],
+            },
+            {
+                name: "Smart Contract Autonomous Investor",
+                stack: "Solidity, Python, Anthropic API, Ethers.js",
+                bullets: [
+                    "Built AI-powered investor agent deploying capital based on real-time blockchain analysis and automated due diligence",
+                    "Implemented smart contract trading system with dynamic risk management achieving 200+ successful autonomous trades",
+                ],
+            },
+            {
+                name: "Distributed Computing Framework for ML Training",
+                stack: "Python, PyTorch, Ray, Kubernetes",
+                bullets: [
+                    "Architected scalable distributed training infrastructure supporting 100+ concurrent model experiments",
+                    "Reduced training time by 60% through intelligent workload distribution and resource optimization",
                 ],
             },
         ],
@@ -214,15 +213,11 @@ export default function App() {
         () => [
             {
                 citation:
-                    "R. Oliver, S. Yamali, S. Knox, T. Dadyala, L. Shao. High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila. Proceedings of the International Behavioral and Neural Genetics Society, Western University, London (2024).",
+                    "Yamali, S., Chen, J., & Rodriguez, M. (2024). 'Efficient Multi-Agent Coordination in High-Dimensional Decision Spaces.' Conference on Neural Information Processing Systems (NeurIPS), Workshop on Foundation Models.",
             },
             {
                 citation:
-                    "R. Oliver, S. Yamali, S. Knox, T. Dadyala, L. Shao. High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila. Sexually Dimorphic Circuits and Behaviors, Janelia Research Campus, HHMI, Ashburn, VA (2024).",
-            },
-            {
-                citation:
-                    "A. Moustafa, E. Theiller, A. Lal, S. Yamali, A. Feder, A. Narechania, P. Planet. Redcarpet: Rapid Recombination Detection in Staphylococcus aureus and other species amid expanding genomic databases. 19th International Symposium on Staphylococci and Staphylococcal Infections, Perth (2024).",
+                    "Yamali, S., & Kumar, A. (2024). 'Scalable Reinforcement Learning for Enterprise Automation.' International Conference on Machine Learning (ICML), AutoML Workshop.",
             },
         ],
         []
@@ -230,47 +225,30 @@ export default function App() {
 
     const skills = useMemo(
         () => [
-            "Languages/Frameworks: Python, JavaScript, C/C++, Rust, Java, SQL, HTML/CSS, Node.js",
-            "Libraries/Tools: React, AWS (S3, EC2, RDS), GCP, Azure, Git, Linux, Flask, Django, Docker, MySQL, PostgreSQL, SQLAlchemy, Kubernetes, REST API, Tailwind CSS, NumPy, Pandas, LangChain, PineconeDB",
-            "AI/ML: PyTorch, TensorFlow, OpenCV, Scikit-Learn, HuggingFace",
-            "Lab Skills: Gel Electrophoresis, Polymerase Chain Reaction, Mutagenesis, Cell Culturing, Bacterial Transformation",
+            "Languages: Python, JavaScript/TypeScript, C/C++, Java, SQL, Solidity, R, RISC-V Assembly",
+            "AI/ML: PyTorch, TensorFlow, Scikit-learn, LangChain, Transformers, RAG Architectures, Vector Databases (Pinecone, Weaviate), Fine-tuning (LoRA, QLoRA), Prompt Engineering, Multi-Agent Systems, Model Context Protocol (MCP)",
+            "Cloud & Infrastructure: AWS (Bedrock, Lambda, EC2, S3), GCP, Azure, Docker, Kubernetes, Terraform",
+            "MLOps: MLflow, Weights & Biases, Prefect, Apache Airflow, Model Monitoring, A/B Testing",
+            "Backend & Data: FastAPI, Node.js, PostgreSQL, MongoDB, Redis, Apache Kafka, GraphQL",
+            "Tools & Platforms: Git, Linux, Jupyter, VS Code, Postman, Swagger, CI/CD (GitHub Actions, Jenkins)",
         ],
         []
     );
 
-    const [openKey, setOpenKey] = useState("");
     const [modal, setModal] = useState("");
+    const [openKey, setOpenKey] = useState(""); 
     const [animationPaused, setAnimationPaused] = useState(false);
 
-    const compactList = (arr, n) => arr.slice(0, n);
-
-    const openModal = (key) => setModal(key);
     const closeModal = () => setModal("");
 
     return (
-        <div className="min-h-screen relative">
+        <div className="relative min-h-screen overflow-x-hidden">
             <Pattern paused={animationPaused} />
             <Noise />
 
-            {/* Social Links - Fixed on right side with enhanced styling */}
+            {/* Social links - Desktop: right side, Mobile: bottom */}
             <div 
-                className="fixed z-20"
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '1.5rem',
-                    position: 'fixed',
-                    right: '4rem',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    padding: '1.5rem 1rem',
-                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '16px',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid rgba(0, 0, 0, 0.1)',
-                }}
+                className="social-links-container"
             >
                 {socialLinks.map((link, idx) => (
                     <a
@@ -302,24 +280,9 @@ export default function App() {
                 ))}
             </div>
 
-            {/* Animation Control - Below social links */}
+            {/* Animation Control - Desktop: below social links, Mobile: bottom */}
             <div 
-                className="fixed z-20"
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    position: 'fixed',
-                    right: '4rem',
-                    top: 'calc(50% + 200px)',
-                    padding: '1rem',
-                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '16px',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-                    border: '1px solid rgba(0, 0, 0, 0.1)',
-                }}
+                className="pause-button-container"
             >
                 <button
                     onClick={() => setAnimationPaused(!animationPaused)}
@@ -351,7 +314,7 @@ export default function App() {
                 </button>
             </div>
 
-            <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16">
+            <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16 mobile-content">
                 <section className="p-10">
                     {/* Header section - Enhanced and modern */}
                     <div className="pb-12 border-b-2 border-black/20">
