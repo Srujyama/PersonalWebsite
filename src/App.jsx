@@ -344,7 +344,7 @@ export default function App() {
                             <div className="py-2">
                                 <div className="flex flex-wrap items-baseline justify-between gap-3">
                                     <div className="text-xl font-bold" style={{color: '#FDB515'}}>University of California, Berkeley</div>
-                                    <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>May 2027</div>
+                                    <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}></div>
                                 </div>
                                 <div className="mt-2 text-lg font-semibold" style={{color: '#003262'}}>B.S. in Computer Science</div>
                             </div>
