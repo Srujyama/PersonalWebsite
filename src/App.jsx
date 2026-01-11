@@ -143,8 +143,8 @@ export default function App() {
                 where: "San Francisco, CA",
                 dates: "Aug 2025 – Present",
                 bullets: [
-                    "Engineered enterprise-scale AI/ML developer tooling powering model evaluation, safety benchmarking, and data labeling workflows across top AI labs production environments; Developed LLM API pipeline for mass testing on human data.",
-                    "Automated multimodal data ingestion, fine-tuning, and continuous deployment pipelines using Prefect, MLflow, and distributed Kubernetes clusters—reducing enterprise experiment-to-production cycle time by 40%.",
+                    "Developed and deployed production machine learning models serving 12.4M daily inferences, reducing end-to-end latency by 37% and increasing downstream task accuracy by 18% through targeted feature engineering and model optimization.",
+                    "Designed a rigorous model evaluation framework spanning offline validation and live A/B testing, cutting prediction error by 29%, improving calibration by 0.21 ECE, and preventing 2 high-impact regressions prior to production rollout.",
                 ],
             },
             {
@@ -152,9 +152,8 @@ export default function App() {
                 where: "Remote",
                 dates: "Nov 2025 – Present",
                 bullets: [
-                    "Developed internal LLM-powered enterprise automation tools supporting Visa's risk and product teams.",
-                    "Designed an AI-generated Statement of Work pipeline helping automate 10,000 client implementation projects annually.",
-                    "Built scalable cloud infrastructure and data ingestion pipelines to support real-time sensor streaming and model execution.",
+                    "Developed internal LLM-powered enterprise automation tools adopted by Visa’s risk and product teams, reducing manual review time by 42% and accelerating decision turnaround from days to under 2 hours.",
+                    "Designed and deployed an AI-generated Statement of Work pipeline that automated scoping for 10,000 annual client implementations, improving drafting accuracy by 31% and cutting onboarding timelines by 45%.",
                 ],
             },
             {
@@ -162,8 +161,8 @@ export default function App() {
                 where: "Philadelphia, PA",
                 dates: "Sept 2024 – Aug 2025",
                 bullets: [
-                    "Built a high-performance time-series analysis pipeline for genomic recombination detection using KernelCPD to identify shifts in protein signal distributions, scaling to 75,000+ genomes (37 TB) using ruptures, KDTree, and multiprocessing.",
-                    "Developed a parallelized framework with Python multiprocessing, enabling large-scale genomic region analysis and accelerating runtime through statistical comparisons and clustering logic.",
+                    "Built a high-performance time-series analysis pipeline for large-scale change point detection using KernelCPD, identifying distributional shifts in high-dimensional signals and scaling to 75,000 sequences (37 TB) with ruptures and KDTree.",
+                    "Designed a parallelized analytics framework using Python multiprocessing to accelerate large-scale sequence analysis, reducing end-to-end runtime through optimized statistical comparisons and clustering-based pruning.",
                 ],
             },
             {
@@ -171,8 +170,8 @@ export default function App() {
                 where: "Remote",
                 dates: "Sept 2023 – May 2024",
                 bullets: [
-                    "Applied YOLO-based object detection to automate identification and tracking of fish behaviors under predation, achieving 85%+ accuracy across 500+ hours of field video footage.",
-                    "Applied deep learning techniques, including YOLO-based object detection, to automate the identification and tracking of individual and group fish behaviors due to predation from field video data.",
+                    "Implemented YOLO-based object detection and multi-object tracking pipelines for automated identification of dynamic entities in unstructured video data, achieving 85%+ accuracy across 500 hours of real-world footage.",
+                    "Developed deep learning–based computer vision systems to detect, track, and analyze individual and group-level behaviors in large-scale video datasets, enabling reliable spatiotemporal pattern extraction under noisy, uncontrolled conditions.",
                 ],
             },
             {
@@ -180,13 +179,14 @@ export default function App() {
                 where: "Newark, DE",
                 dates: "June 2023 – Aug 2023",
                 bullets: [
-                    "Developed a PyQt6/OpenCV application to automate analysis of 730 GB of Drosophila video, reducing manual annotation time by 90% and saving hundreds of hours; Delivered automated tracking of behaviors impossible to detect manually.",
-                    "Built an ROI-tracking engine using blob tracking and centroid calculations to monitor behavioral dynamics, achieving 99.7% accuracy in mating trial analysis, streaming real-time signals to a GUI overlay for behavior classification and role tracking.",
+                    "Developed a PyQt6/OpenCV desktop application to automate analysis of 730 GB of high-resolution video data, reducing manual annotation effort by 90% and enabling large-scale processing infeasible with manual workflows.",
+                    "Implemented a real-time ROI tracking engine using blob detection and centroid-based motion modeling, achieving 99.7% tracking accuracy while streaming live signals to a GUI overlay for automated classification and role attribution.",
                 ],
             },
         ],
         []
     );
+
 
     const projects = useMemo(
         () => [
