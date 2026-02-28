@@ -1,6 +1,7 @@
 // App.jsx
 import "./style.css";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import IntroAnimation from "./IntroAnimation";
 
 /* ─── Mobile detection helper ─── */
 function isMobile() {
@@ -687,6 +688,7 @@ export default function App() {
     const [openKey, setOpenKey] = useState("");
     const [animationPaused, setAnimationPaused] = useState(false);
     const [bgType, setBgType] = useState("waves");
+    const [introComplete, setIntroComplete] = useState(false);
 
     const closeModal = () => setModal("");
 
@@ -699,6 +701,23 @@ export default function App() {
 
     return (
         <div className="relative min-h-screen overflow-x-hidden">
+            {/* Intro Animation */}
+            {!introComplete && (
+                <IntroAnimation
+                    jsonPath="/fly_stipple.json"
+                    onComplete={() => setIntroComplete(true)}
+                />
+            )}
+
+            {/* Main site — fades in after intro */}
+            <div
+                className="site-content"
+                style={{
+                    opacity: introComplete ? 1 : 0,
+                    transition: "opacity 0.8s ease",
+                    pointerEvents: introComplete ? "auto" : "none",
+                }}
+            >
             <BgComponent paused={animationPaused} />
             <Noise />
 
@@ -928,6 +947,7 @@ export default function App() {
                     ))}
                 </div>
             </Modal>
+            </div>{/* end site-content */}
         </div>
     );
 }
