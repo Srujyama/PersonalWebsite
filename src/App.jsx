@@ -1,27 +1,460 @@
 // App.jsx
 import "./style.css";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 
-function useClock(ms = 40) {
-    const [t, setT] = useState(0);
+/* ─── Canvas Background: Floating Dots ─── */
+function DotsBg({ paused }) {
+    const canvasRef = useRef(null);
+    const particles = useRef([]);
+    const animRef = useRef(null);
+    const pausedRef = useRef(paused);
+
+    useEffect(() => { pausedRef.current = paused; }, [paused]);
 
     useEffect(() => {
-        const id = setInterval(() => setT((v) => v + 1), ms);
-        return () => clearInterval(id);
-    }, [ms]);
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        let w, h;
 
-    return t;
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        // Init particles
+        const COUNT = Math.min(80, Math.floor((window.innerWidth * window.innerHeight) / 12000));
+        particles.current = Array.from({ length: COUNT }, () => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: (Math.random() - 0.5) * 0.8,
+            r: Math.random() * 2.5 + 1.5,
+            phase: Math.random() * Math.PI * 2,
+        }));
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+
+            const pts = particles.current;
+            const connectDist = 140;
+
+            if (!pausedRef.current) {
+                for (const p of pts) {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.phase += 0.015;
+                    // Bounce off edges
+                    if (p.x < 0 || p.x > w) p.vx *= -1;
+                    if (p.y < 0 || p.y > h) p.vy *= -1;
+                    p.x = Math.max(0, Math.min(w, p.x));
+                    p.y = Math.max(0, Math.min(h, p.y));
+                }
+            }
+
+            // Draw connections
+            for (let i = 0; i < pts.length; i++) {
+                for (let j = i + 1; j < pts.length; j++) {
+                    const dx = pts[i].x - pts[j].x;
+                    const dy = pts[i].y - pts[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < connectDist) {
+                        const alpha = (1 - dist / connectDist) * 0.18;
+                        ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(pts[i].x, pts[i].y);
+                        ctx.lineTo(pts[j].x, pts[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw dots
+            for (const p of pts) {
+                const pulse = 1 + Math.sin(p.phase) * 0.3;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r * pulse, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+                ctx.fill();
+                // glow
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r * pulse * 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
+                ctx.fill();
+            }
+
+            animRef.current = requestAnimationFrame(draw);
+        }
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animRef.current);
+            window.removeEventListener("resize", resize);
+        };
+    }, []);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{ zIndex: 0 }}
+        />
+    );
 }
 
-function Pattern({ paused }) {
+/* ─── Canvas Background: DNA Helix ─── */
+function DnaBg({ paused }) {
+    const canvasRef = useRef(null);
+    const animRef = useRef(null);
+    const timeRef = useRef(0);
+    const pausedRef = useRef(paused);
+
+    useEffect(() => { pausedRef.current = paused; }, [paused]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        let w, h;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        const helixCount = 3;
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+
+            if (!pausedRef.current) {
+                timeRef.current += 0.012;
+            }
+            const t = timeRef.current;
+
+            for (let hi = 0; hi < helixCount; hi++) {
+                const centerX = w * (0.2 + hi * 0.3);
+                const amplitude = 60 + hi * 10;
+                const phaseOffset = hi * 1.2;
+                const opacity = 0.18 - hi * 0.03;
+                const nodeCount = Math.floor(h / 18);
+
+                const strand1 = [];
+                const strand2 = [];
+
+                for (let i = 0; i <= nodeCount; i++) {
+                    const y = (i / nodeCount) * (h + 40) - 20;
+                    const angle = (i * 0.22) + t * 2 + phaseOffset;
+                    const x1 = centerX + Math.sin(angle) * amplitude;
+                    const x2 = centerX + Math.sin(angle + Math.PI) * amplitude;
+                    strand1.push({ x: x1, y });
+                    strand2.push({ x: x2, y });
+                }
+
+                // Draw backbone strands
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = `rgba(0, 80, 160, ${opacity})`;
+                ctx.beginPath();
+                for (let i = 0; i < strand1.length; i++) {
+                    i === 0 ? ctx.moveTo(strand1[i].x, strand1[i].y) : ctx.lineTo(strand1[i].x, strand1[i].y);
+                }
+                ctx.stroke();
+
+                ctx.strokeStyle = `rgba(160, 40, 40, ${opacity})`;
+                ctx.beginPath();
+                for (let i = 0; i < strand2.length; i++) {
+                    i === 0 ? ctx.moveTo(strand2[i].x, strand2[i].y) : ctx.lineTo(strand2[i].x, strand2[i].y);
+                }
+                ctx.stroke();
+
+                // Draw base pair rungs (every few nodes)
+                for (let i = 0; i < strand1.length; i += 3) {
+                    const angle = (i * 0.22) + t * 2 + phaseOffset;
+                    const depth = Math.cos(angle);
+                    const rungAlpha = (0.08 + Math.abs(depth) * 0.08);
+
+                    ctx.strokeStyle = `rgba(100, 100, 100, ${rungAlpha})`;
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.moveTo(strand1[i].x, strand1[i].y);
+                    ctx.lineTo(strand2[i].x, strand2[i].y);
+                    ctx.stroke();
+
+                    // Nucleotide nodes
+                    const colors = ["rgba(0, 120, 200, 0.35)", "rgba(200, 50, 50, 0.35)", "rgba(50, 170, 80, 0.35)", "rgba(200, 160, 0, 0.35)"];
+                    const midX = (strand1[i].x + strand2[i].x) / 2;
+                    const midY = (strand1[i].y + strand2[i].y) / 2;
+
+                    // Base pair dots on each strand
+                    ctx.beginPath();
+                    ctx.arc(strand1[i].x, strand1[i].y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = colors[i % 4];
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(strand2[i].x, strand2[i].y, 3, 0, Math.PI * 2);
+                    ctx.fillStyle = colors[(i + 2) % 4];
+                    ctx.fill();
+                }
+            }
+
+            animRef.current = requestAnimationFrame(draw);
+        }
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animRef.current);
+            window.removeEventListener("resize", resize);
+        };
+    }, []);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{ zIndex: 0 }}
+        />
+    );
+}
+
+/* ─── Canvas Background: Circuit Board ─── */
+function CircuitBg({ paused }) {
+    const canvasRef = useRef(null);
+    const animRef = useRef(null);
+    const timeRef = useRef(0);
+    const pausedRef = useRef(paused);
+    const pathsRef = useRef([]);
+
+    useEffect(() => { pausedRef.current = paused; }, [paused]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        let w, h;
+
+        function buildPaths() {
+            const paths = [];
+            const gridSize = 50;
+            const cols = Math.ceil(w / gridSize) + 1;
+            const rows = Math.ceil(h / gridSize) + 1;
+
+            for (let i = 0; i < 60; i++) {
+                const startCol = Math.floor(Math.random() * cols);
+                const startRow = Math.floor(Math.random() * rows);
+                const points = [{ x: startCol * gridSize, y: startRow * gridSize }];
+                let cx = startCol, cy = startRow;
+
+                const segments = Math.floor(Math.random() * 6) + 3;
+                for (let s = 0; s < segments; s++) {
+                    const dir = Math.floor(Math.random() * 4);
+                    const len = Math.floor(Math.random() * 4) + 1;
+                    if (dir === 0) cx += len;
+                    else if (dir === 1) cx -= len;
+                    else if (dir === 2) cy += len;
+                    else cy -= len;
+                    cx = Math.max(0, Math.min(cols - 1, cx));
+                    cy = Math.max(0, Math.min(rows - 1, cy));
+                    points.push({ x: cx * gridSize, y: cy * gridSize });
+                }
+
+                paths.push({
+                    points,
+                    pulseOffset: Math.random() * Math.PI * 2,
+                    pulseSpeed: 0.5 + Math.random() * 1.5,
+                    hasNode: Math.random() > 0.3,
+                    nodeType: Math.floor(Math.random() * 3), // circle, square, diamond
+                });
+            }
+            return paths;
+        }
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+            pathsRef.current = buildPaths();
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+
+            if (!pausedRef.current) {
+                timeRef.current += 0.015;
+            }
+            const t = timeRef.current;
+
+            // Draw grid dots
+            const gridSize = 50;
+            for (let x = 0; x < w; x += gridSize) {
+                for (let y = 0; y < h; y += gridSize) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 1, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
+                    ctx.fill();
+                }
+            }
+
+            // Draw circuit paths
+            for (const path of pathsRef.current) {
+                const pulse = Math.sin(t * path.pulseSpeed + path.pulseOffset) * 0.5 + 0.5;
+                const baseAlpha = 0.08 + pulse * 0.1;
+
+                ctx.strokeStyle = `rgba(0, 0, 0, ${baseAlpha})`;
+                ctx.lineWidth = 1.5;
+                ctx.lineCap = "square";
+                ctx.beginPath();
+                for (let i = 0; i < path.points.length; i++) {
+                    const p = path.points[i];
+                    i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+                }
+                ctx.stroke();
+
+                // Draw traveling pulse along path
+                const totalLen = [];
+                let cumLen = 0;
+                totalLen.push(0);
+                for (let i = 1; i < path.points.length; i++) {
+                    const dx = path.points[i].x - path.points[i-1].x;
+                    const dy = path.points[i].y - path.points[i-1].y;
+                    cumLen += Math.sqrt(dx*dx + dy*dy);
+                    totalLen.push(cumLen);
+                }
+                if (cumLen > 0) {
+                    const pos = ((t * 40 * path.pulseSpeed) % cumLen);
+                    for (let i = 1; i < totalLen.length; i++) {
+                        if (totalLen[i] >= pos) {
+                            const segFrac = (pos - totalLen[i-1]) / (totalLen[i] - totalLen[i-1]);
+                            const px = path.points[i-1].x + (path.points[i].x - path.points[i-1].x) * segFrac;
+                            const py = path.points[i-1].y + (path.points[i].y - path.points[i-1].y) * segFrac;
+                            ctx.beginPath();
+                            ctx.arc(px, py, 3, 0, Math.PI * 2);
+                            ctx.fillStyle = `rgba(0, 100, 200, ${0.3 + pulse * 0.2})`;
+                            ctx.fill();
+                            // glow
+                            ctx.beginPath();
+                            ctx.arc(px, py, 8, 0, Math.PI * 2);
+                            ctx.fillStyle = `rgba(0, 100, 200, ${0.06 + pulse * 0.04})`;
+                            ctx.fill();
+                            break;
+                        }
+                    }
+                }
+
+                // Draw endpoint nodes
+                if (path.hasNode) {
+                    const endPt = path.points[path.points.length - 1];
+                    const nodeAlpha = 0.15 + pulse * 0.15;
+
+                    if (path.nodeType === 0) {
+                        ctx.beginPath();
+                        ctx.arc(endPt.x, endPt.y, 4, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(0, 0, 0, ${nodeAlpha})`;
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(endPt.x, endPt.y, 2, 0, Math.PI * 2);
+                        ctx.fillStyle = "#fff";
+                        ctx.fill();
+                    } else if (path.nodeType === 1) {
+                        ctx.fillStyle = `rgba(0, 0, 0, ${nodeAlpha})`;
+                        ctx.fillRect(endPt.x - 4, endPt.y - 4, 8, 8);
+                        ctx.fillStyle = "#fff";
+                        ctx.fillRect(endPt.x - 2, endPt.y - 2, 4, 4);
+                    } else {
+                        ctx.save();
+                        ctx.translate(endPt.x, endPt.y);
+                        ctx.rotate(Math.PI / 4);
+                        ctx.fillStyle = `rgba(0, 0, 0, ${nodeAlpha})`;
+                        ctx.fillRect(-3.5, -3.5, 7, 7);
+                        ctx.restore();
+                    }
+                }
+            }
+
+            animRef.current = requestAnimationFrame(draw);
+        }
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animRef.current);
+            window.removeEventListener("resize", resize);
+        };
+    }, []);
+
+    return (
+        <canvas
+            ref={canvasRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{ zIndex: 0 }}
+        />
+    );
+}
+
+/* ─── CSS Wave Pattern (Original) ─── */
+function WavesBg({ paused }) {
     return (
         <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 grid-warp"
-            style={{
-                animationPlayState: paused ? 'paused' : 'running'
-            }}
+            style={{ animationPlayState: paused ? "paused" : "running" }}
         />
+    );
+}
+
+/* ─── Background Switcher ─── */
+const BG_OPTIONS = [
+    { key: "waves", label: "Waves", icon: "〰" },
+    { key: "dots", label: "Particles", icon: "⋯" },
+    { key: "dna", label: "DNA", icon: "🧬" },
+    { key: "circuit", label: "Circuit", icon: "⏚" },
+];
+
+function BgSwitcher({ current, onChange }) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <div className="bg-switcher-container">
+            {open && (
+                <div className="bg-switcher-options">
+                    {BG_OPTIONS.map((opt) => (
+                        <button
+                            key={opt.key}
+                            onClick={() => { onChange(opt.key); setOpen(false); }}
+                            className={`bg-switcher-option ${current === opt.key ? "active" : ""}`}
+                            title={opt.label}
+                        >
+                            <span className="bg-switcher-icon">{opt.icon}</span>
+                            <span className="bg-switcher-label">{opt.label}</span>
+                        </button>
+                    ))}
+                </div>
+            )}
+            <button
+                onClick={() => setOpen(!open)}
+                className="bg-switcher-toggle"
+                aria-label="Change background"
+                title="Change background"
+            >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
+            </button>
+        </div>
     );
 }
 
@@ -188,6 +621,7 @@ export default function App() {
             {
                 name: "FlyFlirt — Real-Time Behavioral Detection and Tracking",
                 stack: "Python, OpenCV, PyQt6, Pandas",
+                github: "https://github.com/Srujyama/FlyFlirt",
                 bullets: [
                     "Developed a production-grade computer vision pipeline to automatically detect and track Drosophila behaviors across hundreds of hours of video, reducing manual annotation by 90%.",
                     "Implemented real-time OpenCV/NumPy processing for high-throughput experiments with near–zero latency and automated labeling across thousands of frames.",
@@ -196,6 +630,7 @@ export default function App() {
             {
                 name: "RedCarpet — Genomic Changepoint Heatmap Engine",
                 stack: "Python, Ruptures, Scikit-learn, Matplotlib",
+                github: "https://github.com/microbialARC/Redcarpet",
                 bullets: [
                     "Created a high-performance changepoint detection engine using multiprocessing and KDTree-based similarity search, accelerating large-scale recombination discovery by orders of magnitude.",
                     "Automated visualization of comparative signals via Matplotlib heatmaps for reproducible, large-scale genomic analysis.",
@@ -223,31 +658,27 @@ export default function App() {
         []
     );
 
-    const skills = useMemo(
-        () => [
-            "Languages/Frameworks: Python, JavaScript, C/C++, Rust, Java, SQL, HTML/CSS, Node.js",
-            "Libraries/Tools: React, AWS (S3, EC2, RDS), GCP, Azure, Git, Linux, Flask, Django, Docker, MySQL, PostgreSQL, SQLAlchemy, Kubernetes, REST API, Tailwind CSS, NumPy, Pandas, LangChain, PineconeDB",
-            "AI/ML: PyTorch, TensorFlow, OpenCV, Scikit-Learn, HuggingFace",
-            "Lab Skills: Gel Electrophoresis, Polymerase Chain Reaction, Mutagenesis, Cell Culturing, Bacterial Transformation",
-        ],
-        []
-    );
-
     const [modal, setModal] = useState("");
-    const [openKey, setOpenKey] = useState(""); 
+    const [openKey, setOpenKey] = useState("");
     const [animationPaused, setAnimationPaused] = useState(false);
+    const [bgType, setBgType] = useState("waves");
 
     const closeModal = () => setModal("");
 
+    const BgComponent = {
+        waves: WavesBg,
+        dots: DotsBg,
+        dna: DnaBg,
+        circuit: CircuitBg,
+    }[bgType];
+
     return (
         <div className="relative min-h-screen overflow-x-hidden">
-            <Pattern paused={animationPaused} />
+            <BgComponent paused={animationPaused} />
             <Noise />
 
             {/* Social links - Desktop: right side, Mobile: bottom */}
-            <div 
-                className="social-links-container"
-            >
+            <div className="social-links-container">
                 {socialLinks.map((link, idx) => (
                     <a
                         key={idx}
@@ -263,8 +694,8 @@ export default function App() {
                             height: '40px',
                         }}
                     >
-                        <img 
-                            src={link.img} 
+                        <img
+                            src={link.img}
                             alt={link.alt}
                             style={{
                                 width: '40px',
@@ -279,9 +710,7 @@ export default function App() {
             </div>
 
             {/* Animation Control - Desktop: below social links, Mobile: bottom */}
-            <div 
-                className="pause-button-container"
-            >
+            <div className="pause-button-container">
                 <button
                     onClick={() => setAnimationPaused(!animationPaused)}
                     className="hover:scale-110 transition-transform"
@@ -296,9 +725,9 @@ export default function App() {
                         padding: 0,
                     }}
                 >
-                    <img 
-                        src={animationPaused 
-                            ? 'https://cdn-icons-png.flaticon.com/512/727/727245.png' 
+                    <img
+                        src={animationPaused
+                            ? 'https://cdn-icons-png.flaticon.com/512/727/727245.png'
                             : 'https://cdn-icons-png.flaticon.com/512/2404/2404385.png'}
                         alt={animationPaused ? "Resume" : "Pause"}
                         style={{
@@ -312,9 +741,12 @@ export default function App() {
                 </button>
             </div>
 
+            {/* Background Switcher */}
+            <BgSwitcher current={bgType} onChange={setBgType} />
+
             <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16 mobile-content">
                 <section className="p-10">
-                    {/* Header section - Enhanced and modern */}
+                    {/* Header section */}
                     <div className="pb-12 border-b-2 border-black/20">
                         <h1 className="text-7xl font-black text-black tracking-tight mb-6 leading-tight" style={{textShadow: '0 0 30px rgba(255,255,255,0.9)'}}>
                             {profile.name}
@@ -332,9 +764,9 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* Body: larger text and more defined sections */}
+                    {/* Body */}
                     <div className="pt-10 grid gap-6">
-                        {/* Education - Always visible at top, only coursework expands */}
+                        {/* Education */}
                         <div className="border-l-4 border-black/40 pl-6 py-2">
                             <div className="py-2">
                                 <div className="flex flex-wrap items-baseline justify-between gap-3">
@@ -343,7 +775,7 @@ export default function App() {
                                 </div>
                                 <div className="mt-2 text-lg font-semibold" style={{color: '#003262'}}>B.S. in Computer Science</div>
                             </div>
-                            
+
                             <button
                                 type="button"
                                 onClick={() => setOpenKey(openKey === "education" ? "" : "education")}
@@ -352,7 +784,7 @@ export default function App() {
                                 <div className="text-sm font-bold text-black" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>Coursework</div>
                                 <div className="text-lg text-black/60 font-mono">{openKey === "education" ? "−" : "+"}</div>
                             </button>
-                            
+
                             <div
                                 className={`grid transition-all duration-200 ${
                                     openKey === "education" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -366,7 +798,7 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* Experience - Header + expandable content */}
+                        {/* Experience */}
                         <div className="border-l-4 border-black/40 pl-5 py-1">
                             <button
                                 type="button"
@@ -376,7 +808,7 @@ export default function App() {
                                 <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>Experience</div>
                                 <div className="text-lg text-black/60 font-mono">{openKey === "experience" ? "−" : "+"}</div>
                             </button>
-                            
+
                             <div
                                 className={`grid transition-all duration-200 ${
                                     openKey === "experience" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -387,8 +819,8 @@ export default function App() {
                                         {experience.map((e, idx) => (
                                             <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
                                                 <div className="flex items-start gap-4">
-                                                    <img 
-                                                        src={e.logo} 
+                                                    <img
+                                                        src={e.logo}
                                                         alt={`${e.org} logo`}
                                                         className="flex-shrink-0 mt-1 rounded"
                                                         style={{
@@ -417,8 +849,8 @@ export default function App() {
                                                 </div>
                                             </div>
                                         ))}
-                                        
-                                        {/* Resume Buttons at the bottom of experience */}
+
+                                        {/* Resume Buttons */}
                                         <div className="pt-4 flex gap-3">
                                             <a
                                                 href="/SrujanYamaliResumeFeb2026.pdf"
@@ -461,7 +893,7 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* Projects - Header + expandable content */}
+                        {/* Projects */}
                         <div className="border-l-4 border-black/40 pl-6 py-2">
                             <button
                                 type="button"
@@ -471,7 +903,7 @@ export default function App() {
                                 <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>Projects</div>
                                 <div className="text-lg text-black/60 font-mono">{openKey === "projects" ? "−" : "+"}</div>
                             </button>
-                            
+
                             <div
                                 className={`grid transition-all duration-200 ${
                                     openKey === "projects" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -481,7 +913,27 @@ export default function App() {
                                     <div className="pt-3 pb-4 space-y-6">
                                         {projects.map((p, idx) => (
                                             <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
-                                                <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{p.name}</div>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{p.name}</div>
+                                                    <a
+                                                        href={p.github}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex-shrink-0 hover:scale-110 transition-transform"
+                                                        aria-label={`GitHub repository for ${p.name}`}
+                                                    >
+                                                        <img
+                                                            src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                                                            alt="GitHub"
+                                                            style={{
+                                                                width: '20px',
+                                                                height: '20px',
+                                                                objectFit: 'contain',
+                                                                filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.2))',
+                                                            }}
+                                                        />
+                                                    </a>
+                                                </div>
                                                 <div className="text-sm text-black/70 mt-1 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{p.stack}</div>
                                                 <ul className="mt-3 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
                                                     {p.bullets.map((b, i) => (
@@ -495,7 +947,7 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* Publications - Header + expandable content */}
+                        {/* Publications */}
                         <div className="border-l-4 border-black/40 pl-6 py-2">
                             <button
                                 type="button"
@@ -505,7 +957,7 @@ export default function App() {
                                 <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>Publications & Conferences</div>
                                 <div className="text-lg text-black/60 font-mono">{openKey === "pubs" ? "−" : "+"}</div>
                             </button>
-                            
+
                             <div
                                 className={`grid transition-all duration-200 ${
                                     openKey === "pubs" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -523,32 +975,6 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* Skills - Header + expandable content */}
-                        <div className="border-l-4 border-black/40 pl-6 py-2">
-                            <button
-                                type="button"
-                                onClick={() => setOpenKey(openKey === "skills" ? "" : "skills")}
-                                className="w-full py-4 flex items-center justify-between gap-4 text-left"
-                            >
-                                <div className="text-xl font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>Skills</div>
-                                <div className="text-lg text-black/60 font-mono">{openKey === "skills" ? "−" : "+"}</div>
-                            </button>
-                            
-                            <div
-                                className={`grid transition-all duration-200 ${
-                                    openKey === "skills" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                                }`}
-                            >
-                                <div className="overflow-hidden">
-                                    <ul className="pt-3 pb-4 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                        {skills.map((s, i) => (
-                                            <li key={i}>{s}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
                         <div className="pt-8 text-sm text-black font-medium border-t-2 border-black/20" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
                             <div>
                                 © {new Date().getFullYear()} {profile.name}
@@ -558,14 +984,14 @@ export default function App() {
                 </section>
             </main>
 
-            {/* Modal (also no box) */}
+            {/* Modal */}
             <Modal open={modal === "experience"} title="Experience" onClose={closeModal}>
                 <div className="space-y-6">
                     {experience.map((e) => (
                         <div key={e.org} className="pb-6 border-b border-black/10 last:border-b-0">
                             <div className="flex items-start gap-3">
-                                <img 
-                                    src={e.logo} 
+                                <img
+                                    src={e.logo}
                                     alt={`${e.org} logo`}
                                     className="flex-shrink-0 mt-1 rounded"
                                     style={{
