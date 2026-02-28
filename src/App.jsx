@@ -101,8 +101,8 @@ function DotsBg({ paused }) {
         <canvas
             ref={canvasRef}
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{ zIndex: 0 }}
+            className="pointer-events-none fixed top-0 left-0"
+            style={{ zIndex: 0, width: '100vw', height: '100vh' }}
         />
     );
 }
@@ -220,8 +220,8 @@ function DnaBg({ paused }) {
         <canvas
             ref={canvasRef}
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{ zIndex: 0 }}
+            className="pointer-events-none fixed top-0 left-0"
+            style={{ zIndex: 0, width: '100vw', height: '100vh' }}
         />
     );
 }
@@ -396,8 +396,8 @@ function CircuitBg({ paused }) {
         <canvas
             ref={canvasRef}
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{ zIndex: 0 }}
+            className="pointer-events-none fixed top-0 left-0"
+            style={{ zIndex: 0, width: '100vw', height: '100vh' }}
         />
     );
 }
@@ -407,7 +407,7 @@ function WavesBg({ paused }) {
     return (
         <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 grid-warp"
+            className="pointer-events-none fixed inset-0 grid-warp"
             style={{ animationPlayState: paused ? "paused" : "running" }}
         />
     );
@@ -425,7 +425,7 @@ function BgSwitcher({ current, onChange }) {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className="bg-switcher-container">
+        <div style={{ position: 'relative' }}>
             {open && (
                 <div className="bg-switcher-options">
                     {BG_OPTIONS.map((opt) => (
@@ -463,7 +463,7 @@ function Noise() {
     return (
         <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-[0.045] mix-blend-multiply"
+            className="pointer-events-none fixed inset-0 opacity-[0.045] mix-blend-multiply"
             style={{
                 backgroundImage:
                     "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E\")",
@@ -709,8 +709,8 @@ export default function App() {
                 ))}
             </div>
 
-            {/* Animation Control - Desktop: below social links, Mobile: bottom */}
-            <div className="pause-button-container">
+            {/* Controls: Pause + Background Switcher */}
+            <div className="controls-container">
                 <button
                     onClick={() => setAnimationPaused(!animationPaused)}
                     className="hover:scale-110 transition-transform"
@@ -739,10 +739,8 @@ export default function App() {
                         }}
                     />
                 </button>
+                <BgSwitcher current={bgType} onChange={setBgType} />
             </div>
-
-            {/* Background Switcher */}
-            <BgSwitcher current={bgType} onChange={setBgType} />
 
             <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16 mobile-content">
                 <section className="p-10">
