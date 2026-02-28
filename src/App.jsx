@@ -139,49 +139,44 @@ export default function App() {
     const experience = useMemo(
         () => [
             {
-                org: "Mercor — Software Engineer",
-                where: "San Francisco, CA",
-                dates: "Aug 2025 – Present",
-                bullets: [
-                    "Developed and deployed production machine learning models serving 12.4M daily inferences, reducing end-to-end latency by 37% and increasing downstream task accuracy by 18% through targeted feature engineering and model optimization.",
-                    "Designed a rigorous model evaluation framework spanning offline validation and live A/B testing, cutting prediction error by 29%, improving calibration by 0.21 ECE, and preventing 2 high-impact regressions prior to production rollout.",
-                ],
-            },
-            {
-                org: "Visa — Software Engineer Intern",
+                org: "Visa",
+                role: "Software Engineer Intern",
                 where: "Remote",
-                dates: "Nov 2025 – Present",
-                bullets: [
-                    "Developed internal LLM-powered enterprise automation tools adopted by Visa’s risk and product teams, reducing manual review time by 42% and accelerating decision turnaround from days to under 2 hours.",
-                    "Designed and deployed an AI-generated Statement of Work pipeline that automated scoping for 10,000 annual client implementations, improving drafting accuracy by 31% and cutting onboarding timelines by 45%.",
-                ],
+                dates: "Jan 2025 – Present",
+                logo: "/visa.png",
+                description: "Developed LLM-powered automation for large-scale license verification",
             },
             {
-                org: "Children's Hospital of Philadelphia — Data Science Intern",
+                org: "Mercor",
+                role: "Software Engineer",
+                where: "San Francisco, CA",
+                dates: "Aug 2025 – Jan 2025",
+                logo: "/Mercor_Logo.png",
+                description: "Built out Applied AI systems and delivered data to top AI labs",
+            },
+            {
+                org: "Children's Hospital of Philadelphia",
+                role: "Data Science Intern",
                 where: "Philadelphia, PA",
-                dates: "Sept 2024 – Aug 2025",
-                bullets: [
-                    "Built a high-performance time-series analysis pipeline for large-scale change point detection using KernelCPD, identifying distributional shifts in high-dimensional signals and scaling to 75,000 sequences (37 TB) with ruptures and KDTree.",
-                    "Designed a parallelized analytics framework using Python multiprocessing to accelerate large-scale sequence analysis, reducing end-to-end runtime through optimized statistical comparisons and clustering-based pruning.",
-                ],
+                dates: "June 2024 – Aug 2025",
+                logo: "/UniversityofPennsylvania_Shield_RGB-2.png",
+                description: "Data Driven Research into Recombination",
             },
             {
-                org: "Cornell University — Machine Learning Engineer Intern",
+                org: "Cornell University",
+                role: "Machine Learning Engineer Intern",
                 where: "Remote",
                 dates: "Sept 2023 – May 2024",
-                bullets: [
-                    "Implemented YOLO-based object detection and multi-object tracking pipelines for automated identification of dynamic entities in unstructured video data, achieving 85%+ accuracy across 500 hours of real-world footage.",
-                    "Developed deep learning–based computer vision systems to detect, track, and analyze individual and group-level behaviors in large-scale video datasets, enabling reliable spatiotemporal pattern extraction under noisy, uncontrolled conditions.",
-                ],
+                logo: "/Cornell_University_seal.png",
+                description: "Organism Behavior Analysis w/ Deep learning",
             },
             {
-                org: "University of Delaware — Software Development Intern",
+                org: "University of Delaware",
+                role: "Software Development Intern",
                 where: "Newark, DE",
                 dates: "June 2023 – Aug 2023",
-                bullets: [
-                    "Developed a PyQt6/OpenCV desktop application to automate analysis of 730 GB of high-resolution video data, reducing manual annotation effort by 90% and enabling large-scale processing infeasible with manual workflows.",
-                    "Implemented a real-time ROI tracking engine using blob detection and centroid-based motion modeling, achieving 99.7% tracking accuracy while streaming live signals to a GUI overlay for automated classification and role attribution.",
-                ],
+                logo: "/Udel.png",
+                description: "Organism Behavior Analysis w/ Computer Vision",
             },
         ],
         []
@@ -389,39 +384,44 @@ export default function App() {
                             >
                                 <div className="overflow-hidden">
                                     <div className="pt-3 pb-4 space-y-6">
-                                        {experience.map((e, idx) => {
-                                            // Split org into company and role
-                                            const parts = e.org.split(' — ');
-                                            const company = parts[0];
-                                            const role = parts[1] || '';
-                                            
-                                            return (
-                                                <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
-                                                    <div className="flex flex-wrap items-baseline justify-between gap-3">
-                                                        <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{company}</div>
-                                                        <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                            {e.where}
+                                        {experience.map((e, idx) => (
+                                            <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
+                                                <div className="flex items-start gap-4">
+                                                    <img 
+                                                        src={e.logo} 
+                                                        alt={`${e.org} logo`}
+                                                        className="flex-shrink-0 mt-1 rounded"
+                                                        style={{
+                                                            width: '44px',
+                                                            height: '44px',
+                                                            objectFit: 'contain',
+                                                        }}
+                                                    />
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex flex-wrap items-baseline justify-between gap-3">
+                                                            <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{e.org}</div>
+                                                            <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                                {e.where}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="flex flex-wrap items-baseline justify-between gap-3 mt-1">
-                                                        <div className="text-base text-black/90 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{role}</div>
-                                                        <div className="text-sm text-black/70 font-medium" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                            {e.dates}
+                                                        <div className="flex flex-wrap items-baseline justify-between gap-3 mt-1">
+                                                            <div className="text-base text-black/90 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{e.role}</div>
+                                                            <div className="text-sm text-black/70 font-medium" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                                {e.dates}
+                                                            </div>
                                                         </div>
+                                                        <p className="mt-2 text-base text-black/85 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
+                                                            {e.description}
+                                                        </p>
                                                     </div>
-                                                    <ul className="mt-3 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                        {e.bullets.map((b, i) => (
-                                                            <li key={i}>{b}</li>
-                                                        ))}
-                                                    </ul>
                                                 </div>
-                                            );
-                                        })}
+                                            </div>
+                                        ))}
                                         
                                         {/* Resume Buttons at the bottom of experience */}
                                         <div className="pt-4 flex gap-3">
                                             <a
-                                                href="/SrujanYamaliResumeJan2026.pdf"
+                                                href="/SrujanYamaliResumeFeb2026.pdf"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all"
@@ -561,33 +561,39 @@ export default function App() {
             {/* Modal (also no box) */}
             <Modal open={modal === "experience"} title="Experience" onClose={closeModal}>
                 <div className="space-y-6">
-                    {experience.map((e) => {
-                        const parts = e.org.split(' — ');
-                        const company = parts[0];
-                        const role = parts[1] || '';
-                        
-                        return (
-                            <div key={e.org} className="pb-6 border-b border-black/10 last:border-b-0">
-                                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                                    <div className="text-sm font-bold text-black">{company}</div>
-                                    <div className="text-xs text-black/80 font-medium">
-                                        {e.where}
+                    {experience.map((e) => (
+                        <div key={e.org} className="pb-6 border-b border-black/10 last:border-b-0">
+                            <div className="flex items-start gap-3">
+                                <img 
+                                    src={e.logo} 
+                                    alt={`${e.org} logo`}
+                                    className="flex-shrink-0 mt-1 rounded"
+                                    style={{
+                                        width: '36px',
+                                        height: '36px',
+                                        objectFit: 'contain',
+                                    }}
+                                />
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                                        <div className="text-sm font-bold text-black">{e.org}</div>
+                                        <div className="text-xs text-black/80 font-medium">
+                                            {e.where}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex flex-wrap items-baseline justify-between gap-2 mt-1">
-                                    <div className="text-sm text-black/90 font-semibold">{role}</div>
-                                    <div className="text-xs text-black/70 font-medium">
-                                        {e.dates}
+                                    <div className="flex flex-wrap items-baseline justify-between gap-2 mt-1">
+                                        <div className="text-sm text-black/90 font-semibold">{e.role}</div>
+                                        <div className="text-xs text-black/70 font-medium">
+                                            {e.dates}
+                                        </div>
                                     </div>
+                                    <p className="mt-2 text-sm text-black/85 leading-relaxed">
+                                        {e.description}
+                                    </p>
                                 </div>
-                                <ul className="mt-2 text-sm text-black list-disc pl-5 space-y-1.5">
-                                    {e.bullets.map((b, i) => (
-                                        <li key={i}>{b}</li>
-                                    ))}
-                                </ul>
                             </div>
-                        );
-                    })}
+                        </div>
+                    ))}
                 </div>
             </Modal>
         </div>
