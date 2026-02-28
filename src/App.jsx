@@ -2,6 +2,11 @@
 import "./style.css";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 
+/* ─── Mobile detection helper ─── */
+function isMobile() {
+    return window.innerWidth < 768;
+}
+
 /* ─── Canvas Background: Floating Dots ─── */
 function DotsBg({ paused }) {
     const canvasRef = useRef(null);
@@ -14,40 +19,51 @@ function DotsBg({ paused }) {
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-        let w, h;
+        let w, h, dpr;
 
         function resize() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
         resize();
         window.addEventListener("resize", resize);
 
-        // Init particles
-        const COUNT = Math.min(80, Math.floor((window.innerWidth * window.innerHeight) / 12000));
+        const mobile = isMobile();
+        const COUNT = mobile
+            ? Math.min(28, Math.floor((w * h) / 25000))
+            : Math.min(80, Math.floor((w * h) / 12000));
+        const connectDist = mobile ? 90 : 140;
+
         particles.current = Array.from({ length: COUNT }, () => ({
             x: Math.random() * w,
             y: Math.random() * h,
-            vx: (Math.random() - 0.5) * 0.8,
-            vy: (Math.random() - 0.5) * 0.8,
-            r: Math.random() * 2.5 + 1.5,
+            vx: (Math.random() - 0.5) * (mobile ? 0.4 : 0.8),
+            vy: (Math.random() - 0.5) * (mobile ? 0.4 : 0.8),
+            r: Math.random() * 2 + 1.5,
             phase: Math.random() * Math.PI * 2,
         }));
 
+        let frameCount = 0;
+
         function draw() {
+            frameCount++;
             ctx.clearRect(0, 0, w, h);
             ctx.fillStyle = "#ffffff";
             ctx.fillRect(0, 0, w, h);
 
             const pts = particles.current;
-            const connectDist = 140;
 
             if (!pausedRef.current) {
                 for (const p of pts) {
                     p.x += p.vx;
                     p.y += p.vy;
                     p.phase += 0.015;
-                    // Bounce off edges
                     if (p.x < 0 || p.x > w) p.vx *= -1;
                     if (p.y < 0 || p.y > h) p.vy *= -1;
                     p.x = Math.max(0, Math.min(w, p.x));
@@ -55,20 +71,22 @@ function DotsBg({ paused }) {
                 }
             }
 
-            // Draw connections
-            for (let i = 0; i < pts.length; i++) {
-                for (let j = i + 1; j < pts.length; j++) {
-                    const dx = pts[i].x - pts[j].x;
-                    const dy = pts[i].y - pts[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < connectDist) {
-                        const alpha = (1 - dist / connectDist) * 0.18;
-                        ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
-                        ctx.lineWidth = 0.8;
-                        ctx.beginPath();
-                        ctx.moveTo(pts[i].x, pts[i].y);
-                        ctx.lineTo(pts[j].x, pts[j].y);
-                        ctx.stroke();
+            // Draw connections (on mobile, every 3rd frame)
+            if (!mobile || frameCount % 3 === 0) {
+                for (let i = 0; i < pts.length; i++) {
+                    for (let j = i + 1; j < pts.length; j++) {
+                        const dx = pts[i].x - pts[j].x;
+                        const dy = pts[i].y - pts[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < connectDist) {
+                            const alpha = (1 - dist / connectDist) * 0.18;
+                            ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.beginPath();
+                            ctx.moveTo(pts[i].x, pts[i].y);
+                            ctx.lineTo(pts[j].x, pts[j].y);
+                            ctx.stroke();
+                        }
                     }
                 }
             }
@@ -80,11 +98,12 @@ function DotsBg({ paused }) {
                 ctx.arc(p.x, p.y, p.r * pulse, 0, Math.PI * 2);
                 ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
                 ctx.fill();
-                // glow
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r * pulse * 2.5, 0, Math.PI * 2);
-                ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
-                ctx.fill();
+                if (!mobile) {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r * pulse * 2.5, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
+                    ctx.fill();
+                }
             }
 
             animRef.current = requestAnimationFrame(draw);
@@ -97,14 +116,7 @@ function DotsBg({ paused }) {
         };
     }, []);
 
-    return (
-        <canvas
-            ref={canvasRef}
-            aria-hidden="true"
-            className="pointer-events-none fixed top-0 left-0"
-            style={{ zIndex: 0, width: '100vw', height: '100vh' }}
-        />
-    );
+    return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed top-0 left-0" />;
 }
 
 /* ─── Canvas Background: DNA Helix ─── */
@@ -119,16 +131,24 @@ function DnaBg({ paused }) {
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-        let w, h;
+        let w, h, dpr;
 
         function resize() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
         resize();
         window.addEventListener("resize", resize);
 
-        const helixCount = 3;
+        const mobile = isMobile();
+        const helixCount = mobile ? 2 : 3;
+        const nodeSpacing = mobile ? 26 : 18;
 
         function draw() {
             ctx.clearRect(0, 0, w, h);
@@ -141,11 +161,13 @@ function DnaBg({ paused }) {
             const t = timeRef.current;
 
             for (let hi = 0; hi < helixCount; hi++) {
-                const centerX = w * (0.2 + hi * 0.3);
-                const amplitude = 60 + hi * 10;
+                const centerX = mobile
+                    ? w * (0.3 + hi * 0.4)
+                    : w * (0.2 + hi * 0.3);
+                const amplitude = mobile ? (35 + hi * 8) : (60 + hi * 10);
                 const phaseOffset = hi * 1.2;
                 const opacity = 0.18 - hi * 0.03;
-                const nodeCount = Math.floor(h / 18);
+                const nodeCount = Math.floor(h / nodeSpacing);
 
                 const strand1 = [];
                 const strand2 = [];
@@ -159,8 +181,7 @@ function DnaBg({ paused }) {
                     strand2.push({ x: x2, y });
                 }
 
-                // Draw backbone strands
-                ctx.lineWidth = 2;
+                ctx.lineWidth = mobile ? 1.5 : 2;
                 ctx.strokeStyle = `rgba(0, 80, 160, ${opacity})`;
                 ctx.beginPath();
                 for (let i = 0; i < strand1.length; i++) {
@@ -175,32 +196,29 @@ function DnaBg({ paused }) {
                 }
                 ctx.stroke();
 
-                // Draw base pair rungs (every few nodes)
-                for (let i = 0; i < strand1.length; i += 3) {
+                const rungStep = mobile ? 5 : 3;
+                for (let i = 0; i < strand1.length; i += rungStep) {
                     const angle = (i * 0.22) + t * 2 + phaseOffset;
                     const depth = Math.cos(angle);
                     const rungAlpha = (0.08 + Math.abs(depth) * 0.08);
 
                     ctx.strokeStyle = `rgba(100, 100, 100, ${rungAlpha})`;
-                    ctx.lineWidth = 1.2;
+                    ctx.lineWidth = mobile ? 0.8 : 1.2;
                     ctx.beginPath();
                     ctx.moveTo(strand1[i].x, strand1[i].y);
                     ctx.lineTo(strand2[i].x, strand2[i].y);
                     ctx.stroke();
 
-                    // Nucleotide nodes
                     const colors = ["rgba(0, 120, 200, 0.35)", "rgba(200, 50, 50, 0.35)", "rgba(50, 170, 80, 0.35)", "rgba(200, 160, 0, 0.35)"];
-                    const midX = (strand1[i].x + strand2[i].x) / 2;
-                    const midY = (strand1[i].y + strand2[i].y) / 2;
+                    const dotR = mobile ? 2 : 3;
 
-                    // Base pair dots on each strand
                     ctx.beginPath();
-                    ctx.arc(strand1[i].x, strand1[i].y, 3, 0, Math.PI * 2);
+                    ctx.arc(strand1[i].x, strand1[i].y, dotR, 0, Math.PI * 2);
                     ctx.fillStyle = colors[i % 4];
                     ctx.fill();
 
                     ctx.beginPath();
-                    ctx.arc(strand2[i].x, strand2[i].y, 3, 0, Math.PI * 2);
+                    ctx.arc(strand2[i].x, strand2[i].y, dotR, 0, Math.PI * 2);
                     ctx.fillStyle = colors[(i + 2) % 4];
                     ctx.fill();
                 }
@@ -216,14 +234,7 @@ function DnaBg({ paused }) {
         };
     }, []);
 
-    return (
-        <canvas
-            ref={canvasRef}
-            aria-hidden="true"
-            className="pointer-events-none fixed top-0 left-0"
-            style={{ zIndex: 0, width: '100vw', height: '100vh' }}
-        />
-    );
+    return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed top-0 left-0" />;
 }
 
 /* ─── Canvas Background: Circuit Board ─── */
@@ -239,24 +250,26 @@ function CircuitBg({ paused }) {
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-        let w, h;
+        let w, h, dpr;
+        const mobile = isMobile();
+        const gridSize = mobile ? 60 : 50;
+        const pathCount = mobile ? 20 : 60;
 
         function buildPaths() {
             const paths = [];
-            const gridSize = 50;
             const cols = Math.ceil(w / gridSize) + 1;
             const rows = Math.ceil(h / gridSize) + 1;
 
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < pathCount; i++) {
                 const startCol = Math.floor(Math.random() * cols);
                 const startRow = Math.floor(Math.random() * rows);
                 const points = [{ x: startCol * gridSize, y: startRow * gridSize }];
                 let cx = startCol, cy = startRow;
 
-                const segments = Math.floor(Math.random() * 6) + 3;
+                const segments = Math.floor(Math.random() * (mobile ? 3 : 6)) + 2;
                 for (let s = 0; s < segments; s++) {
                     const dir = Math.floor(Math.random() * 4);
-                    const len = Math.floor(Math.random() * 4) + 1;
+                    const len = Math.floor(Math.random() * 3) + 1;
                     if (dir === 0) cx += len;
                     else if (dir === 1) cx -= len;
                     else if (dir === 2) cy += len;
@@ -271,15 +284,21 @@ function CircuitBg({ paused }) {
                     pulseOffset: Math.random() * Math.PI * 2,
                     pulseSpeed: 0.5 + Math.random() * 1.5,
                     hasNode: Math.random() > 0.3,
-                    nodeType: Math.floor(Math.random() * 3), // circle, square, diamond
+                    nodeType: Math.floor(Math.random() * 3),
                 });
             }
             return paths;
         }
 
         function resize() {
-            w = canvas.width = window.innerWidth;
-            h = canvas.height = window.innerHeight;
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             pathsRef.current = buildPaths();
         }
         resize();
@@ -295,24 +314,23 @@ function CircuitBg({ paused }) {
             }
             const t = timeRef.current;
 
-            // Draw grid dots
-            const gridSize = 50;
+            // Grid dots
             for (let x = 0; x < w; x += gridSize) {
                 for (let y = 0; y < h; y += gridSize) {
                     ctx.beginPath();
-                    ctx.arc(x, y, 1, 0, Math.PI * 2);
+                    ctx.arc(x, y, mobile ? 0.7 : 1, 0, Math.PI * 2);
                     ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
                     ctx.fill();
                 }
             }
 
-            // Draw circuit paths
+            // Circuit paths
             for (const path of pathsRef.current) {
                 const pulse = Math.sin(t * path.pulseSpeed + path.pulseOffset) * 0.5 + 0.5;
                 const baseAlpha = 0.08 + pulse * 0.1;
 
                 ctx.strokeStyle = `rgba(0, 0, 0, ${baseAlpha})`;
-                ctx.lineWidth = 1.5;
+                ctx.lineWidth = mobile ? 1 : 1.5;
                 ctx.lineCap = "square";
                 ctx.beginPath();
                 for (let i = 0; i < path.points.length; i++) {
@@ -321,7 +339,7 @@ function CircuitBg({ paused }) {
                 }
                 ctx.stroke();
 
-                // Draw traveling pulse along path
+                // Traveling pulse
                 const totalLen = [];
                 let cumLen = 0;
                 totalLen.push(0);
@@ -339,44 +357,46 @@ function CircuitBg({ paused }) {
                             const px = path.points[i-1].x + (path.points[i].x - path.points[i-1].x) * segFrac;
                             const py = path.points[i-1].y + (path.points[i].y - path.points[i-1].y) * segFrac;
                             ctx.beginPath();
-                            ctx.arc(px, py, 3, 0, Math.PI * 2);
+                            ctx.arc(px, py, mobile ? 2 : 3, 0, Math.PI * 2);
                             ctx.fillStyle = `rgba(0, 100, 200, ${0.3 + pulse * 0.2})`;
                             ctx.fill();
-                            // glow
-                            ctx.beginPath();
-                            ctx.arc(px, py, 8, 0, Math.PI * 2);
-                            ctx.fillStyle = `rgba(0, 100, 200, ${0.06 + pulse * 0.04})`;
-                            ctx.fill();
+                            if (!mobile) {
+                                ctx.beginPath();
+                                ctx.arc(px, py, 8, 0, Math.PI * 2);
+                                ctx.fillStyle = `rgba(0, 100, 200, ${0.06 + pulse * 0.04})`;
+                                ctx.fill();
+                            }
                             break;
                         }
                     }
                 }
 
-                // Draw endpoint nodes
+                // Endpoint nodes
                 if (path.hasNode) {
                     const endPt = path.points[path.points.length - 1];
                     const nodeAlpha = 0.15 + pulse * 0.15;
+                    const ns = mobile ? 3 : 4;
 
                     if (path.nodeType === 0) {
                         ctx.beginPath();
-                        ctx.arc(endPt.x, endPt.y, 4, 0, Math.PI * 2);
+                        ctx.arc(endPt.x, endPt.y, ns, 0, Math.PI * 2);
                         ctx.fillStyle = `rgba(0, 0, 0, ${nodeAlpha})`;
                         ctx.fill();
                         ctx.beginPath();
-                        ctx.arc(endPt.x, endPt.y, 2, 0, Math.PI * 2);
+                        ctx.arc(endPt.x, endPt.y, ns * 0.5, 0, Math.PI * 2);
                         ctx.fillStyle = "#fff";
                         ctx.fill();
                     } else if (path.nodeType === 1) {
                         ctx.fillStyle = `rgba(0, 0, 0, ${nodeAlpha})`;
-                        ctx.fillRect(endPt.x - 4, endPt.y - 4, 8, 8);
+                        ctx.fillRect(endPt.x - ns, endPt.y - ns, ns * 2, ns * 2);
                         ctx.fillStyle = "#fff";
-                        ctx.fillRect(endPt.x - 2, endPt.y - 2, 4, 4);
+                        ctx.fillRect(endPt.x - ns * 0.5, endPt.y - ns * 0.5, ns, ns);
                     } else {
                         ctx.save();
                         ctx.translate(endPt.x, endPt.y);
                         ctx.rotate(Math.PI / 4);
                         ctx.fillStyle = `rgba(0, 0, 0, ${nodeAlpha})`;
-                        ctx.fillRect(-3.5, -3.5, 7, 7);
+                        ctx.fillRect(-ns + 0.5, -ns + 0.5, (ns - 0.5) * 2, (ns - 0.5) * 2);
                         ctx.restore();
                     }
                 }
@@ -392,14 +412,7 @@ function CircuitBg({ paused }) {
         };
     }, []);
 
-    return (
-        <canvas
-            ref={canvasRef}
-            aria-hidden="true"
-            className="pointer-events-none fixed top-0 left-0"
-            style={{ zIndex: 0, width: '100vw', height: '100vh' }}
-        />
-    );
+    return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed top-0 left-0" />;
 }
 
 /* ─── CSS Wave Pattern (Original) ─── */
@@ -423,9 +436,22 @@ const BG_OPTIONS = [
 
 function BgSwitcher({ current, onChange }) {
     const [open, setOpen] = useState(false);
+    const containerRef = useRef(null);
+
+    // Close on outside click / tap
+    useEffect(() => {
+        if (!open) return;
+        const handler = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("pointerdown", handler);
+        return () => document.removeEventListener("pointerdown", handler);
+    }, [open]);
 
     return (
-        <div style={{ position: 'relative' }}>
+        <div ref={containerRef} style={{ position: 'relative' }}>
             {open && (
                 <div className="bg-switcher-options">
                     {BG_OPTIONS.map((opt) => (
@@ -615,7 +641,6 @@ export default function App() {
         []
     );
 
-
     const projects = useMemo(
         () => [
             {
@@ -677,7 +702,7 @@ export default function App() {
             <BgComponent paused={animationPaused} />
             <Noise />
 
-            {/* Social links - Desktop: right side, Mobile: bottom */}
+            {/* Social links */}
             <div className="social-links-container">
                 {socialLinks.map((link, idx) => (
                     <a
@@ -686,25 +711,10 @@ export default function App() {
                         target={link.target || (link.href.startsWith('mailto') ? undefined : '_blank')}
                         rel={link.href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
                         download={link.download || undefined}
-                        className="hover:scale-110 transition-transform block"
+                        className="hover:scale-110 transition-transform block social-icon-link"
                         aria-label={link.alt}
-                        style={{
-                            display: 'block',
-                            width: '40px',
-                            height: '40px',
-                        }}
                     >
-                        <img
-                            src={link.img}
-                            alt={link.alt}
-                            style={{
-                                width: '40px',
-                                height: '40px',
-                                objectFit: 'contain',
-                                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
-                                display: 'block',
-                            }}
-                        />
+                        <img src={link.img} alt={link.alt} className="social-icon-img" />
                     </a>
                 ))}
             </div>
@@ -713,40 +723,25 @@ export default function App() {
             <div className="controls-container">
                 <button
                     onClick={() => setAnimationPaused(!animationPaused)}
-                    className="hover:scale-110 transition-transform"
+                    className="hover:scale-110 transition-transform control-btn"
                     aria-label={animationPaused ? "Resume Animation" : "Pause Animation"}
-                    style={{
-                        display: 'block',
-                        width: '40px',
-                        height: '40px',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: 0,
-                    }}
                 >
                     <img
                         src={animationPaused
                             ? 'https://cdn-icons-png.flaticon.com/512/727/727245.png'
                             : 'https://cdn-icons-png.flaticon.com/512/2404/2404385.png'}
                         alt={animationPaused ? "Resume" : "Pause"}
-                        style={{
-                            width: '40px',
-                            height: '40px',
-                            objectFit: 'contain',
-                            filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
-                            display: 'block',
-                        }}
+                        className="control-btn-img"
                     />
                 </button>
                 <BgSwitcher current={bgType} onChange={setBgType} />
             </div>
 
             <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16 mobile-content">
-                <section className="p-10">
-                    {/* Header section */}
+                <section className="p-10 mobile-section">
+                    {/* Header */}
                     <div className="pb-12 border-b-2 border-black/20">
-                        <h1 className="text-7xl font-black text-black tracking-tight mb-6 leading-tight" style={{textShadow: '0 0 30px rgba(255,255,255,0.9)'}}>
+                        <h1 className="text-7xl mobile-title font-black text-black tracking-tight mb-6 leading-tight" style={{textShadow: '0 0 30px rgba(255,255,255,0.9)'}}>
                             {profile.name}
                         </h1>
                         <div className="space-y-3">
@@ -769,7 +764,6 @@ export default function App() {
                             <div className="py-2">
                                 <div className="flex flex-wrap items-baseline justify-between gap-3">
                                     <div className="text-xl font-bold" style={{color: '#FDB515'}}>University of California, Berkeley</div>
-                                    <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}></div>
                                 </div>
                                 <div className="mt-2 text-lg font-semibold" style={{color: '#003262'}}>B.S. in Computer Science</div>
                             </div>
@@ -783,11 +777,7 @@ export default function App() {
                                 <div className="text-lg text-black/60 font-mono">{openKey === "education" ? "−" : "+"}</div>
                             </button>
 
-                            <div
-                                className={`grid transition-all duration-200 ${
-                                    openKey === "education" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                                }`}
-                            >
+                            <div className={`grid transition-all duration-200 ${openKey === "education" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                                 <div className="overflow-hidden">
                                     <div className="pt-1 pb-2 text-sm text-black/90 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
                                         Machine Learning, Computer Architecture, Data Structures, Algorithms, Discrete Mathematics & Probability Theory, Signals & Systems, Circuits & Devices, Linear Algebra, Artificial Intelligence, Efficient Algorithms
@@ -807,11 +797,7 @@ export default function App() {
                                 <div className="text-lg text-black/60 font-mono">{openKey === "experience" ? "−" : "+"}</div>
                             </button>
 
-                            <div
-                                className={`grid transition-all duration-200 ${
-                                    openKey === "experience" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                                }`}
-                            >
+                            <div className={`grid transition-all duration-200 ${openKey === "experience" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                                 <div className="overflow-hidden">
                                     <div className="pt-3 pb-4 space-y-6">
                                         {experience.map((e, idx) => (
@@ -820,69 +806,30 @@ export default function App() {
                                                     <img
                                                         src={e.logo}
                                                         alt={`${e.org} logo`}
-                                                        className="flex-shrink-0 mt-1 rounded"
-                                                        style={{
-                                                            width: '44px',
-                                                            height: '44px',
-                                                            objectFit: 'contain',
-                                                        }}
+                                                        className="flex-shrink-0 mt-1 rounded exp-logo"
                                                     />
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex flex-wrap items-baseline justify-between gap-3">
                                                             <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{e.org}</div>
-                                                            <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                                {e.where}
-                                                            </div>
+                                                            <div className="text-sm text-black/80 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{e.where}</div>
                                                         </div>
                                                         <div className="flex flex-wrap items-baseline justify-between gap-3 mt-1">
                                                             <div className="text-base text-black/90 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{e.role}</div>
-                                                            <div className="text-sm text-black/70 font-medium" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                                {e.dates}
-                                                            </div>
+                                                            <div className="text-sm text-black/70 font-medium" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{e.dates}</div>
                                                         </div>
-                                                        <p className="mt-2 text-base text-black/85 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                            {e.description}
-                                                        </p>
+                                                        <p className="mt-2 text-base text-black/85 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{e.description}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         ))}
 
-                                        {/* Resume Buttons */}
-                                        <div className="pt-4 flex gap-3">
-                                            <a
-                                                href="/SrujanYamaliResumeFeb2026.pdf"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all"
-                                                style={{
-                                                    border: '3px solid black',
-                                                    backgroundColor: 'transparent',
-                                                    textAlign: 'center',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                            >
+                                        <div className="pt-4 flex gap-3 mobile-resume-buttons">
+                                            <a href="/SrujanYamaliResumeFeb2026.pdf" target="_blank" rel="noopener noreferrer"
+                                                className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all resume-btn">
                                                 View Resume
                                             </a>
-                                            <a
-                                                href="/SrujanYamaliResumeJan2026.pdf"
-                                                download
-                                                className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all"
-                                                style={{
-                                                    border: '3px solid black',
-                                                    backgroundColor: 'transparent',
-                                                    textAlign: 'center',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                }}
-                                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'}
-                                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                                            >
+                                            <a href="/SrujanYamaliResumeJan2026.pdf" download
+                                                className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all resume-btn">
                                                 Download Resume
                                             </a>
                                         </div>
@@ -902,41 +849,23 @@ export default function App() {
                                 <div className="text-lg text-black/60 font-mono">{openKey === "projects" ? "−" : "+"}</div>
                             </button>
 
-                            <div
-                                className={`grid transition-all duration-200 ${
-                                    openKey === "projects" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                                }`}
-                            >
+                            <div className={`grid transition-all duration-200 ${openKey === "projects" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                                 <div className="overflow-hidden">
                                     <div className="pt-3 pb-4 space-y-6">
                                         {projects.map((p, idx) => (
                                             <div key={idx} className="pb-6 border-b-2 border-black/10 last:border-b-0">
                                                 <div className="flex items-center gap-3">
                                                     <div className="text-lg font-bold text-black" style={{textShadow: '0 0 20px rgba(255,255,255,0.9)'}}>{p.name}</div>
-                                                    <a
-                                                        href={p.github}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
+                                                    <a href={p.github} target="_blank" rel="noopener noreferrer"
                                                         className="flex-shrink-0 hover:scale-110 transition-transform"
-                                                        aria-label={`GitHub repository for ${p.name}`}
-                                                    >
-                                                        <img
-                                                            src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
-                                                            alt="GitHub"
-                                                            style={{
-                                                                width: '20px',
-                                                                height: '20px',
-                                                                objectFit: 'contain',
-                                                                filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.2))',
-                                                            }}
-                                                        />
+                                                        aria-label={`GitHub repository for ${p.name}`}>
+                                                        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" alt="GitHub"
+                                                            style={{ width: '20px', height: '20px', objectFit: 'contain', filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.2))' }} />
                                                     </a>
                                                 </div>
                                                 <div className="text-sm text-black/70 mt-1 font-semibold" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>{p.stack}</div>
                                                 <ul className="mt-3 text-base text-black list-disc pl-6 space-y-2 leading-relaxed" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                                                    {p.bullets.map((b, i) => (
-                                                        <li key={i}>{b}</li>
-                                                    ))}
+                                                    {p.bullets.map((b, i) => <li key={i}>{b}</li>)}
                                                 </ul>
                                             </div>
                                         ))}
@@ -956,11 +885,7 @@ export default function App() {
                                 <div className="text-lg text-black/60 font-mono">{openKey === "pubs" ? "−" : "+"}</div>
                             </button>
 
-                            <div
-                                className={`grid transition-all duration-200 ${
-                                    openKey === "pubs" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                                }`}
-                            >
+                            <div className={`grid transition-all duration-200 ${openKey === "pubs" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                                 <div className="overflow-hidden">
                                     <div className="pt-3 pb-4 space-y-4">
                                         {publications.map((p, i) => (
@@ -974,46 +899,29 @@ export default function App() {
                         </div>
 
                         <div className="pt-8 text-sm text-black font-medium border-t-2 border-black/20" style={{textShadow: '0 0 15px rgba(255,255,255,0.8)'}}>
-                            <div>
-                                © {new Date().getFullYear()} {profile.name}
-                            </div>
+                            <div>© {new Date().getFullYear()} {profile.name}</div>
                         </div>
                     </div>
                 </section>
             </main>
 
-            {/* Modal */}
             <Modal open={modal === "experience"} title="Experience" onClose={closeModal}>
                 <div className="space-y-6">
                     {experience.map((e) => (
                         <div key={e.org} className="pb-6 border-b border-black/10 last:border-b-0">
                             <div className="flex items-start gap-3">
-                                <img
-                                    src={e.logo}
-                                    alt={`${e.org} logo`}
-                                    className="flex-shrink-0 mt-1 rounded"
-                                    style={{
-                                        width: '36px',
-                                        height: '36px',
-                                        objectFit: 'contain',
-                                    }}
-                                />
+                                <img src={e.logo} alt={`${e.org} logo`} className="flex-shrink-0 mt-1 rounded"
+                                    style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
                                 <div className="flex-1 min-w-0">
                                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                                         <div className="text-sm font-bold text-black">{e.org}</div>
-                                        <div className="text-xs text-black/80 font-medium">
-                                            {e.where}
-                                        </div>
+                                        <div className="text-xs text-black/80 font-medium">{e.where}</div>
                                     </div>
                                     <div className="flex flex-wrap items-baseline justify-between gap-2 mt-1">
                                         <div className="text-sm text-black/90 font-semibold">{e.role}</div>
-                                        <div className="text-xs text-black/70 font-medium">
-                                            {e.dates}
-                                        </div>
+                                        <div className="text-xs text-black/70 font-medium">{e.dates}</div>
                                     </div>
-                                    <p className="mt-2 text-sm text-black/85 leading-relaxed">
-                                        {e.description}
-                                    </p>
+                                    <p className="mt-2 text-sm text-black/85 leading-relaxed">{e.description}</p>
                                 </div>
                             </div>
                         </div>
