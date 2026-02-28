@@ -704,7 +704,7 @@ export default function App() {
             {/* Intro Animation */}
             {!introComplete && (
                 <IntroAnimation
-                    jsonPath="/fly_stipple.json"
+                    jsonPath="/stipple_data.json"
                     onComplete={() => setIntroComplete(true)}
                 />
             )}

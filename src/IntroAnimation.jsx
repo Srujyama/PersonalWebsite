@@ -86,7 +86,15 @@ export default function IntroAnimation({ jsonPath = "/fly_stipple.json", onCompl
             .then((r) => r.json())
             .then((data) => {
                 const isMobile = window.innerWidth < 768;
-                const aspect = data.w / data.h;
+
+                // Support both formats:
+                //   Compact: { w, h, n, d: [[x,y,r], ...] }
+                //   Program: { width, height, dotCount, dots: [{x,y,r}, ...] }
+                const imgOrigW = data.w || data.width;
+                const imgOrigH = data.h || data.height;
+                const rawDots = data.d || data.dots;
+
+                const aspect = imgOrigW / imgOrigH;
                 state.imageAspect = aspect;
 
                 // Calculate image render size (centered on screen)
@@ -99,14 +107,20 @@ export default function IntroAnimation({ jsonPath = "/fly_stipple.json", onCompl
                 const offY = (h - imgH) / 2;
 
                 // Subsample dots on mobile for performance
-                let dotData = data.d;
+                let dotData = rawDots;
                 if (isMobile && dotData.length > 5000) {
                     const step = Math.ceil(dotData.length / 5000);
                     dotData = dotData.filter((_, i) => i % step === 0);
                 }
 
+                // Normalize each dot to [x, y, r] regardless of input format
+                const normalized = dotData.map((d) => {
+                    if (Array.isArray(d)) return d; // already [x, y, r]
+                    return [d.x, d.y, d.r];         // convert {x, y, r}
+                });
+
                 // Initialize dots
-                const dots = dotData.map(([nx, ny, r]) => {
+                const dots = normalized.map(([nx, ny, r]) => {
                     // Target position (where the dot goes to form the image)
                     const tx = offX + nx * imgW;
                     const ty = offY + ny * imgH;
