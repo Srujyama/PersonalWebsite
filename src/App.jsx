@@ -427,12 +427,496 @@ function WavesBg({ paused }) {
     );
 }
 
+/* ─── Canvas Background: Constellation / Starfield ─── */
+function ConstellationBg({ paused }) {
+    const canvasRef = useRef(null);
+    const animRef = useRef(null);
+    const timeRef = useRef(0);
+    const pausedRef = useRef(paused);
+    const starsRef = useRef([]);
+
+    useEffect(() => { pausedRef.current = paused; }, [paused]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        let w, h, dpr;
+        const mobile = isMobile();
+
+        function resize() {
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            initStars();
+        }
+
+        function initStars() {
+            const count = mobile ? 60 : 140;
+            starsRef.current = Array.from({ length: count }, () => ({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                r: Math.random() * 1.8 + 0.4,
+                twinkleSpeed: 0.5 + Math.random() * 2,
+                twinklePhase: Math.random() * Math.PI * 2,
+                brightness: 0.3 + Math.random() * 0.7,
+                // Subtle drift
+                vx: (Math.random() - 0.5) * 0.08,
+                vy: (Math.random() - 0.5) * 0.08,
+            }));
+        }
+
+        resize();
+        window.addEventListener("resize", resize);
+        const connectDist = mobile ? 100 : 130;
+
+        function draw() {
+            if (!pausedRef.current) timeRef.current += 0.016;
+            const t = timeRef.current;
+
+            ctx.clearRect(0, 0, w, h);
+            // Soft off-white background
+            ctx.fillStyle = "#fafafa";
+            ctx.fillRect(0, 0, w, h);
+
+            const stars = starsRef.current;
+
+            if (!pausedRef.current) {
+                for (const s of stars) {
+                    s.x += s.vx;
+                    s.y += s.vy;
+                    if (s.x < 0) s.x = w;
+                    if (s.x > w) s.x = 0;
+                    if (s.y < 0) s.y = h;
+                    if (s.y > h) s.y = 0;
+                }
+            }
+
+            // Constellation lines
+            for (let i = 0; i < stars.length; i++) {
+                for (let j = i + 1; j < stars.length; j++) {
+                    const dx = stars[i].x - stars[j].x;
+                    const dy = stars[i].y - stars[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < connectDist) {
+                        const alpha = (1 - dist / connectDist) * 0.1;
+                        ctx.strokeStyle = `rgba(100, 120, 160, ${alpha})`;
+                        ctx.lineWidth = 0.6;
+                        ctx.beginPath();
+                        ctx.moveTo(stars[i].x, stars[i].y);
+                        ctx.lineTo(stars[j].x, stars[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Stars with twinkling
+            for (const s of stars) {
+                const twinkle = 0.5 + 0.5 * Math.sin(t * s.twinkleSpeed + s.twinklePhase);
+                const alpha = s.brightness * twinkle;
+                // Outer glow
+                if (!mobile) {
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r * 4, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(80, 100, 150, ${alpha * 0.06})`;
+                    ctx.fill();
+                }
+                // Core
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r * (0.8 + twinkle * 0.4), 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(60, 80, 130, ${alpha * 0.55})`;
+                ctx.fill();
+            }
+
+            animRef.current = requestAnimationFrame(draw);
+        }
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animRef.current);
+            window.removeEventListener("resize", resize);
+        };
+    }, []);
+
+    return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed top-0 left-0" />;
+}
+
+/* ─── Canvas Background: Topographic Contours ─── */
+function TopoBg({ paused }) {
+    const canvasRef = useRef(null);
+    const animRef = useRef(null);
+    const timeRef = useRef(0);
+    const pausedRef = useRef(paused);
+
+    useEffect(() => { pausedRef.current = paused; }, [paused]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        let w, h, dpr;
+        const mobile = isMobile();
+
+        function resize() {
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        // Simplex-like noise using layered sine waves
+        const centers = Array.from({ length: mobile ? 4 : 6 }, () => ({
+            x: Math.random() * 1.4 - 0.2,
+            y: Math.random() * 1.4 - 0.2,
+            freq: 0.8 + Math.random() * 1.5,
+            drift: (Math.random() - 0.5) * 0.02,
+            driftY: (Math.random() - 0.5) * 0.02,
+        }));
+
+        function heightAt(px, py, t) {
+            let val = 0;
+            for (const c of centers) {
+                const cx = c.x + Math.sin(t * c.drift * 5) * 0.1;
+                const cy = c.y + Math.cos(t * c.driftY * 5) * 0.1;
+                const dx = px - cx;
+                const dy = py - cy;
+                val += Math.sin(Math.sqrt(dx * dx + dy * dy) * c.freq * 8 + t * 0.5) * 0.5;
+            }
+            return val;
+        }
+
+        const contourLevels = mobile ? 12 : 18;
+        const resolution = mobile ? 6 : 4;
+
+        function draw() {
+            if (!pausedRef.current) timeRef.current += 0.008;
+            const t = timeRef.current;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+
+            // Compute height field
+            const cols = Math.ceil(w / resolution);
+            const rows = Math.ceil(h / resolution);
+            const field = new Float32Array(cols * rows);
+
+            for (let gy = 0; gy < rows; gy++) {
+                for (let gx = 0; gx < cols; gx++) {
+                    field[gy * cols + gx] = heightAt(gx / cols, gy / rows, t);
+                }
+            }
+
+            // Draw contour lines using marching squares (simplified)
+            for (let level = 0; level < contourLevels; level++) {
+                const threshold = -1 + (2 * level / contourLevels);
+                const alpha = 0.06 + (level % 3 === 0 ? 0.08 : 0);
+                const lw = level % 3 === 0 ? 1.2 : 0.6;
+
+                ctx.strokeStyle = `rgba(80, 60, 40, ${alpha})`;
+                ctx.lineWidth = lw;
+                ctx.beginPath();
+
+                for (let gy = 0; gy < rows - 1; gy++) {
+                    for (let gx = 0; gx < cols - 1; gx++) {
+                        const tl = field[gy * cols + gx];
+                        const tr = field[gy * cols + gx + 1];
+                        const bl = field[(gy + 1) * cols + gx];
+                        const br = field[(gy + 1) * cols + gx + 1];
+
+                        const x0 = gx * resolution;
+                        const y0 = gy * resolution;
+
+                        // Simple contour: if threshold crosses any edge, draw segment
+                        const edges = [];
+                        if ((tl - threshold) * (tr - threshold) < 0) {
+                            const frac = (threshold - tl) / (tr - tl);
+                            edges.push([x0 + frac * resolution, y0]);
+                        }
+                        if ((tr - threshold) * (br - threshold) < 0) {
+                            const frac = (threshold - tr) / (br - tr);
+                            edges.push([x0 + resolution, y0 + frac * resolution]);
+                        }
+                        if ((bl - threshold) * (br - threshold) < 0) {
+                            const frac = (threshold - bl) / (br - bl);
+                            edges.push([x0 + frac * resolution, y0 + resolution]);
+                        }
+                        if ((tl - threshold) * (bl - threshold) < 0) {
+                            const frac = (threshold - tl) / (bl - tl);
+                            edges.push([x0, y0 + frac * resolution]);
+                        }
+
+                        if (edges.length >= 2) {
+                            ctx.moveTo(edges[0][0], edges[0][1]);
+                            ctx.lineTo(edges[1][0], edges[1][1]);
+                        }
+                    }
+                }
+                ctx.stroke();
+            }
+
+            animRef.current = requestAnimationFrame(draw);
+        }
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animRef.current);
+            window.removeEventListener("resize", resize);
+        };
+    }, []);
+
+    return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed top-0 left-0" />;
+}
+
+/* ─── Canvas Background: Hexagonal Grid with Ripples ─── */
+function HexBg({ paused }) {
+    const canvasRef = useRef(null);
+    const animRef = useRef(null);
+    const timeRef = useRef(0);
+    const pausedRef = useRef(paused);
+
+    useEffect(() => { pausedRef.current = paused; }, [paused]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        let w, h, dpr;
+        const mobile = isMobile();
+        const hexSize = mobile ? 28 : 22;
+
+        function resize() {
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+        const sqrt3 = Math.sqrt(3);
+        const rippleSources = [
+            { x: 0.3, y: 0.4, speed: 1.2, phase: 0 },
+            { x: 0.7, y: 0.6, speed: 0.9, phase: 2 },
+            { x: 0.5, y: 0.2, speed: 1.5, phase: 4 },
+        ];
+
+        function drawHex(cx, cy, size, alpha) {
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (Math.PI / 3) * i - Math.PI / 6;
+                const hx = cx + size * Math.cos(angle);
+                const hy = cy + size * Math.sin(angle);
+                i === 0 ? ctx.moveTo(hx, hy) : ctx.lineTo(hx, hy);
+            }
+            ctx.closePath();
+            ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
+            ctx.stroke();
+        }
+
+        function draw() {
+            if (!pausedRef.current) timeRef.current += 0.012;
+            const t = timeRef.current;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.lineWidth = mobile ? 0.5 : 0.7;
+            const hW = hexSize * sqrt3;
+            const hH = hexSize * 1.5;
+
+            const cols = Math.ceil(w / hW) + 2;
+            const rows = Math.ceil(h / hH) + 2;
+
+            for (let row = -1; row < rows; row++) {
+                for (let col = -1; col < cols; col++) {
+                    const offset = row % 2 === 0 ? 0 : hW / 2;
+                    const cx = col * hW + offset;
+                    const cy = row * hH;
+
+                    // Compute ripple effect
+                    let rippleVal = 0;
+                    const nx = cx / w;
+                    const ny = cy / h;
+                    for (const src of rippleSources) {
+                        const dx = nx - src.x;
+                        const dy = ny - src.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        rippleVal += Math.sin(dist * 20 - t * src.speed * 3 + src.phase) * 0.5;
+                    }
+
+                    const alpha = 0.04 + Math.max(0, rippleVal * 0.08);
+                    const sizeScale = 1 + rippleVal * 0.06;
+                    drawHex(cx, cy, hexSize * sizeScale * 0.95, alpha);
+
+                    // Fill bright hexes
+                    if (rippleVal > 0.6) {
+                        ctx.fillStyle = `rgba(0, 0, 0, ${(rippleVal - 0.6) * 0.04})`;
+                        ctx.fill();
+                    }
+                }
+            }
+
+            animRef.current = requestAnimationFrame(draw);
+        }
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animRef.current);
+            window.removeEventListener("resize", resize);
+        };
+    }, []);
+
+    return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed top-0 left-0" />;
+}
+
+/* ─── Canvas Background: Floating Geometric Shapes ─── */
+function GeoBg({ paused }) {
+    const canvasRef = useRef(null);
+    const animRef = useRef(null);
+    const timeRef = useRef(0);
+    const pausedRef = useRef(paused);
+    const shapesRef = useRef([]);
+
+    useEffect(() => { pausedRef.current = paused; }, [paused]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext("2d");
+        let w, h, dpr;
+        const mobile = isMobile();
+
+        function resize() {
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            initShapes();
+        }
+
+        function initShapes() {
+            const count = mobile ? 18 : 35;
+            shapesRef.current = Array.from({ length: count }, () => ({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                size: 12 + Math.random() * (mobile ? 25 : 40),
+                sides: [3, 4, 5, 6][Math.floor(Math.random() * 4)],
+                rotation: Math.random() * Math.PI * 2,
+                rotSpeed: (Math.random() - 0.5) * 0.008,
+                alpha: 0.04 + Math.random() * 0.08,
+                lineWidth: 0.6 + Math.random() * 0.8,
+            }));
+        }
+
+        resize();
+        window.addEventListener("resize", resize);
+
+        function drawPoly(cx, cy, size, sides, rotation) {
+            ctx.beginPath();
+            for (let i = 0; i < sides; i++) {
+                const angle = (Math.PI * 2 / sides) * i + rotation;
+                const px = cx + size * Math.cos(angle);
+                const py = cy + size * Math.sin(angle);
+                i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+        }
+
+        function draw() {
+            if (!pausedRef.current) timeRef.current += 0.016;
+
+            ctx.clearRect(0, 0, w, h);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, w, h);
+
+            const shapes = shapesRef.current;
+
+            for (const s of shapes) {
+                if (!pausedRef.current) {
+                    s.x += s.vx;
+                    s.y += s.vy;
+                    s.rotation += s.rotSpeed;
+                    // Wrap around
+                    if (s.x < -s.size * 2) s.x = w + s.size;
+                    if (s.x > w + s.size * 2) s.x = -s.size;
+                    if (s.y < -s.size * 2) s.y = h + s.size;
+                    if (s.y > h + s.size * 2) s.y = -s.size;
+                }
+
+                ctx.lineWidth = s.lineWidth;
+                ctx.strokeStyle = `rgba(0, 0, 0, ${s.alpha})`;
+                drawPoly(s.x, s.y, s.size, s.sides, s.rotation);
+                ctx.stroke();
+
+                // Inner shape (smaller, rotated opposite)
+                ctx.strokeStyle = `rgba(0, 0, 0, ${s.alpha * 0.5})`;
+                ctx.lineWidth = s.lineWidth * 0.6;
+                drawPoly(s.x, s.y, s.size * 0.5, s.sides, -s.rotation * 1.5);
+                ctx.stroke();
+            }
+
+            // Connection lines between nearby shapes
+            if (!mobile) {
+                for (let i = 0; i < shapes.length; i++) {
+                    for (let j = i + 1; j < shapes.length; j++) {
+                        const dx = shapes[i].x - shapes[j].x;
+                        const dy = shapes[i].y - shapes[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 180) {
+                            const alpha = (1 - dist / 180) * 0.04;
+                            ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
+                            ctx.lineWidth = 0.4;
+                            ctx.beginPath();
+                            ctx.moveTo(shapes[i].x, shapes[i].y);
+                            ctx.lineTo(shapes[j].x, shapes[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            animRef.current = requestAnimationFrame(draw);
+        }
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animRef.current);
+            window.removeEventListener("resize", resize);
+        };
+    }, []);
+
+    return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none fixed top-0 left-0" />;
+}
+
 /* ─── Background Switcher ─── */
 const BG_OPTIONS = [
     { key: "waves", label: "Waves", icon: "〰" },
     { key: "dots", label: "Particles", icon: "⋯" },
     { key: "dna", label: "DNA", icon: "🧬" },
     { key: "circuit", label: "Circuit", icon: "⏚" },
+    { key: "constellation", label: "Stars", icon: "✦" },
+    { key: "topo", label: "Contours", icon: "◎" },
+    { key: "hex", label: "Hexgrid", icon: "⬡" },
+    { key: "geo", label: "Geometry", icon: "△" },
 ];
 
 function BgSwitcher({ current, onChange }) {
@@ -697,6 +1181,10 @@ export default function App() {
         dots: DotsBg,
         dna: DnaBg,
         circuit: CircuitBg,
+        constellation: ConstellationBg,
+        topo: TopoBg,
+        hex: HexBg,
+        geo: GeoBg,
     }[bgType];
 
     return (
@@ -738,8 +1226,8 @@ export default function App() {
                 ))}
             </div>
 
-            {/* Controls: Pause + Background Switcher */}
-            <div className="controls-container">
+            {/* Pause Button */}
+            <div className="pause-container">
                 <button
                     onClick={() => setAnimationPaused(!animationPaused)}
                     className="hover:scale-110 transition-transform control-btn"
@@ -753,6 +1241,10 @@ export default function App() {
                         className="control-btn-img"
                     />
                 </button>
+            </div>
+
+            {/* Background Switcher - below pause on desktop */}
+            <div className="switcher-container">
                 <BgSwitcher current={bgType} onChange={setBgType} />
             </div>
 
