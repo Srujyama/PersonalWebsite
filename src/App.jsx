@@ -911,7 +911,7 @@ function GeoBg({ paused }) {
 const BG_OPTIONS = [
     { key: "waves", label: "Waves", icon: "〰" },
     { key: "dots", label: "Particles", icon: "⋯" },
-    { key: "dna", label: "DNA", icon: "🧬" },
+    { key: "dna", label: "DNA", icon: "⌬" },
     { key: "circuit", label: "Circuit", icon: "⏚" },
     { key: "constellation", label: "Stars", icon: "✦" },
     { key: "topo", label: "Contours", icon: "◎" },
@@ -1171,7 +1171,7 @@ export default function App() {
     const [modal, setModal] = useState("");
     const [openKey, setOpenKey] = useState("");
     const [animationPaused, setAnimationPaused] = useState(false);
-    const [bgType, setBgType] = useState("waves");
+    const [bgType, setBgType] = useState("topo");
     const [introComplete, setIntroComplete] = useState(false);
 
     const closeModal = () => setModal("");

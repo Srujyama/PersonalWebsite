@@ -105,22 +105,41 @@ body {
 }
 
 /* ============================= */
-/* CONTROLS CONTAINER            */
+/* PAUSE BUTTON CONTAINER        */
 /* ============================= */
 
-.controls-container {
+.pause-container {
     position: fixed;
     z-index: 20;
     display: flex;
-    flex-direction: row;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: center;
     right: 4rem;
-    top: calc(50% + 200px);
-    padding: 1rem;
+    top: calc(50% + 160px);
+    padding: 0.85rem;
     background-color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
-    border-radius: 16px;
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* ============================= */
+/* SWITCHER CONTAINER            */
+/* ============================= */
+
+.switcher-container {
+    position: fixed;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 4rem;
+    top: calc(50% + 226px);
+    padding: 0.85rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -156,8 +175,8 @@ body {
     position: absolute;
     bottom: calc(100% + 12px);
     right: 0;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 4px;
     padding: 8px;
     background-color: rgba(255, 255, 255, 0.94);
@@ -167,7 +186,7 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.08);
     animation: fadeSlideUp 0.15s ease;
     z-index: 100;
-    min-width: 130px;
+    min-width: 220px;
 }
 
 @keyframes fadeSlideUp {
@@ -273,16 +292,26 @@ body {
         border-radius: 50px;
     }
 
-    /* Controls → top right corner on mobile */
-    .controls-container {
+    /* Pause → top right */
+    .pause-container {
         position: fixed;
         top: 0.75rem;
         right: 0.75rem;
         bottom: auto;
         left: auto;
         padding: 0.6rem;
-        gap: 0.5rem;
-        border-radius: 14px;
+        border-radius: 12px;
+    }
+
+    /* Switcher → next to pause on mobile (horizontal) */
+    .switcher-container {
+        position: fixed;
+        top: 0.75rem;
+        right: calc(0.75rem + 56px);
+        bottom: auto;
+        left: auto;
+        padding: 0.6rem;
+        border-radius: 12px;
     }
 
     /* Popup: opens downward on mobile to avoid clipping off top */
@@ -291,6 +320,7 @@ body {
         bottom: auto;
         right: 0;
         left: auto;
+        min-width: 200px;
         animation: fadeSlideDown 0.15s ease;
     }
 
@@ -347,12 +377,18 @@ body {
     }
 
     /* Smaller controls */
-    .controls-container {
+    .pause-container {
         top: 0.5rem;
         right: 0.5rem;
         padding: 0.4rem;
-        gap: 0.35rem;
-        border-radius: 12px;
+        border-radius: 10px;
+    }
+
+    .switcher-container {
+        top: 0.5rem;
+        right: calc(0.5rem + 48px);
+        padding: 0.4rem;
+        border-radius: 10px;
     }
 
     .control-btn {
@@ -377,22 +413,22 @@ body {
     }
 
     .bg-switcher-options {
-        min-width: 115px;
+        min-width: 180px;
         padding: 6px;
     }
 
     .bg-switcher-option {
-        padding: 6px 10px;
-        gap: 8px;
+        padding: 5px 8px;
+        gap: 6px;
     }
 
     .bg-switcher-icon {
-        font-size: 15px;
-        width: 20px;
+        font-size: 14px;
+        width: 18px;
     }
 
     .bg-switcher-label {
-        font-size: 12px;
+        font-size: 11px;
     }
 
     .exp-logo {
