@@ -1542,7 +1542,7 @@ export default function App() {
 
                       <div className="pt-4 flex gap-3 mobile-resume-buttons">
                         <a
-                          href="/Srujan_Yamali_SWE_Resume_April_2026"
+                          href="/Srujan_Yamali_SWE_Resume_April_2026.pdf"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all resume-btn"
@@ -1550,7 +1550,7 @@ export default function App() {
                           View Resume
                         </a>
                         <a
-                          href="/Srujan_Yamali_SWE_Resume_April_2026"
+                          href="/Srujan_Yamali_SWE_Resume_April_2026.pdf"
                           download
                           className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all resume-btn"
                         >
