@@ -1084,7 +1084,7 @@ function Section({ title, hint, children, open, onToggle }) {
       </button>
 
       <div
-        className={`grid transition-all duration-200 ${
+        className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         }`}
       >
@@ -1233,20 +1233,53 @@ export default function App() {
     () => [
       {
         name: "FlyFlirt — Real-Time Behavioral Detection and Tracking",
+        tagline: "Teaching computers to watch fruit flies flirt",
         stack: "Python, OpenCV, PyQt6, Pandas",
         github: "https://github.com/Srujyama/FlyFlirt",
         bullets: [
-          "Developed a production-grade computer vision pipeline to automatically detect and track Drosophila behaviors across hundreds of hours of video, reducing manual annotation by 90%.",
-          "Implemented real-time OpenCV/NumPy processing for high-throughput experiments with near–zero latency and automated labeling across thousands of frames.",
+          "Built a computer vision pipeline that automatically detects and tracks Drosophila courtship behaviors across hundreds of hours of video, cutting manual annotation time by 90%.",
+          "Engineered real-time frame processing with OpenCV and NumPy for high-throughput experiments with near-zero latency.",
         ],
       },
       {
-        name: "RedCarpet — Genomic Changepoint Heatmap Engine",
+        name: "RedCarpet — Genomic Changepoint Detection",
+        tagline: "Finding where bacterial genomes swapped DNA",
         stack: "Python, Ruptures, Scikit-learn, Matplotlib",
         github: "https://github.com/microbialARC/Redcarpet",
         bullets: [
-          "Created a high-performance changepoint detection engine using multiprocessing and KDTree-based similarity search, accelerating large-scale recombination discovery by orders of magnitude.",
-          "Automated visualization of comparative signals via Matplotlib heatmaps for reproducible, large-scale genomic analysis.",
+          "Built a changepoint detection engine using multiprocessing and KDTree-based similarity search to identify recombination events across large bacterial genome datasets.",
+          "Generated automated heatmap visualizations via Matplotlib for reproducible, large-scale comparative genomic analysis.",
+        ],
+      },
+      {
+        name: "Sylor — AI Simulation Platform",
+        tagline: "Stress-test your decisions with AI agents",
+        stack: "Next.js, TypeScript, FastAPI, Firebase",
+        github: "https://github.com/Srujyama/sylor",
+        website: "https://sylor.us",
+        bullets: [
+          "Built a platform that lets users simulate major decisions before committing — run multi-agent AI simulations for business ideas, pricing strategies, and startup plans.",
+          "Designed a FastAPI backend that orchestrates AI agents to model competitive dynamics, customer behavior, and market responses, with results visualized through interactive charts.",
+        ],
+      },
+      {
+        name: "Stryda — Workflow Automation Platform",
+        tagline: "Zapier, but for people who actually build things",
+        stack: "Python, TypeScript, React, Docker",
+        website: "https://stryda.ai",
+        bullets: [
+          "Building an automation platform that lets users chain together APIs, AI models, and internal tools into workflows — replacing Zapier with a developer-first approach and deeper integration support.",
+          "Architected a Python execution engine that runs user-defined workflows with branching logic, retries, and real-time status tracking.",
+        ],
+      },
+      {
+        name: "Stryda — iOS Tipping App (Pre-Pivot)",
+        tagline: "Where Stryda started — tap your phone, leave a tip",
+        stack: "Swift, SwiftUI, NFC, Firebase",
+        github: "https://github.com/Srujyama/Stryda",
+        bullets: [
+          "Built an NFC-first tipping app for iOS before pivoting Stryda to the workflow automation platform.",
+          "Implemented NFC and QR code–based payment flows, tip configuration, rewards tracking, and onboarding using SwiftUI and Firebase.",
         ],
       },
     ],
@@ -1256,16 +1289,25 @@ export default function App() {
   const publications = useMemo(
     () => [
       {
-        citation:
-          "R. Oliver, S. Yamali, S. Knox, T. Dadyala, L. Shao. High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila. Proceedings of the International Behavioral and Neural Genetics Society, Western University, London (2024).",
+        title: "High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila",
+        authors: ["R. Oliver", "S. Yamali", "S. Knox", "T. Dadyala", "L. Shao"],
+        venue: "International Behavioral and Neural Genetics Society",
+        location: "Western University, London",
+        year: "2024",
       },
       {
-        citation:
-          "R. Oliver, S. Yamali, S. Knox, T. Dadyala, L. Shao. High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila. Sexually Dimorphic Circuits and Behaviors, Janelia Research Campus, HHMI, Ashburn, VA (2024).",
+        title: "High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila",
+        authors: ["R. Oliver", "S. Yamali", "S. Knox", "T. Dadyala", "L. Shao"],
+        venue: "Sexually Dimorphic Circuits and Behaviors",
+        location: "Janelia Research Campus, HHMI, Ashburn, VA",
+        year: "2024",
       },
       {
-        citation:
-          "A. Moustafa, E. Theiller, A. Lal, S. Yamali, A. Feder, A. Narechania, P. Planet. Redcarpet: Rapid Recombination Detection in Staphylococcus aureus and other species amid expanding genomic databases. 19th International Symposium on Staphylococci and Staphylococcal Infections, Perth (2024).",
+        title: "Redcarpet: Rapid Recombination Detection in Staphylococcus aureus and Other Species Amid Expanding Genomic Databases",
+        authors: ["A. Moustafa", "E. Theiller", "A. Lal", "S. Yamali", "A. Feder", "A. Narechania", "P. Planet"],
+        venue: "19th International Symposium on Staphylococci and Staphylococcal Infections",
+        location: "Perth",
+        year: "2024",
       },
     ],
     [],
@@ -1305,14 +1347,14 @@ export default function App() {
         className="site-content"
         style={{
           opacity: introComplete ? 1 : 0,
-          transition: "opacity 0.8s ease",
+          transition: "opacity 1s cubic-bezier(0.4, 0, 0.2, 1)",
           pointerEvents: introComplete ? "auto" : "none",
         }}
       >
         <BgComponent paused={animationPaused} />
         <Noise />
 
-        {/* Social links */}
+        {/* Unified sidebar */}
         <div className="social-links-container">
           {socialLinks.map((link, idx) => (
             <a
@@ -1328,19 +1370,18 @@ export default function App() {
                   : "noopener noreferrer"
               }
               download={link.download || undefined}
-              className="hover:scale-110 transition-transform block social-icon-link"
+              className="hover:scale-110 transition-transform duration-200 ease-out block social-icon-link"
               aria-label={link.alt}
             >
               <img src={link.img} alt={link.alt} className="social-icon-img" />
             </a>
           ))}
-        </div>
 
-        {/* Pause Button */}
-        <div className="pause-container">
+          <div className="sidebar-divider" />
+
           <button
             onClick={() => setAnimationPaused(!animationPaused)}
-            className="hover:scale-110 transition-transform control-btn"
+            className="hover:scale-110 transition-transform duration-200 ease-out control-btn"
             aria-label={
               animationPaused ? "Resume Animation" : "Pause Animation"
             }
@@ -1355,10 +1396,7 @@ export default function App() {
               className="control-btn-img"
             />
           </button>
-        </div>
 
-        {/* Background Switcher - below pause on desktop */}
-        <div className="switcher-container">
           <BgSwitcher current={bgType} onChange={setBgType} />
         </div>
 
@@ -1374,8 +1412,8 @@ export default function App() {
               </h1>
               <div className="space-y-3">
                 <div
-                  className="text-2xl text-black font-bold"
-                  style={{ textShadow: "0 0 20px rgba(255,255,255,0.8)" }}
+                  className="text-2xl font-bold"
+                  style={{ color: "rgba(88, 60, 140, 0.85)", textShadow: "0 0 20px rgba(255,255,255,0.8)" }}
                 >
                   {profile.title}
                 </div>
@@ -1385,19 +1423,21 @@ export default function App() {
                 >
                   {profile.location}
                 </div>
-                <div
-                  className="text-lg text-black/90 mt-6 leading-relaxed max-w-2xl font-medium"
-                  style={{ textShadow: "0 0 20px rgba(255,255,255,0.8)" }}
-                >
-                  {profile.oneLiner}
-                </div>
+                {profile.oneLiner && (
+                  <div
+                    className="text-lg text-black/90 mt-6 leading-relaxed max-w-2xl font-medium"
+                    style={{ textShadow: "0 0 20px rgba(255,255,255,0.8)" }}
+                  >
+                    {profile.oneLiner}
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Body */}
             <div className="pt-10 grid gap-6">
               {/* Education */}
-              <div className="border-l-4 border-black/40 pl-6 py-2">
+              <div className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(0, 50, 98, 0.35)" }}>
                 <div className="py-2">
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
                     <div
@@ -1434,7 +1474,7 @@ export default function App() {
                 </button>
 
                 <div
-                  className={`grid transition-all duration-200 ${openKey === "education" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                  className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${openKey === "education" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                 >
                   <div className="overflow-hidden">
                     <div
@@ -1451,7 +1491,7 @@ export default function App() {
               </div>
 
               {/* Experience */}
-              <div className="border-l-4 border-black/40 pl-5 py-1">
+              <div className="border-l-4 pl-5 py-1" style={{ borderColor: "rgba(88, 60, 140, 0.3)" }}>
                 <button
                   type="button"
                   onClick={() =>
@@ -1471,7 +1511,7 @@ export default function App() {
                 </button>
 
                 <div
-                  className={`grid transition-all duration-200 ${openKey === "experience" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                  className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${openKey === "experience" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                 >
                   <div className="overflow-hidden">
                     <div className="pt-3 pb-4 space-y-6">
@@ -1563,7 +1603,7 @@ export default function App() {
               </div>
 
               {/* Projects */}
-              <div className="border-l-4 border-black/40 pl-6 py-2">
+              <div className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(40, 140, 140, 0.3)" }}>
                 <button
                   type="button"
                   onClick={() =>
@@ -1583,7 +1623,7 @@ export default function App() {
                 </button>
 
                 <div
-                  className={`grid transition-all duration-200 ${openKey === "projects" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                  className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${openKey === "projects" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                 >
                   <div className="overflow-hidden">
                     <div className="pt-3 pb-4 space-y-6">
@@ -1592,7 +1632,7 @@ export default function App() {
                           key={idx}
                           className="pb-6 border-b-2 border-black/10 last:border-b-0"
                         >
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-start gap-3 flex-wrap">
                             <div
                               className="text-lg font-bold text-black"
                               style={{
@@ -1601,26 +1641,60 @@ export default function App() {
                             >
                               {p.name}
                             </div>
-                            <a
-                              href={p.github}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex-shrink-0 hover:scale-110 transition-transform"
-                              aria-label={`GitHub repository for ${p.name}`}
-                            >
-                              <img
-                                src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
-                                alt="GitHub"
-                                style={{
-                                  width: "20px",
-                                  height: "20px",
-                                  objectFit: "contain",
-                                  filter:
-                                    "drop-shadow(0 1px 4px rgba(0,0,0,0.2))",
-                                }}
-                              />
-                            </a>
+                            {p.github && (
+                              <a
+                                href={p.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-shrink-0 hover:scale-110 transition-transform"
+                                aria-label={`GitHub repository for ${p.name}`}
+                              >
+                                <img
+                                  src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                                  alt="GitHub"
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    objectFit: "contain",
+                                    filter:
+                                      "drop-shadow(0 1px 4px rgba(0,0,0,0.2))",
+                                  }}
+                                />
+                              </a>
+                            )}
+                            {p.website && (
+                              <a
+                                href={p.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-shrink-0 hover:scale-110 transition-transform"
+                                aria-label={`Website for ${p.name}`}
+                              >
+                                <img
+                                  src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png"
+                                  alt="Website"
+                                  style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    objectFit: "contain",
+                                    filter:
+                                      "drop-shadow(0 1px 4px rgba(0,0,0,0.2))",
+                                  }}
+                                />
+                              </a>
+                            )}
                           </div>
+                          {p.tagline && (
+                            <div
+                              className="text-sm mt-1 italic"
+                              style={{
+                                color: "rgba(40, 140, 140, 0.7)",
+                                textShadow: "0 0 15px rgba(255,255,255,0.8)",
+                              }}
+                            >
+                              {p.tagline}
+                            </div>
+                          )}
                           <div
                             className="text-sm text-black/70 mt-1 font-semibold"
                             style={{
@@ -1647,7 +1721,7 @@ export default function App() {
               </div>
 
               {/* Publications */}
-              <div className="border-l-4 border-black/40 pl-6 py-2">
+              <div className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(60, 100, 160, 0.25)" }}>
                 <button
                   type="button"
                   onClick={() => setOpenKey(openKey === "pubs" ? "" : "pubs")}
@@ -1665,19 +1739,36 @@ export default function App() {
                 </button>
 
                 <div
-                  className={`grid transition-all duration-200 ${openKey === "pubs" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                  className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${openKey === "pubs" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                 >
                   <div className="overflow-hidden">
-                    <div className="pt-3 pb-4 space-y-4">
+                    <div className="pt-3 pb-4 space-y-5">
                       {publications.map((p, i) => (
                         <div
                           key={i}
-                          className="pb-4 border-b-2 border-black/10 last:border-b-0 text-base text-black leading-relaxed"
+                          className="pb-5 border-b-2 border-black/10 last:border-b-0"
                           style={{
                             textShadow: "0 0 15px rgba(255,255,255,0.8)",
                           }}
                         >
-                          {p.citation}
+                          <div className="text-base font-semibold text-black leading-snug pub-title">
+                            {p.title}
+                          </div>
+                          <div className="mt-1.5 text-sm text-black/70 leading-relaxed pub-authors">
+                            {p.authors.map((a, j) => (
+                              <span key={j}>
+                                {j > 0 && ", "}
+                                {a === "S. Yamali" ? (
+                                  <span className="font-semibold" style={{ color: "rgba(88, 60, 140, 0.85)" }}>{a}</span>
+                                ) : (
+                                  a
+                                )}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="mt-1 text-sm italic pub-venue" style={{ color: "rgba(60, 100, 160, 0.7)" }}>
+                            {p.venue} — {p.location} ({p.year})
+                          </div>
                         </div>
                       ))}
                     </div>
