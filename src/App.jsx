@@ -1236,20 +1236,16 @@ export default function App() {
         tagline: "Teaching computers to watch fruit flies flirt",
         stack: "Python, OpenCV, PyQt6, Pandas",
         github: "https://github.com/Srujyama/FlyFlirt",
-        bullets: [
-          "Built a computer vision pipeline that automatically detects and tracks Drosophila courtship behaviors across hundreds of hours of video, cutting manual annotation time by 90%.",
-          "Engineered real-time frame processing with OpenCV and NumPy for high-throughput experiments with near-zero latency.",
-        ],
+        description:
+          "Real-time computer vision pipeline tracking Drosophila courtship across hundreds of hours of video, cutting manual annotation time by 90%.",
       },
       {
         name: "RedCarpet — Genomic Changepoint Detection",
         tagline: "Finding where bacterial genomes swapped DNA",
         stack: "Python, Ruptures, Scikit-learn, Matplotlib",
         github: "https://github.com/microbialARC/Redcarpet",
-        bullets: [
-          "Built a changepoint detection engine using multiprocessing and KDTree-based similarity search to identify recombination events across large bacterial genome datasets.",
-          "Generated automated heatmap visualizations via Matplotlib for reproducible, large-scale comparative genomic analysis.",
-        ],
+        description:
+          "Parallelized changepoint detection engine using KDTree similarity search to identify recombination events across large bacterial genome datasets.",
       },
       {
         name: "Sylor — AI Simulation Platform",
@@ -1257,30 +1253,24 @@ export default function App() {
         stack: "Next.js, TypeScript, FastAPI, Firebase",
         github: "https://github.com/Srujyama/sylor",
         website: "https://sylor.us",
-        bullets: [
-          "Built a platform that lets users simulate major decisions before committing — run multi-agent AI simulations for business ideas, pricing strategies, and startup plans.",
-          "Designed a FastAPI backend that orchestrates AI agents to model competitive dynamics, customer behavior, and market responses, with results visualized through interactive charts.",
-        ],
+        description:
+          "Multi-agent AI platform that simulates market, pricing, and competitive dynamics so founders can pressure-test decisions before committing.",
       },
       {
         name: "Stryda — Workflow Automation Platform",
         tagline: "Zapier, but for people who actually build things",
         stack: "Python, TypeScript, React, Docker",
         website: "https://stryda.ai",
-        bullets: [
-          "Building an automation platform that lets users chain together APIs, AI models, and internal tools into workflows — replacing Zapier with a developer-first approach and deeper integration support.",
-          "Architected a Python execution engine that runs user-defined workflows with branching logic, retries, and real-time status tracking.",
-        ],
+        description:
+          "Developer-first automation platform with a Python execution engine for chaining APIs, AI models, and internal tools with branching logic and retries.",
       },
       {
         name: "Stryda — iOS Tipping App (Pre-Pivot)",
         tagline: "Where Stryda started — tap your phone, leave a tip",
         stack: "Swift, SwiftUI, NFC, Firebase",
         github: "https://github.com/Srujyama/Stryda",
-        bullets: [
-          "Built an NFC-first tipping app for iOS before pivoting Stryda to the workflow automation platform.",
-          "Implemented NFC and QR code–based payment flows, tip configuration, rewards tracking, and onboarding using SwiftUI and Firebase.",
-        ],
+        description:
+          "NFC-first iOS tipping app with QR fallbacks, tip configuration, and rewards tracking built on SwiftUI and Firebase.",
       },
     ],
     [],
@@ -1318,6 +1308,15 @@ export default function App() {
   const [animationPaused, setAnimationPaused] = useState(false);
   const [bgType, setBgType] = useState("topo");
   const [introComplete, setIntroComplete] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth < 768 : false,
+  );
+
+  useEffect(() => {
+    const onResize = () => setIsMobileView(window.innerWidth < 768);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const closeModal = () => setModal("");
 
@@ -1351,8 +1350,14 @@ export default function App() {
           pointerEvents: introComplete ? "auto" : "none",
         }}
       >
-        <BgComponent paused={animationPaused} />
-        <Noise />
+        {isMobileView ? (
+          <div aria-hidden="true" className="mobile-static-bg" />
+        ) : (
+          <>
+            <BgComponent paused={animationPaused} />
+            <Noise />
+          </>
+        )}
 
         {/* Unified sidebar */}
         <div className="social-links-container">
@@ -1377,27 +1382,55 @@ export default function App() {
             </a>
           ))}
 
-          <div className="sidebar-divider" />
+          {!isMobileView && (
+            <>
+              <div className="sidebar-divider" />
 
-          <button
-            onClick={() => setAnimationPaused(!animationPaused)}
-            className="hover:scale-110 transition-transform duration-200 ease-out control-btn"
-            aria-label={
-              animationPaused ? "Resume Animation" : "Pause Animation"
-            }
+              <button
+                onClick={() => setAnimationPaused(!animationPaused)}
+                className="hover:scale-110 transition-transform duration-200 ease-out control-btn"
+                aria-label={
+                  animationPaused ? "Resume Animation" : "Pause Animation"
+                }
+              >
+                <img
+                  src={
+                    animationPaused
+                      ? "https://cdn-icons-png.flaticon.com/512/727/727245.png"
+                      : "https://cdn-icons-png.flaticon.com/512/2404/2404385.png"
+                  }
+                  alt={animationPaused ? "Resume" : "Pause"}
+                  className="control-btn-img"
+                />
+              </button>
+
+              <BgSwitcher current={bgType} onChange={setBgType} />
+            </>
+          )}
+        </div>
+
+        {/* Featured-projects sidebar — always visible, labels on hover */}
+        <div className="featured-links-container">
+          <a
+            href="https://thoughts.srujanyamali.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="featured-link"
+            aria-label="Thoughts"
           >
-            <img
-              src={
-                animationPaused
-                  ? "https://cdn-icons-png.flaticon.com/512/727/727245.png"
-                  : "https://cdn-icons-png.flaticon.com/512/2404/2404385.png"
-              }
-              alt={animationPaused ? "Resume" : "Pause"}
-              className="control-btn-img"
-            />
-          </button>
-
-          <BgSwitcher current={bgType} onChange={setBgType} />
+            <img src="/thoughts_logo.png" alt="" className="featured-link-img" />
+            <span className="featured-link-label">Thoughts</span>
+          </a>
+          <a
+            href="https://stryda.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="featured-link"
+            aria-label="Stryda"
+          >
+            <img src="/stryda_logo.svg" alt="" className="featured-link-img" />
+            <span className="featured-link-label">Stryda</span>
+          </a>
         </div>
 
         <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16 mobile-content">
@@ -1626,94 +1659,57 @@ export default function App() {
                   className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${openKey === "projects" ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                 >
                   <div className="overflow-hidden">
-                    <div className="pt-3 pb-4 space-y-6">
+                    <div className="pt-2 pb-4 project-list">
                       {projects.map((p, idx) => (
-                        <div
-                          key={idx}
-                          className="pb-6 border-b-2 border-black/10 last:border-b-0"
-                        >
-                          <div className="flex items-start gap-3 flex-wrap">
-                            <div
-                              className="text-lg font-bold text-black"
-                              style={{
-                                textShadow: "0 0 20px rgba(255,255,255,0.9)",
-                              }}
-                            >
-                              {p.name}
+                        <article key={idx} className="project-card">
+                          <header className="project-header">
+                            <h3 className="project-title">{p.name}</h3>
+                            <div className="project-links">
+                              {p.github && (
+                                <a
+                                  href={p.github}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="project-link-icon"
+                                  aria-label={`GitHub repository for ${p.name}`}
+                                >
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.92.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.87-1.54-3.87-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.39.97.1-.75.41-1.27.74-1.56-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 2.9-.39c.98.01 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.26 5.69.42.36.79 1.08.79 2.18 0 1.58-.01 2.85-.01 3.24 0 .31.21.68.8.56A11.52 11.52 0 0 0 23.5 12c0-6.27-5.23-11.5-11.5-11.5Z"/>
+                                  </svg>
+                                </a>
+                              )}
+                              {p.website && (
+                                <a
+                                  href={p.website}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="project-link-icon"
+                                  aria-label={`Website for ${p.name}`}
+                                >
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <path d="M7 17L17 7" />
+                                    <path d="M8 7h9v9" />
+                                  </svg>
+                                </a>
+                              )}
                             </div>
-                            {p.github && (
-                              <a
-                                href={p.github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-shrink-0 hover:scale-110 transition-transform"
-                                aria-label={`GitHub repository for ${p.name}`}
-                              >
-                                <img
-                                  src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
-                                  alt="GitHub"
-                                  style={{
-                                    width: "20px",
-                                    height: "20px",
-                                    objectFit: "contain",
-                                    filter:
-                                      "drop-shadow(0 1px 4px rgba(0,0,0,0.2))",
-                                  }}
-                                />
-                              </a>
-                            )}
-                            {p.website && (
-                              <a
-                                href={p.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex-shrink-0 hover:scale-110 transition-transform"
-                                aria-label={`Website for ${p.name}`}
-                              >
-                                <img
-                                  src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png"
-                                  alt="Website"
-                                  style={{
-                                    width: "20px",
-                                    height: "20px",
-                                    objectFit: "contain",
-                                    filter:
-                                      "drop-shadow(0 1px 4px rgba(0,0,0,0.2))",
-                                  }}
-                                />
-                              </a>
-                            )}
-                          </div>
+                          </header>
                           {p.tagline && (
-                            <div
-                              className="text-sm mt-1 italic"
-                              style={{
-                                color: "rgba(40, 140, 140, 0.7)",
-                                textShadow: "0 0 15px rgba(255,255,255,0.8)",
-                              }}
-                            >
-                              {p.tagline}
+                            <p className="project-tagline">{p.tagline}</p>
+                          )}
+                          {p.stack && (
+                            <div className="project-stack">
+                              {p.stack.split(",").map((t, i) => (
+                                <span key={i} className="project-stack-pill">
+                                  {t.trim()}
+                                </span>
+                              ))}
                             </div>
                           )}
-                          <div
-                            className="text-sm text-black/70 mt-1 font-semibold"
-                            style={{
-                              textShadow: "0 0 15px rgba(255,255,255,0.8)",
-                            }}
-                          >
-                            {p.stack}
-                          </div>
-                          <ul
-                            className="mt-3 text-base text-black list-disc pl-6 space-y-2 leading-relaxed"
-                            style={{
-                              textShadow: "0 0 15px rgba(255,255,255,0.8)",
-                            }}
-                          >
-                            {p.bullets.map((b, i) => (
-                              <li key={i}>{b}</li>
-                            ))}
-                          </ul>
-                        </div>
+                          {p.description && (
+                            <p className="project-description">{p.description}</p>
+                          )}
+                        </article>
                       ))}
                     </div>
                   </div>

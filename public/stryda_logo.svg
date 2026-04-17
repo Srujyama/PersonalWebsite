@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Top node (blue) -->
+  <rect x="22" y="4" width="20" height="16" rx="4" fill="#2D8CFF"/>
+  <!-- Vertical line from top node -->
+  <path d="M32 20 L32 30" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Horizontal bar -->
+  <path d="M14 30 L50 30" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Left vertical line -->
+  <path d="M14 30 L14 40" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Right vertical line -->
+  <path d="M50 30 L50 40" stroke="#1a1a2e" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Bottom-left node (green) -->
+  <rect x="4" y="40" width="20" height="16" rx="4" fill="#34C759"/>
+  <!-- Bottom-right node (purple) -->
+  <rect x="40" y="40" width="20" height="16" rx="4" fill="#7B61FF"/>
+</svg>

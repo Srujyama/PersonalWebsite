@@ -32,6 +32,21 @@ body {
 }
 
 /* ============================= */
+/* MOBILE STATIC BACKGROUND      */
+/* ============================= */
+
+.mobile-static-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-color: #fafafa;
+    background-image:
+        radial-gradient(circle at 20% 15%, rgba(88, 60, 140, 0.05), transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(0, 50, 98, 0.05), transparent 45%);
+    pointer-events: none;
+}
+
+/* ============================= */
 /* WAVE PATTERN BACKGROUND       */
 /* ============================= */
 
@@ -248,6 +263,171 @@ body {
 }
 
 /* ============================= */
+/* FEATURED LINKS (left sidebar) */
+/* ============================= */
+
+.featured-links-container {
+    position: fixed;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    left: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 1.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.featured-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.75);
+    transition: transform 0.2s ease-out;
+}
+
+.featured-link:hover {
+    transform: scale(1.08);
+}
+
+.featured-link-img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.15));
+    display: block;
+}
+
+.featured-link-label {
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+    padding: 4px 10px;
+    background-color: rgba(20, 20, 20, 0.9);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.featured-link:hover .featured-link-label,
+.featured-link:focus-visible .featured-link-label {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* ============================= */
+/* PROJECT CARDS (minimalist)    */
+/* ============================= */
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.project-card {
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.project-card:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.project-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.project-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.9);
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    margin: 0;
+}
+
+.project-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.project-link-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    color: rgba(0, 0, 0, 0.45);
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.project-link-icon:hover {
+    color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.project-tagline {
+    margin: 0.35rem 0 0;
+    font-size: 0.875rem;
+    color: rgba(0, 0, 0, 0.55);
+    font-weight: 400;
+    letter-spacing: 0.005em;
+}
+
+.project-stack {
+    margin-top: 0.65rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.project-stack-pill {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: rgba(0, 0, 0, 0.55);
+    background-color: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 2px 8px;
+    border-radius: 999px;
+}
+
+.project-description {
+    margin: 0.85rem 0 0;
+    color: #000;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+}
+
+/* ============================= */
 /* TABLET (max-width: 768px)     */
 /* ============================= */
 
@@ -267,6 +447,72 @@ body {
     .mobile-content {
         padding: 1rem !important;
         padding-bottom: 100px !important;
+    }
+
+    /* Featured links → top-right pill, horizontal */
+    .featured-links-container {
+        position: fixed;
+        top: 0.75rem;
+        right: 0.75rem;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 50px;
+    }
+
+    .featured-link {
+        width: 32px;
+        height: 32px;
+    }
+
+    .featured-link-img {
+        width: 26px;
+        height: 26px;
+    }
+
+    /* Tooltip opens downward on mobile to stay in view */
+    .featured-link-label {
+        left: 50%;
+        top: calc(100% + 8px);
+        transform: translateX(-50%) translateY(-4px);
+        font-size: 11px;
+        padding: 3px 8px;
+    }
+
+    .featured-link:hover .featured-link-label,
+    .featured-link:focus-visible .featured-link-label {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    /* Soften heavy glow text-shadows on mobile where bg is static */
+    .mobile-content [style*="textShadow"],
+    .mobile-content [style*="text-shadow"] {
+        text-shadow: none !important;
+    }
+
+    /* Tighten project card spacing */
+    .project-list {
+        gap: 1.25rem;
+    }
+
+    .project-card {
+        padding-bottom: 1.25rem;
+    }
+
+    .project-title {
+        font-size: 0.98rem;
+    }
+
+    .project-tagline {
+        font-size: 0.82rem;
+    }
+
+    .project-description {
+        font-size: 0.85rem;
+        line-height: 1.5;
     }
 
     /* Social links → bottom center, horizontal */
