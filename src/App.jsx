@@ -2,6 +2,7 @@
 import "./style.css";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import IntroAnimation from "./IntroAnimation";
+import DnaHelix3D from "./DnaHelix3D";
 
 /* ─── Mobile detection helper ─── */
 function isMobile() {
@@ -128,8 +129,10 @@ function DotsBg({ paused }) {
   );
 }
 
-/* ─── Canvas Background: DNA Helix ─── */
-function DnaBg({ paused }) {
+/* ─── Canvas Background: Smooth Flow ───
+   Slow, large-scale gradient blobs that drift and breathe. No hard edges,
+   no lines — just a calm, smooth wash. */
+function FlowBg({ paused }) {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
   const timeRef = useRef(0);
@@ -145,7 +148,7 @@ function DnaBg({ paused }) {
     let w, h, dpr;
 
     function resize() {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       w = window.innerWidth;
       h = window.innerHeight;
       canvas.width = w * dpr;
@@ -158,88 +161,43 @@ function DnaBg({ paused }) {
     window.addEventListener("resize", resize);
 
     const mobile = isMobile();
-    const helixCount = mobile ? 2 : 3;
-    const nodeSpacing = mobile ? 26 : 18;
+    // Each blob: base position, drift radius, cycle speed, hue, alpha, size
+    const blobs = [
+      { bx: 0.18, by: 0.22, dr: 0.10, sp: 0.05, color: "88, 60, 140",  alpha: 0.18, size: 0.55 },
+      { bx: 0.82, by: 0.30, dr: 0.08, sp: 0.04, color: "0, 80, 160",   alpha: 0.16, size: 0.60 },
+      { bx: 0.30, by: 0.78, dr: 0.09, sp: 0.06, color: "45, 143, 143", alpha: 0.15, size: 0.65 },
+      { bx: 0.75, by: 0.80, dr: 0.07, sp: 0.045, color: "253, 181, 21", alpha: 0.10, size: 0.50 },
+      { bx: 0.50, by: 0.50, dr: 0.06, sp: 0.035, color: "0, 50, 98",   alpha: 0.10, size: 0.70 },
+    ];
 
     function draw() {
-      ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = "#ffffff";
+      // Soft off-white base
+      ctx.fillStyle = "#fafafa";
       ctx.fillRect(0, 0, w, h);
 
       if (!pausedRef.current) {
-        timeRef.current += 0.012;
+        timeRef.current += 0.0035;
       }
       const t = timeRef.current;
+      const minDim = Math.min(w, h);
 
-      for (let hi = 0; hi < helixCount; hi++) {
-        const centerX = mobile ? w * (0.3 + hi * 0.4) : w * (0.2 + hi * 0.3);
-        const amplitude = mobile ? 35 + hi * 8 : 60 + hi * 10;
-        const phaseOffset = hi * 1.2;
-        const opacity = 0.18 - hi * 0.03;
-        const nodeCount = Math.floor(h / nodeSpacing);
+      // Composite blobs additively-ish via screen blend for a smooth wash
+      ctx.globalCompositeOperation = "source-over";
+      for (let i = 0; i < blobs.length; i++) {
+        const b = blobs[i];
+        const phase = t * b.sp * Math.PI * 2 + i * 1.7;
+        const cx = (b.bx + Math.cos(phase) * b.dr) * w;
+        const cy = (b.by + Math.sin(phase * 0.85) * b.dr) * h;
+        const r  = minDim * b.size * (mobile ? 0.85 : 1.0);
 
-        const strand1 = [];
-        const strand2 = [];
-
-        for (let i = 0; i <= nodeCount; i++) {
-          const y = (i / nodeCount) * (h + 40) - 20;
-          const angle = i * 0.22 + t * 2 + phaseOffset;
-          const x1 = centerX + Math.sin(angle) * amplitude;
-          const x2 = centerX + Math.sin(angle + Math.PI) * amplitude;
-          strand1.push({ x: x1, y });
-          strand2.push({ x: x2, y });
-        }
-
-        ctx.lineWidth = mobile ? 1.5 : 2;
-        ctx.strokeStyle = `rgba(0, 80, 160, ${opacity})`;
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+        grad.addColorStop(0,   `rgba(${b.color}, ${b.alpha})`);
+        grad.addColorStop(0.5, `rgba(${b.color}, ${b.alpha * 0.45})`);
+        grad.addColorStop(1,   `rgba(${b.color}, 0)`);
+        ctx.fillStyle = grad;
         ctx.beginPath();
-        for (let i = 0; i < strand1.length; i++) {
-          i === 0
-            ? ctx.moveTo(strand1[i].x, strand1[i].y)
-            : ctx.lineTo(strand1[i].x, strand1[i].y);
-        }
-        ctx.stroke();
-
-        ctx.strokeStyle = `rgba(160, 40, 40, ${opacity})`;
-        ctx.beginPath();
-        for (let i = 0; i < strand2.length; i++) {
-          i === 0
-            ? ctx.moveTo(strand2[i].x, strand2[i].y)
-            : ctx.lineTo(strand2[i].x, strand2[i].y);
-        }
-        ctx.stroke();
-
-        const rungStep = mobile ? 5 : 3;
-        for (let i = 0; i < strand1.length; i += rungStep) {
-          const angle = i * 0.22 + t * 2 + phaseOffset;
-          const depth = Math.cos(angle);
-          const rungAlpha = 0.08 + Math.abs(depth) * 0.08;
-
-          ctx.strokeStyle = `rgba(100, 100, 100, ${rungAlpha})`;
-          ctx.lineWidth = mobile ? 0.8 : 1.2;
-          ctx.beginPath();
-          ctx.moveTo(strand1[i].x, strand1[i].y);
-          ctx.lineTo(strand2[i].x, strand2[i].y);
-          ctx.stroke();
-
-          const colors = [
-            "rgba(0, 120, 200, 0.35)",
-            "rgba(200, 50, 50, 0.35)",
-            "rgba(50, 170, 80, 0.35)",
-            "rgba(200, 160, 0, 0.35)",
-          ];
-          const dotR = mobile ? 2 : 3;
-
-          ctx.beginPath();
-          ctx.arc(strand1[i].x, strand1[i].y, dotR, 0, Math.PI * 2);
-          ctx.fillStyle = colors[i % 4];
-          ctx.fill();
-
-          ctx.beginPath();
-          ctx.arc(strand2[i].x, strand2[i].y, dotR, 0, Math.PI * 2);
-          ctx.fillStyle = colors[(i + 2) % 4];
-          ctx.fill();
-        }
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       animRef.current = requestAnimationFrame(draw);
@@ -984,7 +942,7 @@ function GeoBg({ paused }) {
 const BG_OPTIONS = [
   { key: "waves", label: "Waves", icon: "〰" },
   { key: "dots", label: "Particles", icon: "⋯" },
-  { key: "dna", label: "DNA", icon: "⌬" },
+  { key: "flow", label: "Flow", icon: "◉" },
   { key: "circuit", label: "Circuit", icon: "⏚" },
   { key: "constellation", label: "Stars", icon: "✦" },
   { key: "topo", label: "Contours", icon: "◎" },
@@ -1307,6 +1265,15 @@ export default function App() {
   const [openKey, setOpenKey] = useState("");
   const [animationPaused, setAnimationPaused] = useState(false);
   const [bgType, setBgType] = useState("topo");
+  const [heroMode, setHeroMode] = useState(() => {
+    if (typeof window === "undefined") return "classic";
+    return window.localStorage.getItem("hero_mode") || "classic";
+  });
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("hero_mode", heroMode);
+    }
+  }, [heroMode]);
   const [introComplete, setIntroComplete] = useState(false);
   const [isMobileView, setIsMobileView] = useState(() =>
     typeof window !== "undefined" ? window.innerWidth < 768 : false,
@@ -1323,7 +1290,7 @@ export default function App() {
   const BgComponent = {
     waves: WavesBg,
     dots: DotsBg,
-    dna: DnaBg,
+    flow: FlowBg,
     circuit: CircuitBg,
     constellation: ConstellationBg,
     topo: TopoBg,
@@ -1354,7 +1321,7 @@ export default function App() {
           <div aria-hidden="true" className="mobile-static-bg" />
         ) : (
           <>
-            <BgComponent paused={animationPaused} />
+            <BgComponent paused={animationPaused || heroMode === "dna"} />
             <Noise />
           </>
         )}
@@ -1433,16 +1400,49 @@ export default function App() {
           </a>
         </div>
 
-        <main className="relative z-10 mx-auto max-w-[900px] px-8 py-16 mobile-content">
+        {/* DNA Hero zone — replaces the classic hero when active.
+            Clickable rungs scroll down to the matching work below. */}
+        {heroMode === "dna" && introComplete && (
+          <DnaHelix3D
+            onExitRequest={() => {
+              setHeroMode("classic");
+              if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+            }}
+            onRungClick={(anchor) => {
+              if (!anchor) return;
+              if (anchor.startsWith("#exp-"))                  setOpenKey("experience");
+              else if (anchor.startsWith("#proj-"))            setOpenKey("projects");
+              else if (anchor === "#section-publications")     setOpenKey("pubs");
+              else if (anchor === "#section-education")        setOpenKey("education");
+            }}
+          />
+        )}
+
+        <main className={`relative z-10 mx-auto max-w-[900px] px-8 mobile-content ${heroMode === "dna" ? "pt-4 pb-16" : "py-16"}`}>
           <section className="p-10 mobile-section">
-            {/* Header */}
+            {/* Classic header — always rendered so it appears at the end of the DNA
+                scroll and becomes the top of the page in classic mode. */}
             <div className="pb-12 border-b-2 border-black/20">
-              <h1
-                className="text-7xl mobile-title font-black text-black tracking-tight mb-6 leading-tight"
-                style={{ textShadow: "0 0 30px rgba(255,255,255,0.9)" }}
-              >
-                {profile.name}
-              </h1>
+              <div className="flex items-start justify-between gap-4">
+                <h1
+                  className="text-7xl mobile-title font-black text-black tracking-tight mb-6 leading-tight"
+                  style={{ textShadow: "0 0 30px rgba(255,255,255,0.9)" }}
+                >
+                  {profile.name}
+                </h1>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = heroMode === "dna" ? "classic" : "dna";
+                    setHeroMode(next);
+                    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+                  }}
+                  className="hero-mode-btn"
+                  aria-label={heroMode === "dna" ? "Switch to classic hero" : "Switch to DNA hero"}
+                >
+                  {heroMode === "dna" ? "Classic hero" : "⌬ DNA hero"}
+                </button>
+              </div>
               <div className="space-y-3">
                 <div
                   className="text-2xl font-bold"
@@ -1470,7 +1470,7 @@ export default function App() {
             {/* Body */}
             <div className="pt-10 grid gap-6">
               {/* Education */}
-              <div className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(0, 50, 98, 0.35)" }}>
+              <div id="section-education" className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(0, 50, 98, 0.35)" }}>
                 <div className="py-2">
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
                     <div
@@ -1551,6 +1551,15 @@ export default function App() {
                       {experience.map((e, idx) => (
                         <div
                           key={idx}
+                          id={
+                            ({
+                              "Visa": "exp-visa",
+                              "Mercor": "exp-mercor",
+                              "Children's Hospital of Philadelphia": "exp-chop",
+                              "Cornell University": "exp-cornell",
+                              "University of Delaware": "exp-udel",
+                            }[e.org]) || undefined
+                          }
                           className="pb-6 border-b-2 border-black/10 last:border-b-0"
                         >
                           <div className="flex items-start gap-4">
@@ -1661,7 +1670,19 @@ export default function App() {
                   <div className="overflow-hidden">
                     <div className="pt-2 pb-4 project-list">
                       {projects.map((p, idx) => (
-                        <article key={idx} className="project-card">
+                        <article
+                          key={idx}
+                          id={
+                            ({
+                              "FlyFlirt — Real-Time Behavioral Detection and Tracking": "proj-flyflirt",
+                              "RedCarpet — Genomic Changepoint Detection": "proj-redcarpet",
+                              "Sylor — AI Simulation Platform": "proj-sylor",
+                              "Stryda — Workflow Automation Platform": "proj-stryda",
+                              "Stryda — iOS Tipping App (Pre-Pivot)": "proj-stryda-ios",
+                            }[p.name]) || undefined
+                          }
+                          className="project-card"
+                        >
                           <header className="project-header">
                             <h3 className="project-title">{p.name}</h3>
                             <div className="project-links">
@@ -1717,7 +1738,7 @@ export default function App() {
               </div>
 
               {/* Publications */}
-              <div className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(60, 100, 160, 0.25)" }}>
+              <div id="section-publications" className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(60, 100, 160, 0.25)" }}>
                 <button
                   type="button"
                   onClick={() => setOpenKey(openKey === "pubs" ? "" : "pubs")}

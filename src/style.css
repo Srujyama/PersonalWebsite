@@ -681,3 +681,406 @@ body {
         transform: translate(-50%, 0);
     }
 }
+
+/* ============================= */
+/* DNA HERO 3D (zone)            */
+/* ============================= */
+
+.dna3d-zone {
+    position: relative;
+    width: 100%;
+    /* 360vh — 7 snap-chapters, tighter exit so hand-off to classic header
+       below feels continuous rather than empty-scrolling. */
+    height: 360vh;
+    z-index: 10;
+}
+
+/* Stage is FIXED (not sticky) — sticky fails inside parents that set
+   overflow on any axis (the site root uses overflow-x-hidden).
+   We render while the zone is in view and hide otherwise. */
+.dna3d-stage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 11;
+    will-change: opacity;
+}
+.dna3d-stage > .dna3d-name,
+.dna3d-stage > .dna3d-labels,
+.dna3d-stage > .dna3d-archive-btn,
+.dna3d-stage > .dna3d-guide {
+    pointer-events: auto;
+}
+.dna3d-stage.dna3d-stage-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dna3d-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+}
+
+/* Centered name (visible only at top of zone) */
+.dna3d-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.4s ease;
+}
+.dna3d-name-title {
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: #000000;
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.6);
+    margin: 0;
+    /* Room below baseline for the gold underline */
+    padding-bottom: 0.15em;
+    display: flex;
+    gap: 0.3em;
+    justify-content: center;
+    align-items: baseline;
+    flex-wrap: wrap;
+}
+.dna3d-name-last {
+    position: relative;
+    color: #000000;
+}
+.dna3d-name-last::after {
+    content: "";
+    position: absolute;
+    /* Sit below the letter baseline, not on top of it */
+    bottom: -0.12em;
+    left: 0;
+    right: 0;
+    height: 0.08em;
+    background: #FDB515;
+    border-radius: 2px;
+}
+.dna3d-name-sub {
+    margin-top: 0.7rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(88, 60, 140, 0.9); /* purple */
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.02em;
+}
+.dna3d-name-scroll {
+    margin-top: 2rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: rgba(45, 143, 143, 0.8); /* teal */
+    animation: dna3d-pulse 2s ease-in-out infinite;
+}
+
+@keyframes dna3d-pulse {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1;   }
+}
+
+/* HTML labels — positioned per frame by JS */
+.dna3d-labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.dna3d-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.5rem 0.85rem;
+    background: #ffffff;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    text-decoration: none;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
+    transition: box-shadow 0.2s ease;
+    border: 1px solid rgba(88, 60, 140, 0.12);
+}
+.dna3d-label:hover {
+    box-shadow: 0 4px 16px rgba(88, 60, 140, 0.18);
+}
+
+.dna3d-label[data-side="L"] {
+    flex-direction: row-reverse;
+}
+
+.dna3d-label-tick {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.6);
+}
+
+.dna3d-label-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.dna3d-label-sub {
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: rgba(11, 18, 32, 0.55);
+    letter-spacing: 0.01em;
+}
+
+/* Left-side chapter panel — offset past the sidebar/scrubber */
+.dna3d-chapter {
+    position: absolute;
+    top: 50%;
+    left: 130px; /* clears social sidebar + scrubber */
+    transform: translateY(-50%);
+    max-width: 340px;
+    pointer-events: none;
+    z-index: 2;
+    padding-right: 1rem;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+@media (min-width: 1200px) {
+    .dna3d-chapter { left: 160px; }
+}
+.dna3d-chapter-eyebrow {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: rgba(88, 60, 140, 0.7);
+    margin-bottom: 0.8rem;
+}
+.dna3d-chapter-title {
+    font-size: clamp(2rem, 4.5vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: #003262;
+    margin: 0;
+    min-height: 2.2em;
+    text-shadow: 0 4px 30px rgba(255, 255, 255, 0.85);
+    transition: opacity 0.35s ease;
+}
+.dna3d-chapter-hint {
+    margin-top: 0.8rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: rgba(88, 60, 140, 0.75);
+    letter-spacing: 0.01em;
+}
+
+/* Chapter progress scrubber — far left edge */
+.dna3d-scrubber {
+    position: absolute;
+    top: 50%;
+    left: 26px;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    z-index: 4;
+    pointer-events: auto;
+}
+.dna3d-scrubber-line {
+    position: absolute;
+    top: 0; bottom: 0; left: 50%;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, rgba(88, 60, 140, 0.3), transparent);
+    z-index: -1;
+}
+.dna3d-scrubber-dots {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+.dna3d-scrubber-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(88, 60, 140, 0.4);
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.dna3d-scrubber-dot:hover {
+    background: rgba(88, 60, 140, 0.15);
+    transform: scale(1.25);
+}
+.dna3d-scrubber-dot-active {
+    background: #583c8c;
+    border-color: #583c8c;
+    box-shadow: 0 0 0 4px rgba(88, 60, 140, 0.15);
+    transform: scale(1.15);
+}
+
+/* Classic-hero switch pill */
+.dna3d-archive-btn {
+    position: absolute;
+    top: 76px;      /* below the top nav area */
+    right: 26px;
+    z-index: 5;
+    background: rgba(255, 255, 255, 0.78);
+    color: rgba(88, 60, 140, 0.9);
+    border: 1px solid rgba(88, 60, 140, 0.25);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.42rem 0.9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.dna3d-archive-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(88, 60, 140, 0.5);
+    color: rgba(88, 60, 140, 1);
+}
+
+/* Skip to resume button */
+.dna3d-skip-btn {
+    position: absolute;
+    bottom: 36px;
+    right: 26px;
+    z-index: 5;
+    background: rgba(253, 181, 21, 0.12);
+    color: #003262;
+    border: 1px solid rgba(0, 50, 98, 0.3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 0.42rem 0.95rem;
+    border-radius: 999px;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+.dna3d-skip-btn:hover {
+    background: rgba(253, 181, 21, 0.3);
+    border-color: rgba(0, 50, 98, 0.6);
+}
+
+/* "DNA hero" button inside classic header */
+.hero-mode-btn {
+    flex-shrink: 0;
+    margin-top: 0.75rem;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    background: rgba(253, 181, 21, 0.18);
+    color: #003262;
+    border: 1px solid rgba(0, 50, 98, 0.35);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+}
+.hero-mode-btn:hover {
+    background: rgba(253, 181, 21, 0.35);
+    border-color: rgba(0, 50, 98, 0.65);
+}
+
+/* ============================= */
+/* DNA HERO — REDUCED / MOBILE   */
+/* ============================= */
+
+.dna3d-fallback {
+    position: relative;
+    z-index: 10;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 3rem;
+    text-align: center;
+}
+
+.dna3d-fallback-name {
+    font-size: clamp(3rem, 10vw, 5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: #003262;
+    margin: 0 0 0.5rem;
+    text-shadow: 0 2px 20px rgba(255, 255, 255, 0.8);
+}
+
+.dna3d-fallback-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(88, 60, 140, 0.9);
+    margin: 0 0 2rem;
+}
+
+.dna3d-fallback-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.6rem;
+    margin: 1rem 0 2rem;
+}
+
+.dna3d-fallback-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    padding: 0.7rem 0.9rem 0.7rem 1.1rem;
+    border-left: 3px solid rgba(88, 60, 140, 0.5);
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 0 8px 8px 0;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+.dna3d-fallback-card:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateX(2px);
+}
+.dna3d-fallback-dot {
+    position: absolute;
+    left: -7px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.dna3d-fallback-card-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+.dna3d-fallback-card-sub {
+    font-size: 0.72rem;
+    color: rgba(11, 18, 32, 0.6);
+}
+
+/* Reduced motion: hide the full zone, the fallback renders in its place */
+@media (prefers-reduced-motion: reduce) {
+    .dna3d-zone { display: none; }
+}
+
