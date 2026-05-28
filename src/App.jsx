@@ -163,11 +163,51 @@ function FlowBg({ paused }) {
     const mobile = isMobile();
     // Each blob: base position, drift radius, cycle speed, hue, alpha, size
     const blobs = [
-      { bx: 0.18, by: 0.22, dr: 0.10, sp: 0.05, color: "88, 60, 140",  alpha: 0.18, size: 0.55 },
-      { bx: 0.82, by: 0.30, dr: 0.08, sp: 0.04, color: "0, 80, 160",   alpha: 0.16, size: 0.60 },
-      { bx: 0.30, by: 0.78, dr: 0.09, sp: 0.06, color: "45, 143, 143", alpha: 0.15, size: 0.65 },
-      { bx: 0.75, by: 0.80, dr: 0.07, sp: 0.045, color: "253, 181, 21", alpha: 0.10, size: 0.50 },
-      { bx: 0.50, by: 0.50, dr: 0.06, sp: 0.035, color: "0, 50, 98",   alpha: 0.10, size: 0.70 },
+      {
+        bx: 0.18,
+        by: 0.22,
+        dr: 0.1,
+        sp: 0.05,
+        color: "88, 60, 140",
+        alpha: 0.18,
+        size: 0.55,
+      },
+      {
+        bx: 0.82,
+        by: 0.3,
+        dr: 0.08,
+        sp: 0.04,
+        color: "0, 80, 160",
+        alpha: 0.16,
+        size: 0.6,
+      },
+      {
+        bx: 0.3,
+        by: 0.78,
+        dr: 0.09,
+        sp: 0.06,
+        color: "45, 143, 143",
+        alpha: 0.15,
+        size: 0.65,
+      },
+      {
+        bx: 0.75,
+        by: 0.8,
+        dr: 0.07,
+        sp: 0.045,
+        color: "253, 181, 21",
+        alpha: 0.1,
+        size: 0.5,
+      },
+      {
+        bx: 0.5,
+        by: 0.5,
+        dr: 0.06,
+        sp: 0.035,
+        color: "0, 50, 98",
+        alpha: 0.1,
+        size: 0.7,
+      },
     ];
 
     function draw() {
@@ -188,12 +228,12 @@ function FlowBg({ paused }) {
         const phase = t * b.sp * Math.PI * 2 + i * 1.7;
         const cx = (b.bx + Math.cos(phase) * b.dr) * w;
         const cy = (b.by + Math.sin(phase * 0.85) * b.dr) * h;
-        const r  = minDim * b.size * (mobile ? 0.85 : 1.0);
+        const r = minDim * b.size * (mobile ? 0.85 : 1.0);
 
         const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-        grad.addColorStop(0,   `rgba(${b.color}, ${b.alpha})`);
+        grad.addColorStop(0, `rgba(${b.color}, ${b.alpha})`);
         grad.addColorStop(0.5, `rgba(${b.color}, ${b.alpha * 0.45})`);
-        grad.addColorStop(1,   `rgba(${b.color}, 0)`);
+        grad.addColorStop(1, `rgba(${b.color}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -1253,23 +1293,35 @@ export default function App() {
   const publications = useMemo(
     () => [
       {
-        title: "High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila",
+        title:
+          "High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila",
         authors: ["R. Oliver", "S. Yamali", "S. Knox", "T. Dadyala", "L. Shao"],
         venue: "International Behavioral and Neural Genetics Society",
         location: "Western University, London",
         year: "2024",
       },
       {
-        title: "High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila",
+        title:
+          "High-Throughput Behavioral Assay Unveils Female Courtship in Drosophila",
         authors: ["R. Oliver", "S. Yamali", "S. Knox", "T. Dadyala", "L. Shao"],
         venue: "Sexually Dimorphic Circuits and Behaviors",
         location: "Janelia Research Campus, HHMI, Ashburn, VA",
         year: "2024",
       },
       {
-        title: "Redcarpet: Rapid Recombination Detection in Staphylococcus aureus and Other Species Amid Expanding Genomic Databases",
-        authors: ["A. Moustafa", "E. Theiller", "A. Lal", "S. Yamali", "A. Feder", "A. Narechania", "P. Planet"],
-        venue: "19th International Symposium on Staphylococci and Staphylococcal Infections",
+        title:
+          "Redcarpet: Rapid Recombination Detection in Staphylococcus aureus and Other Species Amid Expanding Genomic Databases",
+        authors: [
+          "A. Moustafa",
+          "E. Theiller",
+          "A. Lal",
+          "S. Yamali",
+          "A. Feder",
+          "A. Narechania",
+          "P. Planet",
+        ],
+        venue:
+          "19th International Symposium on Staphylococci and Staphylococcal Infections",
         location: "Perth",
         year: "2024",
       },
@@ -1401,7 +1453,11 @@ export default function App() {
             className="featured-link"
             aria-label="Thoughts"
           >
-            <img src="/thoughts_logo.png" alt="" className="featured-link-img" />
+            <img
+              src="/thoughts_logo.png"
+              alt=""
+              className="featured-link-img"
+            />
             <span className="featured-link-label">Thoughts</span>
           </a>
           <a
@@ -1422,19 +1478,22 @@ export default function App() {
           <DnaHelix3D
             onExitRequest={() => {
               setHeroMode("classic");
-              if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
+              if (typeof window !== "undefined")
+                window.scrollTo({ top: 0, behavior: "auto" });
             }}
             onRungClick={(anchor) => {
               if (!anchor) return;
-              if (anchor.startsWith("#exp-"))                  setOpenKey("experience");
-              else if (anchor.startsWith("#proj-"))            setOpenKey("projects");
-              else if (anchor === "#section-publications")     setOpenKey("pubs");
-              else if (anchor === "#section-education")        setOpenKey("education");
+              if (anchor.startsWith("#exp-")) setOpenKey("experience");
+              else if (anchor.startsWith("#proj-")) setOpenKey("projects");
+              else if (anchor === "#section-publications") setOpenKey("pubs");
+              else if (anchor === "#section-education") setOpenKey("education");
             }}
           />
         )}
 
-        <main className={`relative z-10 mx-auto max-w-[900px] px-8 mobile-content ${heroMode === "dna" ? "pt-4 pb-16" : "py-16"}`}>
+        <main
+          className={`relative z-10 mx-auto max-w-[900px] px-8 mobile-content ${heroMode === "dna" ? "pt-4 pb-16" : "py-16"}`}
+        >
           <section className="p-10 mobile-section">
             {/* Classic header — always rendered so it appears at the end of the DNA
                 scroll and becomes the top of the page in classic mode. */}
@@ -1450,7 +1509,10 @@ export default function App() {
               <div className="space-y-3">
                 <div
                   className="text-2xl font-bold"
-                  style={{ color: "rgba(88, 60, 140, 0.85)", textShadow: "0 0 20px rgba(255,255,255,0.8)" }}
+                  style={{
+                    color: "rgba(88, 60, 140, 0.85)",
+                    textShadow: "0 0 20px rgba(255,255,255,0.8)",
+                  }}
                 >
                   {profile.title}
                 </div>
@@ -1474,7 +1536,11 @@ export default function App() {
             {/* Body */}
             <div className="pt-10 grid gap-6">
               {/* Education */}
-              <div id="section-education" className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(0, 50, 98, 0.35)" }}>
+              <div
+                id="section-education"
+                className="border-l-4 pl-6 py-2"
+                style={{ borderColor: "rgba(0, 50, 98, 0.35)" }}
+              >
                 <div className="py-2">
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
                     <div
@@ -1528,7 +1594,10 @@ export default function App() {
               </div>
 
               {/* Experience */}
-              <div className="border-l-4 pl-5 py-1" style={{ borderColor: "rgba(88, 60, 140, 0.3)" }}>
+              <div
+                className="border-l-4 pl-5 py-1"
+                style={{ borderColor: "rgba(88, 60, 140, 0.3)" }}
+              >
                 <button
                   type="button"
                   onClick={() =>
@@ -1556,13 +1625,13 @@ export default function App() {
                         <div
                           key={idx}
                           id={
-                            ({
-                              "Visa": "exp-visa",
-                              "Mercor": "exp-mercor",
+                            {
+                              Visa: "exp-visa",
+                              Mercor: "exp-mercor",
                               "Children's Hospital of Philadelphia": "exp-chop",
                               "Cornell University": "exp-cornell",
                               "University of Delaware": "exp-udel",
-                            }[e.org]) || undefined
+                            }[e.org] || undefined
                           }
                           className="pb-6 border-b-2 border-black/10 last:border-b-0"
                         >
@@ -1628,7 +1697,7 @@ export default function App() {
 
                       <div className="pt-4 flex gap-3 mobile-resume-buttons">
                         <a
-                          href="/Srujan_Yamali_SWE_Resume_April_2026.pdf"
+                          href="/Srujan_Yamali_SWE_Resume_May_2026.pdf"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex-1 px-4 py-3 text-black font-semibold rounded-lg transition-all resume-btn"
@@ -1649,7 +1718,10 @@ export default function App() {
               </div>
 
               {/* Projects */}
-              <div className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(40, 140, 140, 0.3)" }}>
+              <div
+                className="border-l-4 pl-6 py-2"
+                style={{ borderColor: "rgba(40, 140, 140, 0.3)" }}
+              >
                 <button
                   type="button"
                   onClick={() =>
@@ -1677,15 +1749,18 @@ export default function App() {
                         <article
                           key={idx}
                           id={
-                            ({
-                              "FlyFlirt — Real-Time Behavioral Detection and Tracking": "proj-flyflirt",
-                              "RedCarpet — Genomic Changepoint Detection": "proj-redcarpet",
+                            {
+                              "FlyFlirt — Real-Time Behavioral Detection and Tracking":
+                                "proj-flyflirt",
+                              "RedCarpet — Genomic Changepoint Detection":
+                                "proj-redcarpet",
                               "Sylor — AI Simulation Platform": "proj-sylor",
                               "Stryda — AI Golf Commissioner": "proj-stryda",
-                              "Stryier — AI Governance Platform": "proj-stryier",
+                              "Stryier — AI Governance Platform":
+                                "proj-stryier",
                               "M&A Toolkit — Sell-Side Deal Flow": "proj-mna",
                               "Tap to Tip — iOS Tipping App": "proj-tap-to-tip",
-                            }[p.name]) || undefined
+                            }[p.name] || undefined
                           }
                           className="project-card"
                         >
@@ -1700,8 +1775,14 @@ export default function App() {
                                   className="project-link-icon"
                                   aria-label={`GitHub repository for ${p.name}`}
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.92.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.87-1.54-3.87-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.39.97.1-.75.41-1.27.74-1.56-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 2.9-.39c.98.01 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.26 5.69.42.36.79 1.08.79 2.18 0 1.58-.01 2.85-.01 3.24 0 .31.21.68.8.56A11.52 11.52 0 0 0 23.5 12c0-6.27-5.23-11.5-11.5-11.5Z"/>
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                  >
+                                    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.92.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.87-1.54-3.87-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.78 2.72 1.27 3.39.97.1-.75.41-1.27.74-1.56-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11 11 0 0 1 2.9-.39c.98.01 1.97.13 2.9.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.26 5.69.42.36.79 1.08.79 2.18 0 1.58-.01 2.85-.01 3.24 0 .31.21.68.8.56A11.52 11.52 0 0 0 23.5 12c0-6.27-5.23-11.5-11.5-11.5Z" />
                                   </svg>
                                 </a>
                               )}
@@ -1713,7 +1794,17 @@ export default function App() {
                                   className="project-link-icon"
                                   aria-label={`Website for ${p.name}`}
                                 >
-                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                  <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    aria-hidden="true"
+                                  >
                                     <path d="M7 17L17 7" />
                                     <path d="M8 7h9v9" />
                                   </svg>
@@ -1734,7 +1825,9 @@ export default function App() {
                             </div>
                           )}
                           {p.description && (
-                            <p className="project-description">{p.description}</p>
+                            <p className="project-description">
+                              {p.description}
+                            </p>
                           )}
                         </article>
                       ))}
@@ -1744,7 +1837,11 @@ export default function App() {
               </div>
 
               {/* Publications */}
-              <div id="section-publications" className="border-l-4 pl-6 py-2" style={{ borderColor: "rgba(60, 100, 160, 0.25)" }}>
+              <div
+                id="section-publications"
+                className="border-l-4 pl-6 py-2"
+                style={{ borderColor: "rgba(60, 100, 160, 0.25)" }}
+              >
                 <button
                   type="button"
                   onClick={() => setOpenKey(openKey === "pubs" ? "" : "pubs")}
@@ -1782,14 +1879,22 @@ export default function App() {
                               <span key={j}>
                                 {j > 0 && ", "}
                                 {a === "S. Yamali" ? (
-                                  <span className="font-semibold" style={{ color: "rgba(88, 60, 140, 0.85)" }}>{a}</span>
+                                  <span
+                                    className="font-semibold"
+                                    style={{ color: "rgba(88, 60, 140, 0.85)" }}
+                                  >
+                                    {a}
+                                  </span>
                                 ) : (
                                   a
                                 )}
                               </span>
                             ))}
                           </div>
-                          <div className="mt-1 text-sm italic pub-venue" style={{ color: "rgba(60, 100, 160, 0.7)" }}>
+                          <div
+                            className="mt-1 text-sm italic pub-venue"
+                            style={{ color: "rgba(60, 100, 160, 0.7)" }}
+                          >
                             {p.venue} — {p.location} ({p.year})
                           </div>
                         </div>
