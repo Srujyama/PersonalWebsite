@@ -1215,20 +1215,36 @@ export default function App() {
           "Multi-agent AI platform that simulates market, pricing, and competitive dynamics so founders can pressure-test decisions before committing.",
       },
       {
-        name: "Stryda — Workflow Automation Platform",
-        tagline: "Zapier, but for people who actually build things",
-        stack: "Python, TypeScript, React, Docker",
+        name: "Stryda — AI Golf Commissioner",
+        tagline: "The AI commissioner for your foursome",
+        stack: "Python, TypeScript, React, AI",
         website: "https://stryda.ai",
         description:
-          "Developer-first automation platform with a Python execution engine for chaining APIs, AI models, and internal tools with branching logic and retries.",
+          "Runs the round. Holds the line on bets. Settles Venmo before you reach the parking lot. One shared scorecard. Every press remembered. Just play.",
       },
       {
-        name: "Stryda — iOS Tipping App (Pre-Pivot)",
+        name: "Stryier — AI Governance Platform",
+        tagline: "Guardrails for shipping AI you can trust",
+        stack: "Python, TypeScript, Astro, Docker",
+        github: "https://github.com/Srujyama/Stryier",
+        description:
+          "AI governance platform for monitoring, policy enforcement, and oversight across AI systems — a pivot in the Stryda lineage.",
+      },
+      {
+        name: "M&A Toolkit — Sell-Side Deal Flow",
+        tagline: "From a data room to a CIM, automatically",
+        stack: "Python, TypeScript, Astro, Docker",
+        github: "https://github.com/Srujyama/mna-toolkit",
+        description:
+          "End-to-end workflow tool for sell-side M&A and search-fund deal flow that drafts CIMs, teasers, normalized financials, and buyer/comparable lists from a target's documents.",
+      },
+      {
+        name: "Tap to Tip — iOS Tipping App",
         tagline: "Where Stryda started — tap your phone, leave a tip",
         stack: "Swift, SwiftUI, NFC, Firebase",
-        github: "https://github.com/Srujyama/Stryda",
+        github: "https://github.com/Srujyama/Fintech-Tipping",
         description:
-          "NFC-first iOS tipping app with QR fallbacks, tip configuration, and rewards tracking built on SwiftUI and Firebase.",
+          "NFC-first iOS tipping app with QR fallbacks, tip configuration, and rewards tracking built on SwiftUI and Firebase — the original product the Stryda founders started with.",
       },
     ],
     [],
@@ -1264,7 +1280,7 @@ export default function App() {
   const [modal, setModal] = useState("");
   const [openKey, setOpenKey] = useState("");
   const [animationPaused, setAnimationPaused] = useState(false);
-  const [bgType, setBgType] = useState("topo");
+  const [bgType, setBgType] = useState("waves");
   const [heroMode, setHeroMode] = useState(() => {
     if (typeof window === "undefined") return "classic";
     return window.localStorage.getItem("hero_mode") || "classic";
@@ -1430,18 +1446,6 @@ export default function App() {
                 >
                   {profile.name}
                 </h1>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = heroMode === "dna" ? "classic" : "dna";
-                    setHeroMode(next);
-                    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "auto" });
-                  }}
-                  className="hero-mode-btn"
-                  aria-label={heroMode === "dna" ? "Switch to classic hero" : "Switch to DNA hero"}
-                >
-                  {heroMode === "dna" ? "Classic hero" : "⌬ DNA hero"}
-                </button>
               </div>
               <div className="space-y-3">
                 <div
@@ -1677,8 +1681,10 @@ export default function App() {
                               "FlyFlirt — Real-Time Behavioral Detection and Tracking": "proj-flyflirt",
                               "RedCarpet — Genomic Changepoint Detection": "proj-redcarpet",
                               "Sylor — AI Simulation Platform": "proj-sylor",
-                              "Stryda — Workflow Automation Platform": "proj-stryda",
-                              "Stryda — iOS Tipping App (Pre-Pivot)": "proj-stryda-ios",
+                              "Stryda — AI Golf Commissioner": "proj-stryda",
+                              "Stryier — AI Governance Platform": "proj-stryier",
+                              "M&A Toolkit — Sell-Side Deal Flow": "proj-mna",
+                              "Tap to Tip — iOS Tipping App": "proj-tap-to-tip",
                             }[p.name]) || undefined
                           }
                           className="project-card"
