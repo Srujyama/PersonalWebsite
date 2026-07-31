@@ -121,7 +121,6 @@ main:focus { outline: none; }
 :focus-visible {
     outline: 2px solid var(--ink);
     outline-offset: 3px;
-    border-radius: 2px;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1337,9 +1336,12 @@ html.dark .terrain-fallback {
     color: var(--ink);
 }
 
+/* A square box crushes a wide wordmark (SpaceX, Visa) down to a few pixels of
+   height. Cap the height and let the width run. */
 .tl-logo {
-    width: 26px;
-    height: 26px;
+    height: 22px;
+    width: auto;
+    max-width: 72px;
     object-fit: contain;
     opacity: 0.75;
     flex-shrink: 0;
@@ -2422,11 +2424,21 @@ html.dark .terrain-fallback {
 
 /* ── main page prose ── */
 
-.landing-col { padding-top: 2.4rem; }
+/* Two short paragraphs and nothing else, so they sit centred in the column
+   rather than stranded against its top-left corner. */
+.landing-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: min(62vh, 34rem);
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 2.4rem 0 4rem;
+    text-align: center;
+}
 
 .landing-lede {
-    margin: 0 0 1.5rem;
-    max-width: 36rem;
+    margin: 0 0 1.1rem;
     font-size: 1.06rem;
     line-height: 1.7;
     color: var(--ink);
@@ -2434,7 +2446,6 @@ html.dark .terrain-fallback {
 
 .landing-col p {
     margin: 0 0 1rem;
-    max-width: 36rem;
     font-size: 1rem;
     line-height: 1.68;
     color: var(--ink-muted);

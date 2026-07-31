@@ -1,11 +1,9 @@
-// Landing.jsx — the main page. Two short paragraphs and the publications.
-// Everything else has a page of its own, and a front page that tries to hold
-// all of it gets skimmed instead of read.
+// Landing.jsx — the main page. Two short paragraphs, centred, and nothing
+// else. Publications live on their own page.
 import { motion } from "motion/react";
 import TerrainBackground from "../TerrainBackground";
 import { WashLink } from "../wash";
 import { EASE_OUT } from "../motion";
-import { publicationWorks } from "../data";
 
 const lead = (delay) => ({
   initial: { opacity: 0, y: 14 },
@@ -34,35 +32,6 @@ export default function Landing({ theme }) {
           <WashLink to="/explore">3D version of this site</WashLink> if you
           would rather walk around it.
         </motion.p>
-
-        <motion.section className="landing-pubs" {...lead(0.2)}>
-          <h2 className="h">
-            Publications
-            <WashLink to="/publications" className="h-more">
-              with citations →
-            </WashLink>
-          </h2>
-
-          <ol className="landing-pub-list">
-            {publicationWorks.map((w) => (
-              <li key={w.title + w.venues[0].venue} className="landing-pub">
-                <div className="landing-pub-title">{w.title}</div>
-                <div className="landing-pub-authors">
-                  {w.authors.map((a, j) => (
-                    <span key={a}>
-                      {j > 0 && ", "}
-                      {a === "S. Yamali" ? <strong className="pub-me">{a}</strong> : a}
-                    </span>
-                  ))}
-                  .
-                </div>
-                <div className="landing-pub-venues">
-                  {w.venues.map((v) => v.venue).join(". ")} {w.year}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </motion.section>
       </div>
     </main>
   );

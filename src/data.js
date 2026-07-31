@@ -67,6 +67,7 @@ export const experience = [
     role: "Contract Engineer (via subcontractor)",
     where: "Remote",
     dates: "July 2026 – Present",
+    logo: "/SpaceX-Logo.png",
     description:
       "Contract engineering work for SpaceX through a subcontractor.",
   },
