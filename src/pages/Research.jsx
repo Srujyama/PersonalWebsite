@@ -100,7 +100,7 @@ export default function Research() {
             {pubs.length > 0 && (
               <ul className="rsc-pubs">
                 {pubs.map((w) => (
-                  <li key={w.title}>
+                  <li key={w.title + w.venues[0].venue}>
                     <span className="rsc-pub-title">{w.title}</span>
                     <span className="rsc-pub-venue">
                       {w.venues.map((v) => v.venue).join(" · ")} ({w.year})

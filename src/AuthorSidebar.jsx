@@ -21,7 +21,6 @@ export default function AuthorSidebar() {
       .filter((l) => ICON[l.label])
       .map((l) => ({ ...l, Icon: ICON[l.label] })),
     { label: "Résumé (PDF)", href: profile.resume, Icon: Doc },
-    { label: "Research CV (PDF)", href: profile.researchResume, Icon: Doc },
   ];
 
   return (
@@ -32,7 +31,6 @@ export default function AuthorSidebar() {
         </div>
 
         <h2 className="author-name">{profile.name}</h2>
-        <p className="author-role">{profile.title}</p>
 
         {/* Affiliation carries the seal. On an academic site the institution is
             not a line of metadata, it is the letterhead. */}

@@ -12,7 +12,6 @@ import Projects from "./pages/Projects";
 import Ventures from "./pages/Ventures";
 import Publications from "./pages/Publications";
 import Research from "./pages/Research";
-import CV from "./pages/CV";
 import Explore from "./pages/Explore";
 import { useTheme } from "./theme";
 import { WashProvider } from "./wash";
@@ -42,14 +41,14 @@ function Shell({ theme, toggle }) {
           <Route path="/ventures" element={<Ventures />} />
           <Route path="/publications" element={<Publications />} />
           <Route path="/research" element={<Research />} />
-          <Route path="/cv" element={<CV />} />
           <Route path="/explore" element={<Explore theme={theme} />} />
           {/* Old routes, kept alive. /elsewhere was contact-as-a-page; the
               author sidebar carries those links on every page now. */}
           <Route path="/work" element={<Navigate to="/experience" replace />} />
           <Route path="/archive" element={<Navigate to="/research" replace />} />
           <Route path="/elsewhere" element={<Navigate to="/" replace />} />
-          <Route path="/resume" element={<Navigate to="/cv" replace />} />
+          <Route path="/cv" element={<Navigate to="/experience" replace />} />
+          <Route path="/resume" element={<Navigate to="/experience" replace />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

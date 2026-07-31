@@ -97,7 +97,7 @@ export default function Publications() {
           <h2 className="pub-year-label">{year}</h2>
           <ol className="pub-list">
             {works.map((w, i) => (
-              <Entry key={w.title} work={w} index={i} />
+              <Entry key={w.title + w.venues[0].venue} work={w} index={i} />
             ))}
           </ol>
         </section>

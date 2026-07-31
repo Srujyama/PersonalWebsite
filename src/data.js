@@ -2,7 +2,6 @@
 
 export const profile = {
   name: "Srujan Yamali",
-  title: "Software engineer. Visa. Berkeley, CA.",
   location: "Bay Area • Philadelphia • NYC",
   email: "srujanyamali@berkeley.edu",
   phone: "(302) 509-8614",
@@ -13,7 +12,6 @@ export const profile = {
   bio: "I work on LLM tooling at Visa. Before that I built the computer vision and genomics pipelines that research labs at Penn, CHOP and Cornell ran their experiments on.",
   // Both live in public/. `resume` is the one every CTA points at.
   resume: "/Srujan_Yamali_SWE_Resume_June_2026.pdf",
-  researchResume: "/Srujan_Yamali_Research_Resume_Feb_2026.pdf",
 };
 
 // `label` drives the inline icons in src/icons.jsx; the CDN `img`/`alt` pair is
@@ -64,6 +62,14 @@ export const education = {
 };
 
 export const experience = [
+  {
+    org: "SpaceX",
+    role: "Contract Engineer (via subcontractor)",
+    where: "Remote",
+    dates: "July 2026 – Present",
+    description:
+      "Contract engineering work for SpaceX through a subcontractor.",
+  },
   {
     org: "Visa",
     role: "Software Engineer Intern",
@@ -242,40 +248,38 @@ export const publications = [
   },
 ];
 
-// One piece of work presented at two venues is one publication with two venue
-// lines. The raw list above stays per-presentation (that is how a CV records
-// it); everything that renders reads this grouped view, so the same title never
-// appears twice in a row.
-export const publicationWorks = (() => {
-  const byKey = new Map();
-  for (const p of publications) {
-    const key = `${p.year}::${p.title}`;
-    if (!byKey.has(key)) {
-      byKey.set(key, {
-        title: p.title,
-        authors: p.authors,
-        year: p.year,
-        venues: [],
-      });
-    }
-    byKey.get(key).venues.push({ venue: p.venue, location: p.location });
-  }
-  return [...byKey.values()].sort((a, b) => Number(b.year) - Number(a.year));
-})();
+// One entry per presentation. These were merged by title for a while, which
+// collapsed the two Drosophila venues into a single record and undercounted the
+// work; the venue list stays an array so the rendering code is unchanged.
+export const publicationWorks = publications.map((p) => ({
+  title: p.title,
+  authors: p.authors,
+  year: p.year,
+  venues: [{ venue: p.venue, location: p.location }],
+}));
 
 // The research record: the actual output of the lab work rather than a
 // description of it. Grouped by `project` on the page. Every `file` is a real
 // artifact in public/.
 export const research = [
   {
-    title: "The assay and the software that reads it",
+    title: "Where a fly walks, before and after mating",
     kind: "Figure",
     year: "2024",
     project: "drosophila",
     caption:
-      "A. the rig: chambers on a backlight, filmed from above. B. the tracker, which finds each chamber as a region of interest and follows the pair inside it. C. the analysis, showing percent copulation over time for two controls and the experimental group. D. how a frame moves through the pipeline.",
-    file: "/work/flyflirt-methods.png",
+      "Percent of time spent in the centre of the arena, for wild-type (CS) and Corazonin-mutant (CRZ) flies, before mating (a, b) and after (c, d). A fly that avoids the open middle is showing centrophobism, which is the standard read-out for anxiety-like behaviour in the assay. The CRZ post-mating drop in panel c is the result the study is about.",
+    file: "/work/centrophobism-groups.png",
     feature: true,
+  },
+  {
+    title: "Latency against time in the centre",
+    kind: "Figure",
+    year: "2024",
+    project: "drosophila",
+    caption:
+      "How long a pair took to begin mating, plotted against how much of that time the female spent in the centre. Flat for wild-type, negative for the Corazonin mutants.",
+    file: "/work/centrophobism-latency.png",
   },
   {
     title: "Impact of mating on thigmotaxis and centrophobism",
@@ -283,8 +287,8 @@ export const research = [
     year: "2024",
     project: "drosophila",
     caption:
-      "The poster version of the centrophobism work, on how mating changes where a fly chooses to walk in an open arena.",
-    file: "/work/courtship-poster.pdf",
+      "The poster version of the study, with the full design, the statistics and the conclusions on one sheet.",
+    file: "/work/centrophobism-poster.pdf",
     meta: "PDF",
   },
   {
@@ -359,12 +363,12 @@ export const research = [
 export const researchProjects = [
   {
     key: "drosophila",
-    title: "Measuring courtship in Drosophila",
-    lab: "Shao lab · behavioural genetics",
+    title: "Measuring behaviour in Drosophila",
+    lab: "Behavioural genetics",
     years: "2023 – 2024",
     body: [
-      "Courtship in Drosophila is a fixed sequence. The male orients toward the female, taps her, extends one wing and vibrates it into a song, licks, and attempts to copulate. How long that sequence takes to start and how long it runs are the numbers a behavioural study is built on, and for decades they were obtained by a person watching video and pressing a key.",
-      "That is the bottleneck. A trained scorer manages a handful of pairs per hour, so the number of flies a study can include is set by how much of a person's time it can buy rather than by the biology. I built the computer vision that reads the same events off the video directly, which is what let the assay run at the scale the question actually needed.",
+      "Courtship in Drosophila is a fixed sequence. The male orients toward the female, taps her, extends one wing and vibrates it into a song, licks, and attempts to copulate. How long that sequence takes to start and how long it runs are the numbers a behavioural study is built on, and for decades they were obtained by a person watching video and pressing a key. A trained scorer manages a handful of pairs per hour, so the size of a study is set by how much of a person's time it can buy rather than by the biology. I built the computer vision that reads the same events off the video directly.",
+      "The tracking made a second question askable. A fly in an open arena tends to hug the wall and avoid the middle, and how much it avoids the middle is the standard read-out for anxiety-like behaviour. Because the tracker already knew where every fly was in every frame, I could ask whether mating changes that, and whether Corazonin, a neuropeptide tied to stress response, is involved. It does, and the effect shows up only after mating and only in the mutants.",
     ],
   },
   {

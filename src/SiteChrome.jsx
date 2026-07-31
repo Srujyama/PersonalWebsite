@@ -12,12 +12,11 @@ import { WashLink } from "./wash";
 
 export const NAV = [
   { to: "/", label: "Main" },
-  { to: "/research", label: "Research" },
-  { to: "/publications", label: "Publications" },
   { to: "/experience", label: "Experience" },
   { to: "/projects", label: "Projects" },
+  { to: "/research", label: "Research" },
+  { to: "/publications", label: "Publications" },
   { to: "/ventures", label: "Ventures" },
-  { to: "/cv", label: "CV" },
 ];
 
 function Header({ theme, onToggleTheme, pathname }) {
