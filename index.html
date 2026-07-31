@@ -1,11 +1,30 @@
-
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/fly_grain.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sruj's Portal</title>
+    <title>Srujan Yamali — Software Engineer</title>
+    <meta
+      name="description"
+      content="Srujan Yamali — software engineer. Building LLM automation at Visa; previously Mercor, CHOP, Cornell and Delaware. UC Berkeley, B.S. Computer Science."
+    />
+    <meta name="theme-color" content="#f4f3f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)" />
+    <!-- Apply the saved theme before first paint so there's no flash of the
+         wrong palette (and so the terrain's first frame is already correct). -->
+    <script>
+      (function () {
+        try {
+          var s = localStorage.getItem("theme");
+          var dark =
+            s === "dark" ||
+            (!s && window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) document.documentElement.classList.add("dark");
+          document.documentElement.style.colorScheme = dark ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
