@@ -66,6 +66,8 @@ export default function SiteChrome({ theme, onToggleTheme }) {
   }, [pathname, navType]);
 
   const worldOpen = pathname === "/explore";
+  // The main page is short enough to sit centred rather than pinned to the top.
+  const home = pathname === "/";
 
   return (
     <div className={`shell ${worldOpen ? "shell-world" : ""}`}>
@@ -78,7 +80,7 @@ export default function SiteChrome({ theme, onToggleTheme }) {
           <SocialRail />
         </>
       ) : (
-        <div className="layout">
+        <div className={`layout ${home ? "layout-home" : ""}`}>
           <AuthorSidebar />
           <div className="layout-main">
             <Outlet />

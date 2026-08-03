@@ -11,10 +11,6 @@ const ICON = { GitHub: Github, LinkedIn: LinkedIn, Email: Mail };
 
 export default function AuthorSidebar() {
   const current = experience.find((e) => /present/i.test(e.dates));
-  const initials = profile.name
-    .split(" ")
-    .map((w) => w[0])
-    .join("");
 
   const links = [
     ...socialLinks
@@ -26,10 +22,6 @@ export default function AuthorSidebar() {
   return (
     <aside className="author" aria-label="About the author">
       <div className="author-card">
-        <div className="author-avatar" aria-hidden="true">
-          {initials}
-        </div>
-
         <h2 className="author-name">{profile.name}</h2>
 
         {/* Affiliation carries the seal. On an academic site the institution is
