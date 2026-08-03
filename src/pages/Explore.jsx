@@ -67,8 +67,8 @@ export default function Explore({ theme }) {
           <WashLink to="/research" className="pill pill-accent">
             Research
           </WashLink>
-          <WashLink to="/cv" className="pill">
-            CV
+          <WashLink to="/experience" className="pill">
+            Experience
           </WashLink>
         </div>
       </main>

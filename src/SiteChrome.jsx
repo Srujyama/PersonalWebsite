@@ -9,6 +9,7 @@ import { Outlet, useLocation, useNavigationType } from "react-router-dom";
 import AuthorSidebar from "./AuthorSidebar";
 import SocialRail from "./SocialRail";
 import { WashLink } from "./wash";
+import { useCanRunWorld } from "./heroPref";
 
 export const NAV = [
   { to: "/", label: "Main" },
@@ -65,7 +66,11 @@ export default function SiteChrome({ theme, onToggleTheme }) {
     if (navType !== "POP") window.scrollTo({ top: 0, behavior: "auto" });
   }, [pathname, navType]);
 
-  const worldOpen = pathname === "/explore";
+  // /explore only takes over the frame when the world can actually run. On a
+  // phone it renders a written fallback instead, and that page wants the normal
+  // sidebar rather than the world's floating rail.
+  const capable = useCanRunWorld();
+  const worldOpen = pathname === "/explore" && capable;
   // The main page is short enough to sit centred rather than pinned to the top.
   const home = pathname === "/";
 
