@@ -4,6 +4,7 @@
 import { motion } from "motion/react";
 import { EASE_OUT } from "../motion";
 import { research, researchProjects, publicationWorks } from "../data";
+import Taxa from "../taxa";
 
 const isImage = (f) => /\.(png|jpe?g|svg|webp)$/i.test(f);
 
@@ -19,7 +20,9 @@ function Item({ item, index }) {
       transition={{ duration: 0.55, ease: EASE_OUT, delay: (index % 3) * 0.05 }}
     >
       <div className="arc-head">
-        <h4 className="arc-title">{item.title}</h4>
+        <h4 className="arc-title">
+          <Taxa>{item.title}</Taxa>
+        </h4>
         <span className="arc-tag">
           {item.kind} · {item.year}
         </span>
@@ -36,7 +39,9 @@ function Item({ item, index }) {
         </a>
       )}
 
-      <p className="arc-caption">{item.caption}</p>
+      <p className="arc-caption">
+        <Taxa>{item.caption}</Taxa>
+      </p>
 
       <a
         className="arc-link"
@@ -93,7 +98,9 @@ export default function Research() {
 
             <div className="rsc-body">
               {proj.body.map((para) => (
-                <p key={para}>{para}</p>
+                <p key={para}>
+                  <Taxa>{para}</Taxa>
+                </p>
               ))}
             </div>
 
@@ -101,7 +108,9 @@ export default function Research() {
               <ul className="rsc-pubs">
                 {pubs.map((w) => (
                   <li key={w.title + w.venues[0].venue}>
-                    <span className="rsc-pub-title">{w.title}</span>
+                    <span className="rsc-pub-title">
+                      <Taxa>{w.title}</Taxa>
+                    </span>
                     <span className="rsc-pub-venue">
                       {w.venues.map((v) => v.venue).join(" · ")} ({w.year})
                     </span>

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { EASE_OUT } from "../motion";
 import { publicationWorks, citationFor } from "../data";
+import Taxa from "../taxa";
 
 const byYear = [...new Set(publicationWorks.map((w) => w.year))].map((year) => ({
   year,
@@ -34,7 +35,9 @@ function Entry({ work, index }) {
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.5, ease: EASE_OUT, delay: (index % 3) * 0.05 }}
     >
-      <h3 className="pub-heading">{work.title}</h3>
+      <h3 className="pub-heading">
+        <Taxa>{work.title}</Taxa>
+      </h3>
 
       <p className="pub-byline">
         {work.authors.map((a, j) => (

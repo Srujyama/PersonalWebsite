@@ -217,7 +217,7 @@ main:focus { outline: none; }
 
 .display-title {
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: clamp(2.5rem, 6vw, 4rem);
     line-height: 1;
@@ -609,7 +609,7 @@ html.dark .terrain-fallback {
 
 .world-panel-title {
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 560;
     font-size: 2.3rem;
     line-height: 1;
@@ -883,7 +883,7 @@ html.dark .terrain-fallback {
 
 .row-name {
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.95rem;
     line-height: 1.1;
@@ -1183,7 +1183,7 @@ html.dark .terrain-fallback {
 
 .cv-org {
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.24rem;
     line-height: 1.2;
@@ -1356,7 +1356,7 @@ html.dark .terrain-fallback {
 .tl-org {
     margin: 0;
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.72rem;
     line-height: 1.15;
@@ -1605,7 +1605,7 @@ html.dark .terrain-fallback {
 .author-name {
     margin: 1.05rem 0 0;
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.7rem;
     line-height: 1.05;
@@ -1644,7 +1644,7 @@ html.dark .terrain-fallback {
 
 .author-school {
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.02rem;
     line-height: 1.2;
@@ -1816,7 +1816,7 @@ html.dark .terrain-fallback {
 
 .landing-row-label {
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.3rem;
     letter-spacing: -0.01em;
@@ -1882,7 +1882,7 @@ html.dark .terrain-fallback {
 .arc-title {
     margin: 0;
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.34rem;
     line-height: 1.25;
@@ -2004,7 +2004,7 @@ html.dark .terrain-fallback {
 .pub-heading {
     margin: 0;
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.36rem;
     line-height: 1.25;
@@ -2280,7 +2280,7 @@ html.dark .terrain-fallback {
 
 .landing-pub-title {
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.15rem;
     line-height: 1.3;
@@ -2320,7 +2320,7 @@ html.dark .terrain-fallback {
 .rsc-title {
     margin: 0;
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: clamp(1.7rem, 3.6vw, 2.3rem);
     line-height: 1.1;
@@ -2363,7 +2363,7 @@ html.dark .terrain-fallback {
 .rsc-pub-title {
     display: block;
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.02rem;
     line-height: 1.3;
@@ -2393,7 +2393,7 @@ html.dark .terrain-fallback {
 .h1 {
     margin: 0;
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.75rem;
     line-height: 1.15;
@@ -2413,7 +2413,7 @@ html.dark .terrain-fallback {
     padding-bottom: 0.65rem;
     border-bottom: 1px solid var(--rule);
     font-family: var(--font-display);
-    font-style: italic;
+    font-style: normal;
     font-weight: 500;
     font-size: 1.2rem;
     line-height: 1.2;
@@ -2615,3 +2615,67 @@ html.dark .terrain-fallback {
         padding-right: max(1.6rem, env(safe-area-inset-right));
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ITALIC MEANS SOMETHING
+   Every heading, name and title on this site used to be set in
+   Newsreader italic. That is a magazine's habit, and in biology it
+   destroys the one signal italic actually carries: a species, a
+   gene, a journal. Headings are roman now; italic is reserved.
+   ═══════════════════════════════════════════════════════════════ */
+
+.doc em,
+.landing-col em,
+.rsc-body em,
+.arc-caption em,
+.pub-venue-line em,
+.cv-note em,
+.tl-points em {
+    font-style: italic;
+}
+
+/* Venue names in a citation, same convention as a reference list. */
+.pub-venue-line em,
+.rsc-pubs em { font-style: italic; }
+
+/* ═══════════════════════════════════════════════════════════════
+   DENSITY
+   A lab page is a document, not a poster. Tighter leading and less
+   air between blocks, so it reads as something written rather than
+   something laid out.
+   ═══════════════════════════════════════════════════════════════ */
+
+.landing-col {
+    text-align: left;
+    max-width: 38rem;
+    margin: 0;
+}
+
+.landing-lede {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink-muted);
+}
+
+.landing-col p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.rsc-body p,
+.arc-caption,
+.page-lede { line-height: 1.6; }
+
+.page-head { margin-bottom: 2rem; }
+.rsc + .rsc { margin-top: 3.4rem; padding-top: 2.8rem; }
+.arc { padding: 1.8rem 0; }
+
+/* Names read as names when they are set upright and tight. */
+.author-name { letter-spacing: -0.02em; }
+.h1 { letter-spacing: -0.02em; }
+.tl-org,
+.arc-title,
+.pub-heading,
+.rsc-title,
+.landing-pub-title { letter-spacing: -0.015em; }

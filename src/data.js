@@ -75,7 +75,7 @@ export const experience = [
     org: "Visa",
     role: "Software Engineer Intern",
     where: "Remote",
-    dates: "Jan 2025 – Present",
+    dates: "Jan 2025 – May 2026",
     logo: "/visa.png",
     stack: "Python, LLMs, Internal tooling",
     bullets: [
