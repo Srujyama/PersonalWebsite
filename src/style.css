@@ -35,6 +35,12 @@
     /* The 3D world keeps its Berkeley colour; the .world-* block reads these. */
     --gold: #FDB515;
     --navy: #003262;
+    /* Two places colour is allowed in the 2D UI, and only two: a link, and a
+       mark on the thing you are currently looking at. Navy clears AA on paper
+       at ~13:1; gold does not clear it for text at all, so it is never used on
+       type — only on rules, dots and underlines. */
+    --link: #003262;
+    --mark: #FDB515;
 
 }
 
@@ -55,6 +61,8 @@ html.dark {
     --scrim-soft: rgba(14, 14, 13, 0.55);
     --gold: #FDB515;
     --navy: #4d8bc9;
+    --link: #7fb0e0;
+    --mark: #FDB515;
 }
 
 * {
@@ -1312,9 +1320,9 @@ html.dark .terrain-fallback {
 }
 
 .tl-current .tl-node {
-    background: var(--ink);
-    border-color: var(--ink);
-    box-shadow: 0 0 0 4px var(--accent-soft);
+    background: var(--mark);
+    border-color: var(--mark);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--mark) 22%, transparent);
 }
 
 .tl-body { padding-left: 0.9rem; }
@@ -1505,7 +1513,11 @@ html.dark .terrain-fallback {
 .topnav-link:hover::after { transform: scaleX(1); }
 
 .topnav-link-on { color: var(--ink); }
-.topnav-link-on::after { transform: scaleX(1); }
+.topnav-link-on::after {
+    transform: scaleX(1);
+    background: var(--mark);
+    height: 2px;
+}
 
 @media (prefers-reduced-motion: reduce) {
     .topnav-link::after { transition: none; }
@@ -1666,8 +1678,8 @@ html.dark .terrain-fallback {
 }
 
 .author-links a { transition: color 0.18s ease; }
-.author-links a:hover { color: var(--ink); }
-.author-links a:hover svg { color: var(--ink); }
+.author-links a:hover { color: var(--link); }
+.author-links a:hover svg { color: var(--link); }
 
 /* Below the two-column breakpoint the sidebar becomes a masthead: the same
    information, stacked above the page, still on every route. */
@@ -1884,7 +1896,7 @@ html.dark .terrain-fallback {
     transition: border-color 0.2s ease;
 }
 
-.arc-frame:hover { border-color: var(--ink-subtle); }
+.arc-frame:hover { border-color: color-mix(in srgb, var(--link) 45%, transparent); }
 
 .arc-frame img {
     width: 100%;
@@ -1920,7 +1932,7 @@ html.dark .terrain-fallback {
     transition: color 0.18s ease;
 }
 
-.arc-link:hover { color: var(--ink); }
+.arc-link:hover { color: var(--link); }
 
 .arc-meta { color: var(--ink-subtle); opacity: 0.75; }
 
@@ -1988,7 +2000,7 @@ html.dark .terrain-fallback {
 }
 
 .pub-me {
-    color: var(--ink);
+    color: var(--link);
     font-weight: 700;
 }
 
@@ -2054,8 +2066,8 @@ html.dark .terrain-fallback {
 }
 
 .pub-cite-btn:hover {
-    color: var(--ink);
-    border-color: var(--ink-subtle);
+    color: var(--link);
+    border-color: color-mix(in srgb, var(--link) 45%, transparent);
 }
 
 .pub-cite-text {
@@ -2323,7 +2335,7 @@ html.dark .terrain-fallback {
     list-style: none;
     margin: 1.5rem 0 0;
     padding: 0.9rem 0 0.9rem 1rem;
-    border-left: 2px solid var(--rule-strong);
+    border-left: 2px solid var(--mark);
 }
 
 .rsc-pubs li + li { margin-top: 0.7rem; }
@@ -2401,7 +2413,7 @@ html.dark .terrain-fallback {
     transition: color 0.18s ease;
 }
 
-.h-more:hover { color: var(--ink); }
+.h-more:hover { color: var(--link); }
 
 .rsc-title { font-size: 1.35rem; }
 
@@ -2437,13 +2449,13 @@ html.dark .terrain-fallback {
 .landing-col em { font-style: italic; color: var(--ink); }
 
 .landing-col a {
-    color: var(--ink);
+    color: var(--link);
     text-decoration: none;
-    border-bottom: 1px solid var(--rule-strong);
-    transition: border-color 0.16s ease;
+    border-bottom: 1px solid color-mix(in srgb, var(--link) 35%, transparent);
+    transition: border-color 0.16s ease, color 0.16s ease;
 }
 
-.landing-col a:hover { border-bottom-color: var(--ink); }
+.landing-col a:hover { border-bottom-color: var(--link); }
 .landing-col .landing-fig a,
 .landing-col .h-more { border-bottom: 0; }
 

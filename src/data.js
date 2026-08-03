@@ -203,6 +203,14 @@ export const ventures = [
       "End-to-end workflow tool for sell-side M&A and search-fund deal flow that drafts CIMs, teasers, normalized financials, and buyer/comparable lists from a target's documents.",
   },
   {
+    name: "Tipsy",
+    subtitle: "iPhone Drink Tracker",
+    tagline: "The night, itemized",
+    website: "https://tipsyy.vercel.app/",
+    description:
+      "A drink tracker for iPhone. Logging a drink takes two taps, and from that it keeps a running count of calories and spend, paces the night, and helps you get home safe.",
+  },
+  {
     name: "Tap to Tip",
     subtitle: "iOS Tipping App",
     tagline: "Where Stryda started — tap your phone, leave a tip",
