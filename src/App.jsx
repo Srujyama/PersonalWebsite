@@ -86,16 +86,19 @@ function shouldPlayIntro() {
 export default function App() {
   const { theme, toggle } = useTheme();
 
-  // "playing"  — the overlay owns the screen; the page renders behind it,
-  //              hidden, so the relief is already warm when the dots land.
-  // "settling" — the overlay has gone transparent and the dots are flying onto
-  //              the relief. The relief shows; the rest of the UI does not.
-  // "done"     — overlay gone, everything visible.
+  // "playing"  — dots assembling over blank paper. The relief is mounted and
+  //              rendering (the readback needs real pixels) but not shown.
+  // "settling" — dots flying out to the contour positions. Still no relief:
+  //              the pattern appearing on screen is theirs, not the map's.
+  // "forming"  — every dot has landed, so the relief fades up underneath the
+  //              pattern the dots just drew, and they fade out into it.
+  // "done"     — overlay gone, the rest of the UI fades in.
   const [phase, setPhase] = useState(() =>
     shouldPlayIntro() ? "playing" : "done",
   );
 
   const onSettle = useCallback(() => setPhase("settling"), []);
+  const onFormed = useCallback(() => setPhase("forming"), []);
   const onComplete = useCallback(() => {
     setPhase("done");
     try {
@@ -112,6 +115,7 @@ export default function App() {
           jsonPath="/stipple_data.json"
           ink={INTRO_INK[theme]}
           onSettle={onSettle}
+          onFormed={onFormed}
           onComplete={onComplete}
         />
       )}

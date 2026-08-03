@@ -16,7 +16,8 @@
 //
 // Props:
 //   jsonPath  — stipple JSON ("/stipple_data.json")
-//   onSettle  — dots have begun flying to the relief; reveal the terrain
+//   onSettle  — dots have begun flying out to the contour positions
+//   onFormed  — every dot has arrived; the relief can start fading up
 //   onComplete— overlay can be unmounted
 import { useEffect, useRef, useState, useCallback } from "react";
 
@@ -152,6 +153,7 @@ function sampleReliefTargets(want, w, h) {
 export default function IntroAnimation({
   jsonPath = "/stipple_data.json",
   onSettle,
+  onFormed,
   onComplete,
   ink = "#121211",
 }) {
@@ -167,13 +169,16 @@ export default function IntroAnimation({
   const [fadeOut, setFadeOut] = useState(false);
   const doneRef = useRef(false);
   const settleRef = useRef(false);
+  const formedRef = useRef(false);
 
   // Latest-callback refs: the draw loop lives in an effect that must not
   // re-run when a parent re-render hands down new function identities.
   const settleCb = useRef(onSettle);
+  const formedCb = useRef(onFormed);
   const completeCb = useRef(onComplete);
   useEffect(() => {
     settleCb.current = onSettle;
+    formedCb.current = onFormed;
     completeCb.current = onComplete;
   });
 
@@ -183,13 +188,21 @@ export default function IntroAnimation({
     settleCb.current?.();
   }, []);
 
+  const markFormed = useCallback(() => {
+    if (formedRef.current) return;
+    formedRef.current = true;
+    formedCb.current?.();
+  }, []);
+
   const finish = useCallback(() => {
     if (doneRef.current) return;
     doneRef.current = true;
-    beginSettle(); // a skip still hands the backdrop over, just immediately
+    // A skip has to hand over both signals, or the relief stays hidden.
+    beginSettle();
+    markFormed();
     setFadeOut(true);
     setTimeout(() => completeCb.current?.(), 520);
-  }, [beginSettle]);
+  }, [beginSettle, markFormed]);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSkip(true), 1800);
@@ -403,6 +416,8 @@ export default function IntroAnimation({
           // than a drawing of the relief.
           if (state.landed) d.k = 1 - 0.55 * lt;
         }
+        if (p >= ARRIVE) markFormed();
+
         if (state.landed) {
           // One fade for the whole layer, after the map has formed and held.
           // The layer also eases from full strength down to 0.62 across the
@@ -448,7 +463,7 @@ export default function IntroAnimation({
       cancelAnimationFrame(animRef.current);
       window.removeEventListener("resize", resize);
     };
-  }, [jsonPath, finish, beginSettle, ink]);
+  }, [jsonPath, finish, beginSettle, markFormed, ink]);
 
   return (
     <div

@@ -976,45 +976,52 @@ html.dark .terrain-fallback {
 }
 
 /* ── the load-in handoff ──
-   The page is never hidden as a whole. The relief renders from the first frame
-   and stays exactly as it is through the entire intro, so there is no moment
-   where the background arrives or changes weight — only the UI is held back,
-   so the dots land on an empty map rather than on top of the navigation. */
+   The dots draw the relief; the relief does not sit there waiting for them.
+   Through "playing" and "settling" the terrain is mounted and rendering (the
+   contour readback needs real pixels) but held at zero, so the only pattern on
+   screen is the one the dots are making. "forming" fires the instant the last
+   dot lands: the relief fades up underneath the drawing the dots just finished
+   while they fade out, which reads as the dots turning into the background.
 
-/* Named individually rather than hiding .layout, because the relief is a
-   descendant of .layout and an opacity:0 ancestor would take it down too.
-   Hidden from "playing" onward, not just at the handoff — otherwise they are
-   at opacity 1 when the settle begins and spend the whole flight fading out
-   underneath the dots. */
+   The nav and the page text stay out of it until the very end — they are held
+   from "playing" onward, not just at the handoff, or they spend the whole
+   flight fading out underneath the dots. */
+.site-content.intro-playing .terrain-hero-wrap,
+.site-content.intro-playing .terrain-fallback,
+.site-content.intro-settling .terrain-hero-wrap,
+.site-content.intro-settling .terrain-fallback {
+    opacity: 0;
+    transition: none;
+    /* The mount animation would otherwise fight the hold. */
+    animation: none;
+}
+
+.site-content .terrain-hero-wrap,
+.site-content .terrain-fallback {
+    transition: opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.site-content.intro-playing .nav,
 .site-content.intro-playing .chrome,
 .site-content.intro-playing .author,
 .site-content.intro-playing .page,
 .site-content.intro-playing .timeline-wrap,
 .site-content.intro-playing .landing-col,
 .site-content.intro-playing .social-rail,
+.site-content.intro-settling .nav,
 .site-content.intro-settling .chrome,
 .site-content.intro-settling .author,
 .site-content.intro-settling .page,
 .site-content.intro-settling .timeline-wrap,
 .site-content.intro-settling .landing-col,
-.site-content.intro-settling .social-rail {
-    opacity: 0;
-    transition: none;
-}
-
-
-/* The paper scrim mutes the relief so type stays readable over it. Held off
-   during the intro, the dots get strong lines to land on; then it eases in
-   across 2.6s starting at the settle, so the relief drifts down to its page
-   weight while the dots are leaving and keeps drifting for a moment after.
-   The transition is declared on the base selector, not on .intro-settling —
-   otherwise the class flip to .intro-done drops the rule mid-ramp and the
-   scrim snaps the rest of the way. */
-.site-content .classic::before {
-    transition: opacity 2.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.site-content.intro-playing .classic::before {
+.site-content.intro-settling .social-rail,
+.site-content.intro-forming .nav,
+.site-content.intro-forming .chrome,
+.site-content.intro-forming .author,
+.site-content.intro-forming .page,
+.site-content.intro-forming .timeline-wrap,
+.site-content.intro-forming .landing-col,
+.site-content.intro-forming .social-rail {
     opacity: 0;
     transition: none;
 }
@@ -1026,6 +1033,19 @@ html.dark .terrain-fallback {
 .site-content .landing-col,
 .site-content .social-rail {
     transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+
+/* The paper scrim mutes the relief so type stays readable over it. It arrives
+   with the relief, on a slower curve, so the map settles to its page weight
+   rather than appearing at it. */
+.site-content .classic::before {
+    transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.site-content.intro-playing .classic::before,
+.site-content.intro-settling .classic::before {
+    opacity: 0;
+    transition: none;
 }
 
 .intro-skip {
