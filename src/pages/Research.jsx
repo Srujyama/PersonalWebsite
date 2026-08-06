@@ -64,11 +64,6 @@ export default function Research() {
     <main className="page">
       <header className="page-head">
         <h1 className="h1">Research</h1>
-        <p className="page-lede">
-          Both lines of work start in the same place. Something is being judged
-          by a person, or not judged at all because there is too much of it, and
-          the question is whether the data can be made to answer directly.
-        </p>
       </header>
 
       {researchProjects.map((proj) => {

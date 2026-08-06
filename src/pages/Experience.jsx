@@ -3,6 +3,37 @@ import { motion } from "motion/react";
 import { EASE_OUT } from "../motion";
 import { experience } from "../data";
 
+/* A rail of company marks only reads as one family if the marks are optically
+   the same size, and matching their heights does not do that. SpaceX is eight
+   times wider than it is tall and Penn's shield is taller than it is wide; set
+   both to 34px and the wordmark carries several times the ink and swamps the
+   column. Matching their areas instead over-corrects, shrinking a long
+   wordmark to a thread.
+   So: height falls off with aspect ratio, damped. p = 0.5 is equal area, p = 0
+   is equal height; 0.38 sits where a designer would put them by eye. The
+   ratio is read off the loaded image, so a logo added later normalises itself
+   with no numbers to maintain in data.js. */
+const MARK_H = 34; // the height a square mark gets
+const DAMP = 0.38;
+
+function OrgMark({ src }) {
+  return (
+    <span className="tl-logo-slot">
+      <img
+        src={src}
+        alt=""
+        className="tl-logo"
+        loading="lazy"
+        onLoad={(e) => {
+          const { naturalWidth: w, naturalHeight: h } = e.currentTarget;
+          if (!w || !h) return;
+          e.currentTarget.style.height = `${MARK_H * Math.pow(h / w, DAMP)}px`;
+        }}
+      />
+    </span>
+  );
+}
+
 function Role({ item, current }) {
   return (
     <motion.li
@@ -13,6 +44,7 @@ function Role({ item, current }) {
       transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.04 }}
     >
       <div className="tl-when">
+        {item.logo && <OrgMark src={item.logo} />}
         <span className="tl-dates">{item.dates}</span>
         <span className="tl-where">{item.where}</span>
       </div>
@@ -22,9 +54,6 @@ function Role({ item, current }) {
       <div className="tl-body">
         <div className="tl-head">
           <h3 className="tl-org">{item.org}</h3>
-          {item.logo && (
-            <img src={item.logo} alt="" className="tl-logo" loading="lazy" />
-          )}
         </div>
         <div className="tl-role">{item.role}</div>
 

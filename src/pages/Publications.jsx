@@ -90,9 +90,6 @@ export default function Publications() {
     <main className="page">
       <header className="page-head">
         <h1 className="h1">Publications</h1>
-        <p className="page-lede">
-          Work I co-authored in behavioural genetics and bacterial genomics.
-        </p>
       </header>
 
       {byYear.map(({ year, works }) => (

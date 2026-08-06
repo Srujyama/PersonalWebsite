@@ -1,9 +1,17 @@
-// wash.jsx — one 1100ms accent sweep per forward navigation. The route swaps
-// at the midpoint, hidden under full coverage, so a page change reads as a
-// deliberate turn rather than a cut. Lives above <Routes> so a single keyframe
-// run spans both the origin and destination page.
+// wash.jsx — one 1100ms sweep per forward navigation. The route swaps at the
+// midpoint, hidden under full coverage, so a page change reads as a deliberate
+// turn rather than a cut. Lives above <Routes> so a single run spans both the
+// origin and the destination page.
+//
+// The sweep used to be a solid slab sliding across. It worked, but it was the
+// one piece of motion on the site that had nothing to do with the rest of it:
+// the landing assembles out of stipple dots, the background is drawn in dots,
+// and then a page change was a rectangle. This is the same idea in the same
+// vocabulary — a curtain of dots swells shut across the screen, holds long
+// enough to cover the swap, and disperses off the far side.
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DotCurtain, { preloadCurtainDots, TIMING } from "./DotCurtain.jsx";
 
 const WashContext = createContext({ go: () => {}, active: false });
 
@@ -25,6 +33,14 @@ export function WashProvider({ children }) {
     return () => t.current.forEach(clearTimeout);
   }, []);
 
+  // Fetch the Campanile stipple while the first page is being read, so the
+  // first navigation already has it. If it is late the curtain just closes and
+  // opens without the tower — it never waits on the network.
+  useEffect(() => {
+    const idle = window.requestIdleCallback || ((f) => setTimeout(f, 700));
+    idle(() => preloadCurtainDots());
+  }, []);
+
   // A browser Back/Forward during a sweep must win: drop the pending
   // navigate() and clear the overlay instead of fighting the user.
   useEffect(() => {
@@ -40,10 +56,12 @@ export function WashProvider({ children }) {
 
   const go = useCallback(
     (href) => {
-      if (reduced) {
-        navigate(href);
-        return;
-      }
+      // Reduced motion used to return here and navigate on the spot, which
+      // meant the preference removed the transition entirely rather than
+      // removing the movement in it. DotCurtain has a still cut for exactly
+      // this: the same picture, cross-faded, with nothing travelling.
+      const T = reduced ? TIMING.still : TIMING.motion;
+
       // One sweep at a time. Without this, a second click queues another
       // deferred navigate() that can fire after the user has already pressed
       // Back — yanking them to a page they no longer asked for — and can also
@@ -51,14 +69,16 @@ export function WashProvider({ children }) {
       if (inFlight.current) return;
       inFlight.current = true;
 
+      // Both beats belong to the curtain, which exports them: the swap happens
+      // while it is opaque, and it comes down when the tower has faded out.
       setActive(true);
-      timers.current.push(setTimeout(() => navigate(href), 550));
+      timers.current.push(setTimeout(() => navigate(href), T.swapAt));
       timers.current.push(
         setTimeout(() => {
           setActive(false);
           inFlight.current = false;
           timers.current = [];
-        }, 1100),
+        }, T.run),
       );
     },
     [navigate, reduced],
@@ -67,7 +87,7 @@ export function WashProvider({ children }) {
   return (
     <WashContext.Provider value={{ go, active }}>
       {children}
-      {active && <div className="wash" aria-hidden="true" />}
+      {active && <DotCurtain still={reduced} />}
     </WashContext.Provider>
   );
 }

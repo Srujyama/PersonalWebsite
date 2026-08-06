@@ -6,14 +6,17 @@
    TOKENS
    The 2D UI is monochrome — hierarchy from value and weight, never
    hue. (The 3D world at "/" keeps its Berkeley colour and reads
-   --gold/--navy below.) Display = Newsreader italic. Micro =
-   JetBrains Mono, uppercase, tracked. Body = system sans.
+   --gold/--navy below.) One face sets the whole site: JetBrains
+   Mono. Display is it at weight, micro is it uppercase and tracked,
+   body is it at reading size. A single fixed advance width means
+   every column, date and figure lines up without being asked to.
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-    --font-display: "Newsreader Variable", Georgia, "Times New Roman", serif;
-    --font-micro: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
-    --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, "Liberation Mono", monospace;
+    --font-display: var(--mono);
+    --font-micro: var(--mono);
+    --font-body: var(--mono);
 
     /* Monochrome. Hierarchy comes from value, weight and rules — never hue.
        A whisper of warmth in the neutrals keeps it paper, not printer-grey. */
@@ -99,7 +102,14 @@ body {
     color: var(--ink);
 }
 
+/* No scrollbar anywhere. It has to be said on <html> as well as <body>: the
+   viewport's scrollbar is drawn by the root element, so hiding it on the body
+   alone left the grey rail down the right of every page. Scrolling itself is
+   untouched — wheel, trackpad, keys and the scroll position all behave. */
+html::-webkit-scrollbar,
 body::-webkit-scrollbar { display: none; }
+
+html,
 body { -ms-overflow-style: none; scrollbar-width: none; }
 
 ::selection {
@@ -187,29 +197,19 @@ main:focus { outline: none; }
    WASH PAGE TRANSITION
    ═══════════════════════════════════════════════════════════════ */
 
-.wash {
+/* The sweep is drawn on a canvas (DotCurtain.jsx) — a grid of dots that swells
+   shut and disperses, the same vocabulary as the landing. All this has to do
+   is put it over everything and let it swallow clicks while it runs, since at
+   the midpoint the page underneath is invisible. */
+.wash-dots {
     position: fixed;
     inset: 0;
     z-index: 500;
-    /* Opaque and full-screen while sweeping, so it must swallow clicks —
-       otherwise people click links they can't see. */
     pointer-events: auto;
-    background: var(--accent);
-    transform: translateX(-100%);
-    animation: wash-sweep 1100ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
 }
-
-@keyframes wash-sweep {
-    0%   { transform: translateX(-100%); }
-    50%  { transform: translateX(0%); }
-    100% { transform: translateX(100%); }
-
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .wash { animation: none; transform: translateX(100%); }
-
-}
+/* No reduced-motion rule here on purpose. Under that preference the curtain
+   still runs, in its still cut: the picture cross-fades and nothing travels.
+   Hiding the canvas would take the transition away rather than the motion. */
 
 /* ═══════════════════════════════════════════════════════════════
    TYPE PRIMITIVES
@@ -1273,12 +1273,14 @@ html.dark .terrain-fallback {
     position: relative;
 }
 
-/* the spine — sits 0.75rem into the node column, so it tracks .tl-item's
-   first column width. Change one, change the other. */
+/* The spine sits exactly where the nodes do — the start of the node column,
+   which is .tl-item's first column width. Change one, change the other. (It
+   used to sit 0.75rem further right than the nodes, which read as a gap on a
+   bare timeline and as a collision once the logos moved into the left column.) */
 .timeline::before {
     content: "";
     position: absolute;
-    left: 11rem;
+    left: 12.5rem;
     top: 0.55rem;
     bottom: 1.6rem;
     width: 1px;
@@ -1295,7 +1297,7 @@ html.dark .terrain-fallback {
     display: grid;
     /* Wide enough for "SEPT 2023 – MAY 2024" on one line — a wrapped date
        range reads as two dates. */
-    grid-template-columns: 10.25rem 1.5rem 1fr;
+    grid-template-columns: 12.5rem 1.5rem 1fr;
     gap: 0 0;
     padding-bottom: 2.6rem;
 }
@@ -1339,10 +1341,12 @@ html.dark .terrain-fallback {
     z-index: 1;
 }
 
+/* The current role used to be marked with a gold node. Colour on a spine that
+   is otherwise pure ink read as an alert, not as "still going" — the date
+   already says PRESENT. A filled ink node says the same thing quietly. */
 .tl-current .tl-node {
-    background: var(--mark);
-    border-color: var(--mark);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--mark) 22%, transparent);
+    background: var(--ink);
+    border-color: var(--ink);
 }
 
 .tl-body { padding-left: 0.9rem; }
@@ -1364,15 +1368,39 @@ html.dark .terrain-fallback {
     color: var(--ink);
 }
 
-/* A square box crushes a wide wordmark (SpaceX, Visa) down to a few pixels of
-   height. Cap the height and let the width run. */
+/* The mark leads the row — you recognise SpaceX or Visa before you read it —
+   so it sits left of the name and is given enough height to be legible. A
+   square box crushes a wide wordmark down to a few pixels, so cap the height
+   and let the width run. */
+/* The mark sits in the left-hand column, above the dates and outside the
+   spine, so the eye runs down a rail of logos and can find a job by its
+   wordmark before reading a word.
+   The slot is a fixed-height box the marks sit on the BOTTOM of. That shared
+   baseline is what makes them a rail rather than a scatter: the heights vary
+   by design (see OrgMark in Experience.jsx), so hanging them from the top
+   would start every date at a different y and the column would look ragged.
+   The source PNGs also carried a lot of transparent margin — SpaceX was
+   3840×2400 for a wordmark 474px tall — so they are trimmed to their ink; that
+   is why these numbers are small and still read large. */
+.tl-logo-slot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    height: 36px;
+    /* Hung upward so the marks sit ON the org name's line rather than under
+       it. The tall ones reach into the gap above, which the previous entry's
+       2.6rem of padding leaves empty anyway. */
+    margin-top: -14px;
+    margin-bottom: 0.5rem;
+}
+
 .tl-logo {
-    height: 22px;
+    /* Height is set per-logo on load; this is only the pre-load placeholder. */
+    height: 26px;
     width: auto;
-    max-width: 72px;
+    max-width: 100%;
     object-fit: contain;
-    opacity: 0.75;
-    flex-shrink: 0;
+    opacity: 0.9;
 }
 
 .tl-role {
@@ -1393,9 +1421,20 @@ html.dark .terrain-fallback {
         grid-column: 2;
         grid-row: 1;
         flex-direction: row;
+        flex-wrap: wrap;
         gap: 0.6rem;
         text-align: left;
         padding: 0 0 0.35rem 0.9rem;
+    }
+
+    /* Own line, ranged left with the dates under it — there is no right-hand
+       column to hang it off once the spine moves to the edge. The slot takes
+       the whole line so the dates are forced below it. */
+    .tl-logo-slot {
+        flex: 0 0 100%;
+        justify-content: flex-start;
+        height: 30px;
+        margin-bottom: 0.25rem;
     }
     .tl-node { grid-column: 1; grid-row: 1; margin-top: 0.3rem; margin-left: 0; }
     .tl-body { grid-column: 2; grid-row: 2; }
@@ -1594,12 +1633,31 @@ html.dark .terrain-fallback {
     .author { padding-top: 3rem; }
 }
 
+/* ONE GRID.
+   The card had three different left edges — the name at 0, the icon rows'
+   text at 54, the school's at 120 — because the seal, the icons and the
+   heading each set their own indent. Nothing lined up with anything, which is
+   what made a small stack of six facts feel like three unrelated widgets.
+   Now every row is the same two tracks: a mark slot and a text column. The
+   seal fills the slot, the icons sit at its right edge (so the marks share an
+   edge with each other and the seal reaches the same x as the name), and
+   every line of type in the card starts at exactly one place. */
 .author-card {
+    --mark: 2.35rem;
+    --mark-gap: 0.78rem;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
 }
 
+.author-affil,
+.author-fact,
+.author-link a {
+    display: grid;
+    grid-template-columns: var(--mark) minmax(0, 1fr);
+    column-gap: var(--mark-gap);
+    align-items: center;
+}
 
 
 .author-name {
@@ -1626,19 +1684,17 @@ html.dark .terrain-fallback {
 /* Affiliation: the seal is the one piece of colour in the 2D UI, the same
    licence the timeline's company marks already take. */
 .author-affil {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 1.15rem;
-    padding-top: 1.1rem;
+    margin-top: 1.05rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--rule);
     width: 100%;
 }
 
+/* Fills the mark slot exactly, which is what puts its left edge on the name's
+   and its right edge on the icons'. */
 .author-seal {
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
+    width: var(--mark);
+    height: var(--mark);
     object-fit: contain;
 }
 
@@ -1661,45 +1717,56 @@ html.dark .terrain-fallback {
     color: var(--ink-subtle);
 }
 
-.author-meta,
-.author-links {
+/* One rail: facts then links, same icon column, same left edge, one rhythm.
+   The rule that used to sit between them made the card read as three unrelated
+   panels stacked up; a single line of space does the grouping without cutting
+   the column in half. */
+.author-rail {
     list-style: none;
     padding: 0;
     width: 100%;
-}
-
-.author-meta { margin: 1.1rem 0 0; }
-
-.author-links {
-    margin: 1rem 0 0;
-    padding-top: 0.95rem;
+    margin: 1.05rem 0 0;
     border-top: 1px solid var(--rule);
+    padding-top: 0.95rem;
 }
 
-.author-meta li,
-.author-links a {
-    display: flex;
-    align-items: center;
-    gap: 0.62rem;
-    padding: 0.28rem 0;
+.author-link-first { margin-top: 0.65rem; }
+
+.author-fact,
+.author-link a {
+    padding: 0.24rem 0;
     font-size: 0.83rem;
     line-height: 1.35;
-    color: var(--ink-muted);
     text-decoration: none;
 }
 
-.author-meta svg,
-.author-links svg {
+/* Facts are context and links are things to press, so they part on weight
+   rather than on a border. */
+.author-fact { color: var(--ink-subtle); }
+.author-link a { color: var(--ink-muted); }
+
+/* Lowercase and quiet: the join in "Contract Engineer at SpaceX" is grammar,
+   not information, and at full strength it competes with the company. */
+.author-at {
+    color: var(--ink-subtle);
+    opacity: 0.75;
+}
+
+/* Hung off the right of the mark slot: the icons are all one width, so they
+   line up with each other there, and the gap to the text is the same on every
+   row of the card. */
+.author-fact svg,
+.author-link svg {
+    justify-self: end;
     width: 15px;
     height: 15px;
-    flex: 0 0 15px;
     color: var(--ink-subtle);
     transition: color 0.18s ease;
 }
 
-.author-links a { transition: color 0.18s ease; }
-.author-links a:hover { color: var(--link); }
-.author-links a:hover svg { color: var(--link); }
+.author-link a { transition: color 0.18s ease; }
+.author-link a:hover { color: var(--link); }
+.author-link a:hover svg { color: var(--link); }
 
 /* Below the two-column breakpoint the sidebar becomes a masthead: the same
    information, stacked above the page, still on every route. */
@@ -1722,17 +1789,18 @@ html.dark .terrain-fallback {
     .author-name { font-size: 1.5rem; }
     .author-affil { border-top: none; padding-top: 0.4rem; }
 
-    .author-meta,
-    .author-links {
+    /* As a masthead the rail runs across instead of down, so the card stays
+       one band of information rather than a tall list above the page. */
+    .author-rail {
         display: flex;
         flex-wrap: wrap;
         gap: 0 1.4rem;
+        border-top: none;
+        padding-top: 0.5rem;
+        margin-top: 0.7rem;
     }
 
-    .author-links {
-        border-top: none;
-        padding-top: 0.35rem;
-    }
+    .author-link-first { margin-top: 0; }
 
     .layout-main .page { padding-top: 1.6rem; }
 }
@@ -2489,25 +2557,29 @@ html.dark .terrain-fallback {
 /* The sidebar is the identity on every page, so it can afford to be read at
    arm's length rather than squinted at. */
 .author-name { font-size: 2rem; }
-.author-seal { width: 56px; height: 56px; flex-basis: 56px; }
-.author-school { font-size: 1.14rem; }
+/* The whole card scales by widening the one slot everything hangs off. */
+.author-card { --mark: 2.85rem; --mark-gap: 0.85rem; }
 .author-degree { font-size: 0.63rem; letter-spacing: 0.12em; }
 
-.author-meta li,
-.author-links a {
-    font-size: 0.94rem;
-    gap: 0.7rem;
-    padding: 0.34rem 0;
+/* Two lines, tight, ranged left — a lockup rather than a wrapped sentence. */
+.author-school {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.06rem;
+    line-height: 1.18;
 }
 
-.author-meta svg,
-.author-links svg {
+.author-fact,
+.author-link a {
+    font-size: 0.9rem;
+    padding: 0.3rem 0;
+}
+
+.author-fact svg,
+.author-link svg {
     width: 17px;
     height: 17px;
-    flex-basis: 17px;
 }
-
-.author-affil { gap: 0.85rem; }
 
 /* Main page only: there is very little on it, so both columns sit centred in
    the viewport instead of hanging from the top edge. */
@@ -2539,7 +2611,7 @@ html.dark .terrain-fallback {
     .layout-home .author { padding-top: 0.5rem; }
     .layout-home .landing-col { padding-top: 1.6rem; padding-bottom: 3rem; }
     .author-name { font-size: 1.7rem; }
-    .author-seal { width: 48px; height: 48px; flex-basis: 48px; }
+    .author-card { --mark: 2.6rem; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2582,10 +2654,10 @@ html.dark .terrain-fallback {
     .theme-toggle { flex: 0 0 auto; }
 
     /* Thumb-sized targets for everything in the profile card. */
-    .author-links a,
-    .author-meta li { padding: 0.42rem 0; }
+    .author-fact,
+    .author-link a { padding: 0.42rem 0; }
 
-    .author-links {
+    .author-rail {
         gap: 0.1rem 1.5rem;
         margin-top: 0.6rem;
     }
@@ -2595,7 +2667,7 @@ html.dark .terrain-fallback {
 @media (max-width: 400px) {
     .author-name { font-size: 1.55rem; }
     .author-school { font-size: 1rem; }
-    .author-seal { width: 42px; height: 42px; flex-basis: 42px; }
+    .author-card { --mark: 2.35rem; --mark-gap: 0.7rem; }
     .h1 { font-size: 1.5rem; }
     .rsc-title { font-size: 1.2rem; }
     .arc-title { font-size: 1.14rem; }
@@ -2679,3 +2751,97 @@ html.dark .terrain-fallback {
 .pub-heading,
 .rsc-title,
 .landing-pub-title { letter-spacing: -0.015em; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ONE FACE
+   The site is set entirely in JetBrains Mono. A monospace at the
+   sizes a serif wanted comes out too big and too loose: every
+   glyph carries the same wide advance, so a line of it is roughly
+   an eighth longer and reads a size larger than it measures. So
+   headings come down and pull in, prose comes down a step and
+   gains leading, and the weight axis does the work the serif used
+   to do with contrast.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── headings: smaller, tighter, heavier ── */
+
+.display-title,
+.world-panel-title,
+.row-name,
+.cv-org,
+.tl-org,
+.author-name,
+.author-school,
+.landing-row-label,
+.arc-title,
+.pub-heading,
+.landing-pub-title,
+.rsc-pub-title,
+.rsc-title,
+.h1,
+.h {
+    font-weight: 600;
+    letter-spacing: -0.04em;
+}
+
+.display-title    { font-size: clamp(1.95rem, 4.6vw, 2.95rem); }
+.world-panel-title { font-size: 1.85rem; }
+.row-name         { font-size: 1.55rem; }
+.h1               { font-size: 1.45rem; }
+.rsc-title        { font-size: clamp(1.4rem, 3vw, 1.85rem); }
+.tl-org           { font-size: 1.4rem; }
+.author-name      { font-size: 1.35rem; }
+.h                { font-size: 1.02rem; }
+.pub-heading      { font-size: 1.16rem; }
+.arc-title        { font-size: 1.14rem; }
+.landing-row-label { font-size: 1.1rem; }
+.cv-org           { font-size: 1.06rem; }
+.landing-pub-title { font-size: 1rem; }
+.author-school    { font-size: 0.94rem; }
+.rsc-pub-title    { font-size: 0.94rem; }
+
+/* ── prose: a step down, a little more air between lines ── */
+
+.landing-lede,
+.landing-col p,
+.page-lede,
+.rsc-body p,
+.doc p,
+.arc-caption {
+    font-size: 0.92rem;
+    line-height: 1.72;
+}
+
+.tl-points li,
+.cv-note,
+.pub-byline,
+.landing-pub-authors,
+.landing-row-note {
+    font-size: 0.85rem;
+    line-height: 1.65;
+}
+
+.tl-role,
+.cv-role {
+    font-size: 0.86rem;
+    font-weight: 550;
+    letter-spacing: -0.01em;
+}
+
+/* Mono is tabular by construction; say so, so a browser that has been
+   handed proportional figures by a fallback face still lines them up. */
+.tl-dates,
+.cv-dates,
+.entry-dates,
+.pub-year { font-variant-numeric: tabular-nums; }
+
+@media (max-width: 400px) {
+    .author-name { font-size: 1.24rem; }
+    .h1 { font-size: 1.26rem; }
+    .rsc-title { font-size: 1.16rem; }
+    .arc-title { font-size: 1.04rem; }
+    .pub-heading { font-size: 1.06rem; }
+    .tl-org { font-size: 1.16rem; }
+    .landing-lede,
+    .landing-col p { font-size: 0.88rem; }
+}

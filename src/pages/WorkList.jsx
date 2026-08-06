@@ -60,12 +60,11 @@ function Row({ item, index }) {
   );
 }
 
-export default function WorkList({ title, lede, items }) {
+export default function WorkList({ title, items }) {
   return (
     <main className="page">
       <header className="page-head">
         <h1 className="h1">{title}</h1>
-        {lede && <p className="page-lede">{lede}</p>}
       </header>
 
       <ol className="rows">
