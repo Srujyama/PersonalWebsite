@@ -10,6 +10,29 @@
     />
     <meta name="theme-color" content="#f4f3f0" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)" />
+    <!-- Theme before first paint: a choice made with the switch in the header
+         is kept, otherwise it follows the visitor's clock, light from 7am to
+         7pm. src/theme.js applies the same rule after load. -->
+    <script>
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem("theme");
+        } catch (e) {}
+        if (t !== "light" && t !== "dark") {
+          var h = new Date().getHours();
+          t = h >= 7 && h < 19 ? "light" : "dark";
+        }
+        var r = document.documentElement;
+        r.setAttribute("data-theme", t);
+        r.style.colorScheme = t;
+        var m = document.querySelectorAll('meta[name="theme-color"]');
+        for (var i = 0; i < m.length; i++) {
+          m[i].setAttribute("content", t === "dark" ? "#0e0e0d" : "#f4f3f0");
+        }
+      })();
+    </script>
+    <script type="module" src="/src/theme.js"></script>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="stylesheet" href="/src/site.css" />
   </head>
@@ -18,6 +41,11 @@
       <header class="head">
         <h1>SRUJAN YAMALI <span class="cursor" aria-hidden="true">█</span></h1>
         <p><a href="/">← BACK TO HOME</a></p>
+        <p class="theme" role="group" aria-label="Colour theme">
+          <button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise">auto</button>
+          <button type="button" data-theme-set="light" aria-pressed="false">light</button>
+          <button type="button" data-theme-set="dark" aria-pressed="false">dark</button>
+        </p>
       </header>
 
       <article>

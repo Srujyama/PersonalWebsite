@@ -50,7 +50,13 @@ const LANDED_CAP_MOBILE = 16000;
 const CHUNK = 1024; // dots per path, see paint()
 const TAU = Math.PI * 2;
 
-const INK = matchMedia("(prefers-color-scheme: dark)").matches
+// The theme is settled before this runs (the <head> script sets data-theme
+// from the visitor's clock or their saved choice); the OS setting is only the
+// fallback for a page without it.
+const DARK = document.documentElement.dataset.theme
+  ? document.documentElement.dataset.theme === "dark"
+  : matchMedia("(prefers-color-scheme: dark)").matches;
+const INK = DARK
   ? [242, 241, 237] // #f2f1ed
   : [18, 18, 17]; // #121211
 
@@ -667,6 +673,7 @@ function sampleText(n, cap, vw, vh) {
     const m = probe.measureText("x");
     const st = {
       font,
+      hidden: cs.visibility !== "visible",
       g: groupOf(cs.color),
       ascent: m.fontBoundingBoxAscent ?? parseFloat(cs.fontSize) * 0.95,
       transform: cs.textTransform,
@@ -703,6 +710,7 @@ function sampleText(n, cap, vw, vh) {
     range.selectNodeContents(node);
     if (!onScreen(range.getBoundingClientRect())) continue;
     const st = styleOf(node.parentElement);
+    if (st.hidden) continue;
     for (let i = 0; i < text.length; ) {
       const c = text.codePointAt(i);
       const len = c > 0xffff ? 2 : 1;
@@ -756,7 +764,7 @@ function sampleText(n, cap, vw, vh) {
     for (const pseudo of ["::before", "::after"]) {
       const cs = getComputedStyle(el, pseudo);
       const m = /^"((?:[^"\\]|\\.)*)"/.exec(cs.content || "");
-      if (!m || cs.display === "none") continue;
+      if (!m || cs.display === "none" || cs.visibility !== "visible") continue;
       const str = m[1].replace(/\\(.)/g, "$1");
       if (!/\S/.test(str)) continue;
       const anchor = edgeRect(el, pseudo === "::before");

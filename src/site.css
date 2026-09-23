@@ -27,8 +27,24 @@
     Menlo, Monaco, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
 }
 
+/* Dark is chosen by src/theme.js (the visitor's clock, or the switch in the
+   header), which sets data-theme on <html> before first paint. With scripts
+   off there is no data-theme, and the OS setting decides instead. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e0e0d;
+  --fg: #f2f1ed;
+  --fg2: #a3a19b;
+  --fg3: #6b6964;
+  --wash: #1c1c1a;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --bg: #0e0e0d;
     --fg: #f2f1ed;
     --fg2: #a3a19b;
@@ -111,6 +127,62 @@ strong {
   font-weight: inherit;
   line-height: inherit;
   margin: 0;
+}
+
+/* The theme switch: three words on the header's last line, the current one
+   in brackets. Every word keeps room for its brackets, so choosing one never
+   shifts the others, and those empty brackets are the spaces between them. Invisible (not absent) until src/theme.js runs, so the
+   header is the same height either way. */
+.theme {
+  visibility: hidden;
+}
+
+.theme.is-on {
+  visibility: visible;
+}
+
+.theme button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--fg3);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.theme button::before,
+.theme button::after {
+  display: inline-block; /* keeps the hover underline off the brackets */
+}
+
+.theme button::before {
+  content: "[";
+}
+
+.theme button::after {
+  content: "]";
+}
+
+.theme button[aria-pressed="false"]::before,
+.theme button[aria-pressed="false"]::after {
+  visibility: hidden;
+}
+
+.theme button[aria-pressed="true"] {
+  color: var(--fg);
+}
+
+.theme button:hover {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.theme button:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
 }
 
 .cursor {
@@ -341,9 +413,9 @@ ul > li::before {
   }
 
   /* The arena's top sits on the same line as the ~*~ line opposite it: the
-     header is 3 x 18px and the pause after it 5 lines, the links 4 x 18px. */
+     header is 4 x 18px and the pause after it 5 lines, the links 4 x 18px. */
   .home .arena {
-    margin-top: calc(3 * 18px + 5 * var(--line) - 4 * 18px);
+    margin-top: calc(4 * 18px + 5 * var(--line) - 4 * 18px);
   }
 }
 
@@ -449,8 +521,12 @@ figcaption b {
 /* The plots are white PNGs. Inverting them for the dark page would turn every
    colour in the data into its opposite, so they keep their colours and only
    come down a little, enough that a figure stops glaring out of the dark. */
+:root[data-theme="dark"] figure img {
+  filter: brightness(0.9);
+}
+
 @media (prefers-color-scheme: dark) {
-  figure img {
+  :root:not([data-theme]) figure img {
     filter: brightness(0.9);
   }
 }
