@@ -1,3 +1,18 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/experience", "destination": "/#experience", "permanent": false },
+    { "source": "/work", "destination": "/#experience", "permanent": false },
+    { "source": "/cv", "destination": "/#experience", "permanent": false },
+    { "source": "/projects", "destination": "/#open-source", "permanent": false },
+    { "source": "/ventures", "destination": "/#ventures", "permanent": false },
+    { "source": "/publications", "destination": "/#research", "permanent": false },
+    { "source": "/research", "destination": "/#research", "permanent": false },
+    { "source": "/archive", "destination": "/#research", "permanent": false },
+    { "source": "/explore", "destination": "/", "permanent": false },
+    { "source": "/elsewhere", "destination": "/", "permanent": false },
+    { "source": "/resume", "destination": "/Srujan_Yamali_SWE_Resume_June_2026.pdf", "permanent": false }
+  ]
 }

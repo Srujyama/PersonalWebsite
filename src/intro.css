@@ -1,0 +1,58 @@
+/* intro.css — the load-in's overlay and its one control.
+
+   The rules that must hold before first paint (hide <main>, lock scroll, the
+   failsafe for when this never loads) are inline in index.html's <head>,
+   because in dev Vite only injects this file once the module has run. */
+
+.intro-overlay {
+  /* position, inset, z-index and the canvas box are inline in index.html's
+     <head>, so they hold even when this file arrives after the module runs. */
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Plain text in the page's own voice, sitting where the page's text column
+   begins, so the only control on screen already looks like the site. */
+.intro-skip {
+  position: absolute;
+  left: 40px;
+  bottom: 40px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--fg2);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s ease, color 0.15s ease;
+}
+
+.intro-skip.is-on {
+  opacity: 1;
+}
+
+.intro-skip:disabled {
+  pointer-events: none;
+  transition-duration: 0.3s;
+}
+
+.intro-skip:hover {
+  color: var(--fg);
+}
+
+.intro-skip:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+  .intro-skip {
+    left: 20px;
+    bottom: 32px;
+  }
+}

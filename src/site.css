@@ -1,0 +1,475 @@
+/* site.css — the whole design system, and it is meant to be small.
+
+   Every page is one column of monospaced text on paper. Type is 12px on a
+   20px line, and every vertical space on the page is a whole number of those
+   lines, so the page keeps the rhythm of a text file: a heading, a blank
+   line, a paragraph, a blank line. Hierarchy comes from weight and from the
+   markdown marks in front of headings, never from size. The only colour on the
+   page is the gold you get when you select something. */
+
+@import "@fontsource-variable/jetbrains-mono/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght-italic.css";
+
+:root {
+  color-scheme: light dark;
+  --bg: #f4f3f0;
+  --fg: #121211;
+  /* Secondary text that still carries information (dates, captions).
+     5.6:1 on the paper. */
+  --fg2: #63615c;
+  /* Pure decoration: the markdown marks in front of headings and list items.
+     Readers never need to read these, so they can sit quieter. */
+  --fg3: #9c9a94;
+  --wash: #e9e8e4;
+  --gold: #fdb515;
+  --line: 20px;
+  --font: "JetBrains Mono Variable", ui-monospace, "SF Mono", "SFMono-Regular",
+    Menlo, Monaco, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0e0d;
+    --fg: #f2f1ed;
+    --fg2: #a3a19b;
+    --fg3: #6b6964;
+    --wash: #1c1c1a;
+  }
+}
+
+html {
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+::selection {
+  background: var(--gold);
+  color: #121211;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: var(--line);
+  padding: 40px;
+  overflow-wrap: anywhere;
+}
+
+main {
+  max-width: 480px;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+  text-decoration: none;
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+b,
+strong {
+  font-weight: 700;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+
+/* Three short lines set a little tighter than the body, then a long pause
+   before anything else. */
+.head {
+  line-height: 18px;
+}
+
+.head h1,
+.head p {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+
+.cursor {
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}
+
+.colophon {
+  margin-top: calc(var(--line) * 5);
+  /* On the narrowest phones it wraps; balanced, it never strands a ~*~. */
+  text-wrap: balance;
+}
+
+/* ── Blocks ────────────────────────────────────────────────────────────── */
+
+/* One blank line between blocks. Margins collapse, so a heading after a
+   paragraph is still exactly one line away rather than two. */
+p,
+ul,
+ol,
+dl,
+h2,
+h3,
+blockquote,
+figure {
+  margin-block: var(--line);
+}
+
+h2,
+h3 {
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h2::before {
+  content: "## ";
+  content: "## " / "";
+  color: var(--fg3);
+  font-weight: 400;
+}
+
+h2.top::before {
+  content: "# ";
+  content: "# " / "";
+}
+
+h3::before {
+  content: "### ";
+  content: "### " / "";
+  color: var(--fg3);
+  font-weight: 400;
+}
+
+/* Lists hang their marker in the gutter, so a long entry wraps under its own
+   text instead of under the dash. */
+ul {
+  list-style: none;
+}
+
+ul > li {
+  padding-left: 2ch;
+}
+
+ul > li::before {
+  content: "- ";
+  content: "- " / "";
+  margin-left: -2ch;
+}
+
+/* Two columns of plain text, the way `ls -l` lines things up. The left one is
+   wide enough for "2026–now" plus two spaces, which is why end years are
+   written short: at 10ch the longest row, the one for the Children's Hospital,
+   still fits the 480px measure on one line. A long right-hand entry wraps
+   inside its own column. */
+.rows {
+  display: grid;
+  grid-template-columns: 10ch 1fr;
+}
+
+.rows dt {
+  color: var(--fg2);
+  font-variant-numeric: tabular-nums;
+}
+
+.rows dd {
+  margin: 0;
+}
+
+.muted {
+  color: var(--fg2);
+}
+
+/* ── Home: the text column, and a quiet one on the right ──────────────── */
+
+/* The right column mirrors the header block: four lines at the header's
+   18px, top-aligned with it, each a mark and a handle. Only the handle is
+   underlined, the way only the URL is in a [label](url) link. */
+.links {
+  list-style: none;
+  line-height: 18px;
+  margin: 0;
+}
+
+.links > li {
+  padding-left: 0;
+}
+
+.links > li::before {
+  content: none;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 1ch;
+  text-decoration: none;
+}
+
+.links a span {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.links a:hover span {
+  text-decoration-thickness: 2px;
+}
+
+.links a:focus-visible {
+  outline-offset: 1px;
+}
+
+.icon {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.icon-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The arena is set on a 12px line so its character cells are close enough
+   to square for a circle to read as one. Twenty rows is 240px, a whole
+   number of the page's 20px lines, so everything under it stays on the
+   grid. */
+.arena {
+  margin: 0;
+  width: 35ch;
+}
+
+.arena pre {
+  font: inherit;
+  line-height: 12px;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+.a-ring,
+.a-zone,
+.a-old {
+  color: var(--fg3);
+}
+
+.a-mid {
+  color: var(--fg2);
+}
+
+.a-fly {
+  font-weight: 700;
+}
+
+.arena-readout {
+  margin: var(--line) 0 0;
+  color: var(--fg2);
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+.arena figcaption {
+  margin-top: calc(var(--line) / 2);
+  color: var(--fg2);
+}
+
+@media (min-width: 960px) {
+  main.home {
+    max-width: 1360px;
+    display: grid;
+    grid-template-columns: 480px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    column-gap: 80px;
+  }
+
+  .home .head {
+    grid-area: 1 / 1;
+  }
+
+  .home .body {
+    grid-area: 2 / 1;
+  }
+
+  /* Pinned, so the links are one click away however far down the page is
+     read. */
+  .home .side {
+    grid-area: 1 / 2 / 3 / 3;
+    justify-self: end;
+    align-self: start;
+    position: sticky;
+    top: 40px;
+  }
+
+  /* The arena's top sits on the same line as the ~*~ line opposite it: the
+     header is 3 x 18px and the pause after it 5 lines, the links 4 x 18px. */
+  .home .arena {
+    margin-top: calc(3 * 18px + 5 * var(--line) - 4 * 18px);
+  }
+}
+
+/* One column: the links go straight under the header, where contact belongs
+   on a phone, and the arena goes to the end of the page. */
+@media (max-width: 959px) {
+  main.home {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .home .side {
+    display: contents;
+  }
+
+  .home .links {
+    order: 1;
+    margin-top: var(--line);
+  }
+
+  .home .body {
+    order: 2;
+  }
+
+  .home .arena {
+    order: 3;
+    margin-top: calc(var(--line) * 2);
+  }
+}
+
+/* ── Articles ──────────────────────────────────────────────────────────── */
+
+/* An article page runs to 48em, which is eighty columns, because a figure
+   needs more room than a paragraph does. The header and the back links sit
+   in the same wider column, so the page still reads as one file. */
+main.wide {
+  max-width: 48em;
+}
+
+.back {
+  line-height: 18px;
+}
+
+/* The byline is the line straight after the title. Its negative margin
+   collapses with the heading's own, which leaves exactly zero between them,
+   and then two blank lines before the text starts. */
+.byline {
+  color: var(--fg2);
+  margin-top: calc(var(--line) * -1);
+  margin-bottom: calc(var(--line) * 2);
+}
+
+article h2 {
+  margin-top: calc(var(--line) * 2);
+}
+
+/* The page ends the way it starts, with the way home, after a longer pause. */
+article + .back {
+  margin-top: calc(var(--line) * 3);
+}
+
+/* A document in a list gets its description on the lines under the link,
+   hanging from the same indent as the link itself. */
+.note {
+  display: block;
+}
+
+blockquote {
+  margin-inline: -40px 0;
+  padding: var(--line) var(--line) var(--line) 40px;
+  background: var(--wash);
+}
+
+/* Figures are framed in one hairline of ink, the way pierre frames a video.
+   The caption is the next line after the frame, and a figure is two blank
+   lines from the one before it, so a caption can only belong to the image
+   above it. */
+figure + figure {
+  margin-top: calc(var(--line) * 2);
+}
+
+figure > a {
+  display: block;
+  cursor: zoom-in;
+}
+
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--fg);
+  background: #fff;
+}
+
+figcaption {
+  color: var(--fg2);
+}
+
+figcaption b {
+  color: var(--fg);
+}
+
+/* The plots are white PNGs. Inverting them for the dark page would turn every
+   colour in the data into its opposite, so they keep their colours and only
+   come down a little, enough that a figure stops glaring out of the dark. */
+@media (prefers-color-scheme: dark) {
+  figure img {
+    filter: brightness(0.9);
+  }
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 32px 20px;
+  }
+
+  blockquote {
+    margin-inline: -20px 0;
+    padding-left: 20px;
+  }
+}
+
+/* A short description after a link wraps as a unit, never mid-phrase. On a
+   phone the column is too narrow to promise that, so there it wraps freely. */
+@media (min-width: 521px) {
+  .gloss {
+    white-space: nowrap;
+  }
+}

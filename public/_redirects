@@ -1,1 +1,17 @@
-/*    /index.html   200
+# Netlify / Cloudflare Pages. Mirrors the redirects in vercel.json.
+# The site is static pages now, so there is no catch-all: an unknown path
+# gets 404.html instead of the home page. The old app's routes point at the
+# section of the home page that holds what they used to show. They are 302s so
+# that a path can be reused later without browsers holding on to the old move.
+
+/experience     /#experience                               302
+/work           /#experience                               302
+/cv             /#experience                               302
+/projects       /#open-source                              302
+/ventures       /#ventures                                 302
+/publications   /#research                                 302
+/research       /#research                                 302
+/archive        /#research                                 302
+/explore        /                                          302
+/elsewhere      /                                          302
+/resume         /Srujan_Yamali_SWE_Resume_June_2026.pdf    302

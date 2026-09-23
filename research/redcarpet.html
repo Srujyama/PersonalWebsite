@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finding recombination in bacterial genomes :: Srujan Yamali</title>
+    <meta
+      name="description"
+      content="A changepoint detector that finds recombination in bacterial genomes. It reads the similarity between proteins as a signal running along the chromosome and marks the places where that signal shifts, because a shift is where a block of DNA arrived from somewhere else."
+    />
+    <meta name="theme-color" content="#f4f3f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" href="/src/site.css" />
+  </head>
+  <body>
+    <main class="wide">
+      <header class="head">
+        <h1>SRUJAN YAMALI <span class="cursor" aria-hidden="true">█</span></h1>
+        <p><a href="/">← BACK TO HOME</a></p>
+      </header>
+
+      <article>
+        <h2 class="top">Finding recombination in bacterial genomes</h2>
+        <p class="byline">
+          Children's Hospital of Philadelphia · Moustafa &amp; Planet labs ·
+          2024–2025
+        </p>
+
+        <p>
+          Bacteria do not only inherit their genomes down the family tree. They
+          also take DNA from each other, and a block that arrived that way
+          carries the history of wherever it came from rather than the history
+          of the chromosome it now sits in. Working out which stretches arrived
+          that way is how you tell whether a resistance gene spread by descent
+          or by transfer.
+        </p>
+
+        <p>
+          RedCarpet finds those stretches without aligning anything. For every
+          protein it asks which genomes in the database carry an exact copy of
+          it, then compares those genome sets between proteins. Proteins
+          that share a history share a set, so ordering the proteins along the
+          chromosome turns the comparison into a signal, and a recombined block
+          shows up as a stretch where that signal shifts. Detecting the shifts
+          is a changepoint problem, and Figure 1 below is the detector running
+          on <em>S.&nbsp;aureus</em> NCTC8325.
+        </p>
+
+        <h2>Presentations</h2>
+
+        <ul>
+          <li>
+            Redcarpet: Rapid Recombination Detection in <em>Staphylococcus
+            aureus</em> and Other Species Amid Expanding Genomic Databases.
+            A.&nbsp;Moustafa, E.&nbsp;Theiller, A.&nbsp;Lal, <b>S.&nbsp;Yamali</b>, A.&nbsp;Feder,
+            A.&nbsp;Narechania, P.&nbsp;Planet. <i>19th International Symposium on
+            Staphylococci and Staphylococcal Infections</i>, Perth, Australia, 2024.
+          </li>
+        </ul>
+
+        <h2>Files</h2>
+
+        <ul>
+          <li>
+            [Slides](<a href="/work/carpet-change-catcher-methods.pdf">/work/<wbr>carpet-change-catcher-methods.pdf</a>),
+            <span class="gloss muted">PDF&nbsp;·&nbsp;21&nbsp;pages&nbsp;·&nbsp;13&nbsp;MB</span>
+            <span class="note">Carpet Change Catcher, the deck from the end of
+            the project, which covers how the changepoint penalty was scaled to
+            genome size, why a synthetic benchmark could not work, results on
+            five genomes, and the check that merges neighbouring regions that
+            are not statistically different.</span>
+          </li>
+          <li>[Code](<a href="https://github.com/microbialARC/Redcarpet" target="_blank" rel="noopener">https://<wbr>github.com/<wbr>microbialARC/<wbr>Redcarpet</a>)</li>
+        </ul>
+
+        <h2>Figures</h2>
+
+        <figure>
+          <a href="/work/redcarpet-nctc-heatmap.jpg"
+            ><img
+              src="/work/redcarpet-nctc-heatmap.jpg"
+              width="1555"
+              height="1600"
+              decoding="async"
+              alt="A square heatmap of similarity between every pair of the 2,630 proteins of S. aureus NCTC8325, ordered along the genome. It is mostly orange and red, crossed by dark bands, with cyan lines marking the eleven detected changepoints."
+          /></a>
+          <figcaption>
+            <b>Figure 1.</b> The 2,630-protein similarity matrix for
+            <em>S.&nbsp;aureus</em> NCTC8325. Proteins are ordered along the genome,
+            so a run of proteins that share a history shows up as a bright
+            block on the diagonal. The cyan lines are the eleven changepoints
+            the detector placed at the region boundaries.
+          </figcaption>
+        </figure>
+
+        <figure>
+          <a href="/work/redcarpet-nctc-profile.png"
+            ><img
+              src="/work/redcarpet-nctc-profile.png"
+              width="1600"
+              height="600"
+              loading="lazy"
+              decoding="async"
+              alt="A line plot of one protein's similarity to every other protein against position along the genome, with orange vertical lines at nine changepoints. Inside two of the detected regions the signal drops to near zero."
+          /></a>
+          <figcaption>
+            <b>Figure 2.</b> A single row of the matrix from another run, which
+            is the first protein's similarity to every other protein in the
+            order they sit on the genome, with that run's changepoints drawn
+            over it. The detector works on the whole matrix, and one row is only
+            a way of seeing what it responds to, which is the stretches where
+            the similarity falls to almost nothing.
+          </figcaption>
+        </figure>
+
+        <figure>
+          <a href="/work/redcarpet-recombination.png"
+            ><img
+              src="/work/redcarpet-recombination.png"
+              width="1124"
+              height="886"
+              loading="lazy"
+              decoding="async"
+              alt="Diagram of recombination, or horizontal transfer: a donor genome region above a recipient genome region, joined by two crossed lines. A note underneath says a transferred block of proteins co-occurs in a different set of database genomes and so shows up as a block in the Redcarpet matrix."
+          /></a>
+          <figcaption>
+            <b>Figure 3.</b> Recombination moves a block of DNA from a donor
+            genome into a recipient. That block then co-occurs with a different
+            set of database genomes than the rest of the chromosome does, and
+            that difference is the whole signal the method is built on.
+          </figcaption>
+        </figure>
+
+        <figure>
+          <a href="/work/redcarpet-anatomy.png"
+            ><img
+              src="/work/redcarpet-anatomy.png"
+              width="1539"
+              height="1406"
+              loading="lazy"
+              decoding="async"
+              alt="A synthetic similarity matrix: bright yellow blocks along the diagonal on a dark red field, cyan lines at the block boundaries, one bright block labelled as a region and a dim band labelled as a recombinant region with a different genome set."
+          /></a>
+          <figcaption>
+            <b>Figure 4.</b> A recombinant stretch reads as a band that is dim
+            against the core genome but bright within itself. This figure is
+            the reference I used to explain what the detector is looking for
+            before showing it running.
+          </figcaption>
+        </figure>
+
+        <figure>
+          <a href="/work/redcarpet-pipeline.png"
+            ><img
+              src="/work/redcarpet-pipeline.png"
+              width="2055"
+              height="686"
+              loading="lazy"
+              decoding="async"
+              alt="Flow diagram of the Redcarpet pipeline in four boxes: the query genome's proteins, WhatsGNU per-protein genome hits, the Redcarpet N by N Jaccard matrix, and CarpetCleanChangepoints producing regions and recombination calls, run as one Snakemake workflow."
+          /></a>
+          <figcaption>
+            <b>Figure 5.</b> The Snakemake workflow, from genome in to region
+            calls out. Making it a workflow rather than a set of scripts is
+            what let other people in the lab run it without me.
+          </figcaption>
+        </figure>
+
+        <figure>
+          <a href="/work/redcarpet-scale.png"
+            ><img
+              src="/work/redcarpet-scale.png"
+              width="1845"
+              height="1020"
+              loading="lazy"
+              decoding="async"
+              alt="Runtime in seconds and peak memory in gigabytes against genome size in proteins, for M. tuberculosis, P. aeruginosa and K. pneumoniae. Runtime rises from about 14 to 32 seconds while peak memory stays under 4 GB."
+          /></a>
+          <figcaption>
+            <b>Figure 6.</b> Measured on genomes up to 5,700 proteins. The
+            rewritten matrix engine is 27× faster than the original and
+            produces byte-identical output, which is the only reason it was
+            safe to swap in.
+          </figcaption>
+        </figure>
+      </article>
+
+      <p class="back"><a href="/">← BACK TO HOME</a></p>
+    </main>
+  </body>
+</html>
