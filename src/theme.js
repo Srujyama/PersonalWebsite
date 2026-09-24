@@ -1,16 +1,16 @@
-// theme.js — the theme switch, and the clock behind "auto".
+// theme.js — light and dark, by the visitor's clock unless they choose.
 //
 // "Auto" is light from 7am to 7pm local time and dark the rest of the day.
-// Any other choice (light, dark, or one of the named themes from my notes
-// app) is pinned and kept in localStorage; choosing auto again forgets it.
-// The first paint is decided by the small inline script in every page's
-// <head> (same rule, same key), so this module only wires the switch and
-// flips the page when the clock crosses 7am or 7pm while it is open.
-import { byId } from "./themes.js";
+// The switch in the header can pin either one, and a pinned choice is kept
+// in localStorage; choosing auto again forgets it. The first paint is decided
+// by the small inline script in every page's <head> (same rule, same key), so
+// this module only wires the switch and flips the page when the clock crosses
+// 7am or 7pm while it is open.
 
 const KEY = "theme";
 const DAY_START = 7; // hour, local
 const DAY_END = 19;
+const PAPER = { light: "#f4f3f0", dark: "#0e0e0d" };
 
 const root = document.documentElement;
 
@@ -22,7 +22,7 @@ const byClock = (d = new Date()) => {
 function stored() {
   try {
     const t = localStorage.getItem(KEY);
-    return byId(t) ? t : null;
+    return t === "light" || t === "dark" ? t : null;
   } catch {
     return null;
   }
@@ -32,11 +32,11 @@ let mode = stored() || "auto";
 const resolve = () => (mode === "auto" ? byClock() : mode);
 
 function apply() {
-  const t = byId(resolve());
-  if (root.dataset.theme !== t.id) root.dataset.theme = t.id;
-  root.style.colorScheme = t.dark ? "dark" : "light";
+  const t = resolve();
+  if (root.dataset.theme !== t) root.dataset.theme = t;
+  root.style.colorScheme = t;
   for (const m of document.querySelectorAll('meta[name="theme-color"]')) {
-    m.setAttribute("content", t.bg);
+    m.setAttribute("content", PAPER[t]);
   }
 }
 
@@ -69,7 +69,7 @@ function sync() {
 }
 
 function set(next) {
-  mode = next === "auto" || byId(next) ? next : "auto";
+  mode = next;
   try {
     if (mode === "auto") localStorage.removeItem(KEY);
     else localStorage.setItem(KEY, mode);
@@ -105,8 +105,7 @@ window.addEventListener("storage", (e) => {
 apply();
 sync();
 scheduleFlip();
-// The switch is laid out but invisible until this runs, so the properties
-// keep their height with scripts off and there is never a control that does
-// nothing.
+// The switch is laid out but invisible until this runs, so the header keeps
+// its height with scripts off and there is never a control that does nothing.
 const ctl = document.querySelector(".theme");
 if (ctl) ctl.classList.add("is-on");

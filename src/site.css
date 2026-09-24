@@ -1,177 +1,55 @@
-/* site.css — the whole design system.
+/* site.css — the whole design system, and it is meant to be small.
 
-   Every page is set the way my notes are. I write in Obsidian with the
-   Typewriter theme, so the page uses the same things: iA Writer Quattro for
-   the words and iA Writer Mono for anything that is data (dates, paths,
-   properties, tags), on the theme's cream paper, with its green for links
-   inside the site. A page opens the way a note does, with the folder it sits
-   in, a title and a properties block, and then runs as headed sections split
-   by rules, and it ends with its tags. The gold you get when you select
-   something is still the one Berkeley colour on the page. */
+   Every page is one column of monospaced text on paper. Type is 12px on a
+   20px line, and every vertical space on the page is a whole number of those
+   lines, so the page keeps the rhythm of a text file: a heading, a blank
+   line, a paragraph, a blank line. Hierarchy comes from weight and from the
+   markdown marks in front of headings, never from size. The only colour on the
+   page is the gold you get when you select something. */
 
-@font-face {
-  font-family: "Quattro";
-  src: url("/fonts/iAWriterQuattroS-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Quattro";
-  src: url("/fonts/iAWriterQuattroS-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Quattro";
-  src: url("/fonts/iAWriterQuattroS-Italic.woff2") format("woff2");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Writer Mono";
-  src: url("/fonts/iAWriterMonoS-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+@import "@fontsource-variable/jetbrains-mono/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght-italic.css";
 
 :root {
   color-scheme: light dark;
-  /* The Typewriter theme's paper, hsl(44 79% 94%), and ink to match. */
-  --bg: #fcf5e4;
-  --fg: #22211d;
-  /* Secondary text that still carries information. 5.3:1 on the paper. */
-  --fg2: #69634f;
-  /* Decoration only: rules, breadcrumb slashes, the arena's wall. */
-  --fg3: #aaa28b;
-  --rule: #e7dcbf;
-  --wash: #f4ead0;
-  /* The theme's accent, hsl(129 32% 47%), taken down until it reads as text
-     on cream. */
-  --link: #357a40;
+  --bg: #f4f3f0;
+  --fg: #121211;
+  /* Secondary text that still carries information (dates, captions).
+     5.6:1 on the paper. */
+  --fg2: #63615c;
+  /* Pure decoration: the markdown marks in front of headings and list items.
+     Readers never need to read these, so they can sit quieter. */
+  --fg3: #9c9a94;
+  --wash: #e9e8e4;
   --gold: #fdb515;
-  --line: 26px;
-  --text: "Quattro", "iA Writer Quattro S", ui-sans-serif, system-ui,
-    -apple-system, "Segoe UI", sans-serif;
-  --mono: "Writer Mono", "iA Writer Mono S", ui-monospace, "SF Mono", Menlo,
-    Consolas, monospace;
+  --line: 20px;
+  --font: "JetBrains Mono Variable", ui-monospace, "SF Mono", "SFMono-Regular",
+    Menlo, Monaco, "Cascadia Mono", Consolas, "Liberation Mono", monospace;
 }
 
 /* Dark is chosen by src/theme.js (the visitor's clock, or the switch in the
-   properties), which sets data-theme on <html> before first paint. With
-   scripts off there is no data-theme, and the OS setting decides instead.
-   The dark values are the Typewriter theme's own: neutral #262626, not a
-   warm black. */
+   header), which sets data-theme on <html> before first paint. With scripts
+   off there is no data-theme, and the OS setting decides instead. */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #262626;
-  --fg: #e3e1da;
-  --fg2: #a7a399;
-  --fg3: #6c6962;
-  --rule: #3a3a38;
-  --wash: #2f2f2d;
-  --link: #86c38f;
+  --bg: #0e0e0d;
+  --fg: #f2f1ed;
+  --fg2: #a3a19b;
+  --fg3: #6b6964;
+  --wash: #1c1c1a;
 }
 
 :root[data-theme="light"] {
   color-scheme: light;
 }
 
-/* The named themes are the ones in my notes app, Thoughts, with its colours:
-   its background, its text, its divider, its link colour. Where a theme's
-   own "dim" text was too faint to carry dates and captions, it is lifted
-   until it reads at 4.5:1 or better. */
-:root[data-theme="nord"] {
-  color-scheme: dark;
-  --bg: #2e3440;
-  --fg: #eceff4;
-  --fg2: #9aa5bb;
-  --fg3: #616e88;
-  --rule: #4c566a;
-  --wash: #3b4252;
-  --link: #88c0d0;
-}
-
-:root[data-theme="dracula"] {
-  color-scheme: dark;
-  --bg: #282a36;
-  --fg: #f8f8f2;
-  --fg2: #8f9bc8;
-  --fg3: #6272a4;
-  --rule: #44475a;
-  --wash: #343746;
-  --link: #bd93f9;
-}
-
-:root[data-theme="solarized"] {
-  color-scheme: light;
-  --bg: #fdf6e3;
-  --fg: #475a60;
-  --fg2: #586e75;
-  --fg3: #93a1a1;
-  --rule: #e2d9bf;
-  --wash: #eee8d5;
-  --link: #0d5a8a;
-}
-
-:root[data-theme="monokai"] {
-  color-scheme: dark;
-  --bg: #272822;
-  --fg: #f8f8f2;
-  --fg2: #a29d85;
-  --fg3: #75715e;
-  --rule: #49483e;
-  --wash: #3e3d32;
-  --link: #66d9ef;
-}
-
-:root[data-theme="ocean"] {
-  color-scheme: dark;
-  --bg: #1b2838;
-  --fg: #d4dae4;
-  --fg2: #8ea5c2;
-  --fg3: #5f7a9b;
-  --rule: #2a3f58;
-  --wash: #243447;
-  --link: #4ec9b0;
-}
-
-:root[data-theme="cyberpunk"] {
-  color-scheme: dark;
-  --bg: #050508;
-  --fg: #c8d8e4;
-  --fg2: #7f8ea3;
-  --fg3: #4a5568;
-  --rule: #3a0612;
-  --wash: #12121e;
-  --link: #00f5ff;
-}
-
-/* Cyberpunk is the one theme in Thoughts that glows. */
-:root[data-theme="cyberpunk"] h1 {
-  text-shadow: 0 0 10px rgba(0, 245, 255, 0.45);
-}
-
-:root[data-theme="cyberpunk"] .caret {
-  background: #ff003c;
-  box-shadow: 0 0 8px #ff003c;
-}
-
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --bg: #262626;
-    --fg: #e3e1da;
-    --fg2: #a7a399;
-    --fg3: #6c6962;
-    --rule: #3a3a38;
-    --wash: #2f2f2d;
-    --link: #86c38f;
+    --bg: #0e0e0d;
+    --fg: #f2f1ed;
+    --fg2: #a3a19b;
+    --fg3: #6b6964;
+    --wash: #1c1c1a;
   }
 }
 
@@ -185,7 +63,7 @@ html {
 
 ::selection {
   background: var(--gold);
-  color: #22211d;
+  color: #121211;
 }
 
 * {
@@ -197,56 +75,32 @@ html {
 body {
   background-color: var(--bg);
   color: var(--fg);
-  font-family: var(--text);
-  font-size: 16px;
+  font-family: var(--font);
+  font-size: 12px;
   line-height: var(--line);
-  padding: 48px 40px 64px;
-  overflow-wrap: break-word;
+  padding: 40px;
+  overflow-wrap: anywhere;
 }
 
 main {
-  max-width: 640px;
+  max-width: 480px;
 }
 
-/* Links out of the site are underlined and carry a ↗, the way Obsidian marks
-   an external link. Links within it are the theme's green and nothing else,
-   the way it draws a link to another note. */
 a {
   color: inherit;
   text-decoration: underline;
-  text-decoration-color: var(--fg3);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
 
 a:hover {
-  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
 }
 
-a.ext::after {
-  content: "↗";
-  content: "↗" / "";
-  display: inline-block; /* keeps the underline off the arrow */
-  margin-left: 0.15em;
-  font-size: 0.8em;
-  color: var(--fg2);
-  text-decoration: none;
-}
-
-a.int {
-  color: var(--link);
-  text-decoration: none;
-}
-
-a.int:hover {
-  text-decoration: underline;
-}
-
-a:focus-visible,
-button:focus-visible {
-  outline: 2px solid var(--link);
+a:focus-visible {
+  outline: 2px solid var(--fg);
   outline-offset: 2px;
-  border-radius: 2px;
+  text-decoration: none;
 }
 
 em,
@@ -259,69 +113,80 @@ strong {
   font-weight: 700;
 }
 
-.mono,
-code,
-time {
-  font-family: var(--mono);
-  font-size: 13px;
+/* ── Header ────────────────────────────────────────────────────────────── */
+
+/* Three short lines set a little tighter than the body, then a long pause
+   before anything else. */
+.head {
+  line-height: 18px;
 }
 
-code {
-  padding: 1px 4px;
-  border-radius: 3px;
-  background: var(--wash);
+.head h1,
+.head p {
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  margin: 0;
 }
 
-.muted {
-  color: var(--fg2);
+/* The theme switch: three words on the header's last line, the current one
+   in brackets. Every word keeps room for its brackets, so choosing one never
+   shifts the others, and those empty brackets are the spaces between them. Invisible (not absent) until src/theme.js runs, so the
+   header is the same height either way. */
+.theme {
+  visibility: hidden;
 }
 
-/* ── The top of a note ─────────────────────────────────────────────────── */
-
-/* The folder the note sits in, the way Obsidian shows it above the title.
-   On an article it is the way back, one level at a time. */
-.crumbs {
-  font-family: var(--mono);
-  font-size: 13px;
-  line-height: 20px;
-  color: var(--fg2);
+.theme.is-on {
+  visibility: visible;
 }
 
-.crumbs a {
-  text-decoration: none;
+.theme button {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--fg3);
+  text-transform: uppercase;
+  cursor: pointer;
 }
 
-.crumbs a:hover {
+.theme button::before,
+.theme button::after {
+  display: inline-block; /* keeps the hover underline off the brackets */
+}
+
+.theme button::before {
+  content: "[";
+}
+
+.theme button::after {
+  content: "]";
+}
+
+.theme button[aria-pressed="false"]::before,
+.theme button[aria-pressed="false"]::after {
+  visibility: hidden;
+}
+
+.theme button[aria-pressed="true"] {
+  color: var(--fg);
+}
+
+.theme button:hover {
   color: var(--fg);
   text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
-.crumbs .sep {
-  color: var(--fg3);
-  margin: 0 0.5ch;
+.theme button:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
 }
 
-.crumbs [aria-current] {
-  color: var(--fg);
-}
-
-h1 {
-  margin-top: 28px;
-  font-size: 30px;
-  line-height: 38px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-/* The editor's caret after the title: the note is open, not printed. */
-.caret {
-  display: inline-block;
-  width: 2px;
-  height: 0.9em;
-  margin-left: 3px;
-  vertical-align: -0.08em;
-  background: var(--link);
-  animation: blink 1.1s step-end infinite;
+.cursor {
+  animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
@@ -331,275 +196,189 @@ h1 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .caret {
+  .cursor {
     animation: none;
   }
 }
 
-/* Properties: the frontmatter block Obsidian draws under a title. Keys in
-   the mono, quiet; values in the text face. */
-.props {
-  display: grid;
-  grid-template-columns: 11ch minmax(0, 1fr);
-  column-gap: 12px;
-  margin-top: 18px;
-  font-size: 15px;
-  line-height: 24px;
+.colophon {
+  margin-top: calc(var(--line) * 5);
+  /* On the narrowest phones it wraps; balanced, it never strands a ~*~. */
+  text-wrap: balance;
 }
 
-.props dt {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--fg2);
-}
+/* ── Blocks ────────────────────────────────────────────────────────────── */
 
-.props dd {
-  margin: 0;
-}
-
-/* The theme switch is a property like the others: auto, light and dark,
-   then the named themes, each with the swatch Thoughts puts beside it.
-   Invisible (not absent) until src/theme.js runs, so the block is the same
-   height with scripts off and there is never a control that does nothing. */
-.theme {
-  visibility: hidden;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 2px 2px;
-}
-
-.theme.is-on {
-  visibility: visible;
-}
-
-.theme .gap {
-  width: 1px;
-  height: 14px;
-  margin: 0 6px;
-  background: var(--rule);
-}
-
-.theme button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0 7px;
-  border: 0;
-  border-radius: 4px;
-  background: none;
-  font: inherit;
-  color: var(--fg2);
-  cursor: pointer;
-}
-
-.sw {
-  flex: none;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  border: 1.5px solid;
-}
-
-[data-theme-set="auto"] .sw {
-  background: linear-gradient(135deg, #fcf5e4 50%, #262626 50%);
-  border-color: #8a8577;
-}
-[data-theme-set="light"] .sw { background: #fcf5e4; border-color: #357a40; }
-[data-theme-set="dark"] .sw { background: #262626; border-color: #86c38f; }
-[data-theme-set="nord"] .sw { background: #2e3440; border-color: #88c0d0; }
-[data-theme-set="dracula"] .sw { background: #282a36; border-color: #bd93f9; }
-[data-theme-set="solarized"] .sw { background: #fdf6e3; border-color: #268bd2; }
-[data-theme-set="monokai"] .sw { background: #272822; border-color: #f92672; }
-[data-theme-set="ocean"] .sw { background: #1b2838; border-color: #5e9ed6; }
-[data-theme-set="cyberpunk"] .sw { background: #050508; border-color: #ff003c; }
-
-.theme button:hover {
-  color: var(--fg);
-}
-
-.theme button[aria-pressed="true"] {
-  color: var(--fg);
-  background: var(--wash);
-}
-
-/* ── The body of a note ────────────────────────────────────────────────── */
-
+/* One blank line between blocks. Margins collapse, so a heading after a
+   paragraph is still exactly one line away rather than two. */
 p,
 ul,
 ol,
-table,
-figure,
-blockquote {
-  margin-block: 14px;
+dl,
+h2,
+h3,
+blockquote,
+figure {
+  margin-block: var(--line);
 }
 
-/* A rule between sections, the way every note of mine is cut up with ---. */
-hr {
-  margin: 34px 0 30px;
-  border: 0;
-  border-top: 1px solid var(--rule);
-}
-
-h2 {
-  font-size: 19px;
-  line-height: 26px;
-  font-weight: 700;
-  margin: 0 0 12px;
-}
-
+/* Headings are written the way my notes write them, in sentence case
+   ("## Experience"), not shouted in capitals. */
+h2,
 h3 {
-  font-size: 16px;
+  font-size: inherit;
+  line-height: inherit;
   font-weight: 700;
-  margin: 22px 0 6px;
 }
 
+h2::before {
+  content: "## ";
+  content: "## " / "";
+  color: var(--fg3);
+  font-weight: 400;
+}
+
+h2.top::before {
+  content: "# ";
+  content: "# " / "";
+}
+
+h3::before {
+  content: "### ";
+  content: "### " / "";
+  color: var(--fg3);
+  font-weight: 400;
+}
+
+/* Lists hang their marker in the gutter, so a long entry wraps under its own
+   text instead of under the dash. */
 ul {
-  padding-left: 22px;
+  list-style: none;
 }
 
-li + li {
-  margin-top: 6px;
+ul > li {
+  padding-left: 2ch;
 }
 
-li::marker {
+ul > li::before {
+  content: "- ";
+  content: "- " / "";
+  margin-left: -2ch;
+}
+
+/* Two columns of plain text, the way `ls -l` lines things up. The left one is
+   wide enough for "2026–now" plus two spaces, which is why end years are
+   written short: at 10ch the longest row, the one for the Children's Hospital,
+   still fits the 480px measure on one line. A long right-hand entry wraps
+   inside its own column. */
+.rows {
+  display: grid;
+  grid-template-columns: 10ch 1fr;
+}
+
+.rows dt {
+  color: var(--fg2);
+  font-variant-numeric: tabular-nums;
+}
+
+.rows dd {
+  margin: 0;
+}
+
+.muted {
+  color: var(--fg2);
+}
+
+/* The rest of the markdown is mine too, the habits my notes are written in.
+   A --- line cuts the page into sections before every heading. */
+.rule {
   color: var(--fg3);
 }
 
-/* An item with its detail on the line under it. */
-.item .muted {
-  display: block;
-  font-size: 15px;
-  line-height: 22px;
+/* A quote rather than an ornament for the one line under the header. */
+.quote::before {
+  content: "> ";
+  content: "> " / "";
+  color: var(--fg3);
 }
 
-/* Tables are how I lay out anything with more than one field: bold names in
-   the first column that matters, a quiet header row, rules between rows. */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 15px;
-  line-height: 22px;
-}
-
-.table th {
-  text-align: left;
-  font-family: var(--mono);
-  font-size: 12px;
+/* Names in bold, with the stars left in, the way the editor shows them. */
+.rows b::before,
+.rows b::after {
+  content: "**";
+  content: "**" / "";
+  color: var(--fg3);
   font-weight: 400;
-  color: var(--fg2);
-  padding: 0 12px 6px 0;
-  border-bottom: 1px solid var(--rule);
 }
 
-.table td {
-  padding: 9px 12px 9px 0;
-  border-bottom: 1px solid var(--rule);
-  vertical-align: top;
+/* A link to another page of the site is a [[wikilink]], the way one note
+   links another; links out stay [label](url). */
+.wiki::before,
+.wiki::after {
+  display: inline-block; /* keeps the underline off the brackets */
+  color: var(--fg3);
+  text-decoration: none;
 }
 
-.table td:last-child,
-.table th:last-child {
-  padding-right: 0;
+.wiki::before {
+  content: "[[";
+  content: "[[" / "";
 }
 
-/* Dates take what they need, the role gets the room: it is the longest
-   thing in most rows. */
-.table th:nth-child(2),
-.table td:nth-child(2) {
-  width: 38%;
-}
-
-.table .when {
-  white-space: nowrap;
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--fg2);
-}
-
-/* On a phone the three columns become a date over two lines. */
-@media (max-width: 560px) {
-  .table thead {
-    display: none;
-  }
-
-  .table tr {
-    display: grid;
-    grid-template-columns: 9ch minmax(0, 1fr);
-    column-gap: 12px;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .table td {
-    padding: 0;
-    border: 0;
-  }
-
-  .table td:nth-child(2),
-  .table td:nth-child(3) {
-    grid-column: 2;
-  }
-
-  .table .when {
-    grid-row: 1 / span 2;
-  }
+.wiki::after {
+  content: "]]";
+  content: "]]" / "";
 }
 
 /* Tags close a note. */
 .tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 30px;
-  font-family: var(--mono);
-  font-size: 12px;
-  line-height: 20px;
+  color: var(--fg2);
 }
 
-.tags span {
-  padding: 1px 8px;
-  border-radius: 999px;
-  color: var(--link);
-  background: var(--wash);
-}
+/* ── Home: the text column, and a quiet one on the right ──────────────── */
 
-/* ── Home: the note, and a sidebar on the right ────────────────────────── */
-
+/* The right column mirrors the header block: four lines at the header's
+   18px, top-aligned with it, each a mark and a handle. Only the handle is
+   underlined, the way only the URL is in a [label](url) link. */
 .links {
   list-style: none;
-  padding: 0;
+  line-height: 18px;
   margin: 0;
-  font-size: 15px;
-  line-height: 24px;
 }
 
-.links li + li {
-  margin-top: 2px;
+.links > li {
+  padding-left: 0;
+}
+
+.links > li::before {
+  content: none;
 }
 
 .links a {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 1ch;
   text-decoration: none;
 }
 
 .links a span {
   text-decoration: underline;
-  text-decoration-color: var(--fg3);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
 
 .links a:hover span {
-  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
+}
+
+.links a:focus-visible {
+  outline-offset: 1px;
 }
 
 .icon {
   flex: none;
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   fill: currentColor;
 }
 
@@ -611,14 +390,13 @@ li::marker {
   stroke-linejoin: round;
 }
 
-/* The arena is set in the mono on a 12px line, so its character cells are
-   close enough to square for a circle to read as one. */
+/* The arena is set on a 12px line so its character cells are close enough
+   to square for a circle to read as one. Twenty rows is 240px, a whole
+   number of the page's 20px lines, so everything under it stays on the
+   grid. */
 .arena {
   margin: 0;
   width: 35ch;
-  font-family: var(--mono);
-  font-size: 12px;
-  line-height: 20px;
 }
 
 .arena pre {
@@ -638,40 +416,27 @@ li::marker {
   color: var(--fg2);
 }
 
-.a-new,
-.a-fly {
-  color: var(--fg);
-}
-
 .a-fly {
   font-weight: 700;
 }
 
 .arena-readout {
-  margin: 14px 0 0;
+  margin: var(--line) 0 0;
   color: var(--fg2);
   white-space: pre;
   overflow-wrap: normal;
 }
 
 .arena figcaption {
-  margin-top: 10px;
-  font-family: var(--text);
-  font-size: 14px;
-  line-height: 21px;
+  margin-top: calc(var(--line) / 2);
   color: var(--fg2);
 }
 
-.arena figcaption a {
-  color: var(--link);
-  text-decoration: none;
-}
-
-@media (min-width: 1100px) {
+@media (min-width: 960px) {
   main.home {
     max-width: 1360px;
     display: grid;
-    grid-template-columns: 640px minmax(0, 1fr);
+    grid-template-columns: 480px minmax(0, 1fr);
     grid-template-rows: auto 1fr;
     column-gap: 80px;
   }
@@ -684,26 +449,26 @@ li::marker {
     grid-area: 2 / 1;
   }
 
-  /* Pinned, so the links are one click away however far down the note is
+  /* Pinned, so the links are one click away however far down the page is
      read. */
   .home .side {
     grid-area: 1 / 2 / 3 / 3;
     justify-self: end;
     align-self: start;
     position: sticky;
-    top: 48px;
-    width: 35ch;
-    font-size: 15px;
+    top: 40px;
   }
 
+  /* The arena's top sits on the same line as the ~*~ line opposite it: the
+     header is 4 x 18px and the pause after it 5 lines, the links 4 x 18px. */
   .home .arena {
-    margin-top: 44px;
+    margin-top: calc(4 * 18px + 5 * var(--line) - 4 * 18px);
   }
 }
 
-/* One column: the links go straight under the properties, where contact
-   belongs on a phone, and the arena goes to the end of the page. */
-@media (max-width: 1099px) {
+/* One column: the links go straight under the header, where contact belongs
+   on a phone, and the arena goes to the end of the page. */
+@media (max-width: 959px) {
   main.home {
     display: flex;
     flex-direction: column;
@@ -715,7 +480,7 @@ li::marker {
 
   .home .links {
     order: 1;
-    margin-top: 20px;
+    margin-top: var(--line);
   }
 
   .home .body {
@@ -724,41 +489,59 @@ li::marker {
 
   .home .arena {
     order: 3;
-    margin-top: 44px;
+    margin-top: calc(var(--line) * 2);
   }
 }
 
 /* ── Articles ──────────────────────────────────────────────────────────── */
 
-/* An article runs wider than the home note, because a figure needs more
-   room than a paragraph does. */
+/* An article page runs to 48em, which is eighty columns, because a figure
+   needs more room than a paragraph does. The header and the back links sit
+   in the same wider column, so the page still reads as one file. */
 main.wide {
-  max-width: 760px;
+  max-width: 48em;
+}
+
+.back {
+  line-height: 18px;
+}
+
+/* The byline is the line straight after the title. Its negative margin
+   collapses with the heading's own, which leaves exactly zero between them,
+   and then two blank lines before the text starts. */
+.byline {
+  color: var(--fg2);
+  margin-top: calc(var(--line) * -1);
+  margin-bottom: calc(var(--line) * 2);
 }
 
 article h2 {
-  margin-top: 0;
+  margin-top: calc(var(--line) * 2);
 }
 
-/* The way home again at the bottom of a long page. */
-.back {
-  margin-top: 40px;
-  font-family: var(--mono);
-  font-size: 13px;
+/* The page ends the way it starts, with the way home, after a longer pause. */
+article + .back {
+  margin-top: calc(var(--line) * 3);
 }
 
-.back a {
-  color: var(--link);
-  text-decoration: none;
-}
-
-/* A document in a list gets its description on the lines under the link. */
+/* A document in a list gets its description on the lines under the link,
+   hanging from the same indent as the link itself. */
 .note {
   display: block;
 }
 
+blockquote {
+  margin-inline: -40px 0;
+  padding: var(--line) var(--line) var(--line) 40px;
+  background: var(--wash);
+}
+
+/* Figures are framed in one hairline of ink, the way pierre frames a video.
+   The caption is the next line after the frame, and a figure is two blank
+   lines from the one before it, so a caption can only belong to the image
+   above it. */
 figure + figure {
-  margin-top: 34px;
+  margin-top: calc(var(--line) * 2);
 }
 
 figure > a {
@@ -770,15 +553,11 @@ figure img {
   display: block;
   width: 100%;
   height: auto;
-  border: 1px solid var(--rule);
-  border-radius: 4px;
+  border: 1px solid var(--fg);
   background: #fff;
 }
 
 figcaption {
-  margin-top: 8px;
-  font-size: 15px;
-  line-height: 22px;
   color: var(--fg2);
 }
 
@@ -799,17 +578,21 @@ figcaption b {
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 520px) {
   body {
-    padding: 32px 20px 48px;
+    padding: 32px 20px;
   }
 
-  h1 {
-    font-size: 26px;
-    line-height: 32px;
+  blockquote {
+    margin-inline: -20px 0;
+    padding-left: 20px;
   }
+}
 
-  .props {
-    grid-template-columns: 9ch minmax(0, 1fr);
+/* A short description after a link wraps as a unit, never mid-phrase. On a
+   phone the column is too narrow to promise that, so there it wraps freely. */
+@media (min-width: 521px) {
+  .gloss {
+    white-space: nowrap;
   }
 }

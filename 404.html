@@ -3,33 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Srujan Yamali- not found</title>
+    <title>Not found :: Srujan Yamali</title>
     <meta name="robots" content="noindex" />
-    <meta name="theme-color" content="#fcf5e4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#262626" media="(prefers-color-scheme: dark)" />
-    <!-- Theme before first paint: a theme chosen in the properties is kept,
-         otherwise it follows the visitor's clock, light from 7am to 7pm.
-         src/theme.js applies the same rule after load; src/themes.js is the
-         list these ids and papers come from. -->
+    <meta name="theme-color" content="#f4f3f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)" />
+    <!-- Theme before first paint: a choice made with the switch in the header
+         is kept, otherwise it follows the visitor's clock, light from 7am to
+         7pm. src/theme.js applies the same rule after load. -->
     <script>
       (function () {
-        var bg = {
-          light: "#fcf5e4", dark: "#262626", nord: "#2e3440", dracula: "#282a36",
-          solarized: "#fdf6e3", monokai: "#272822", ocean: "#1b2838", cyberpunk: "#050508"
-        };
         var t = null;
         try {
           t = localStorage.getItem("theme");
         } catch (e) {}
-        if (!bg.hasOwnProperty(t)) {
+        if (t !== "light" && t !== "dark") {
           var h = new Date().getHours();
           t = h >= 7 && h < 19 ? "light" : "dark";
         }
         var r = document.documentElement;
         r.setAttribute("data-theme", t);
-        r.style.colorScheme = t === "light" || t === "solarized" ? "light" : "dark";
+        r.style.colorScheme = t;
         var m = document.querySelectorAll('meta[name="theme-color"]');
-        for (var i = 0; i < m.length; i++) m[i].setAttribute("content", bg[t]);
+        for (var i = 0; i < m.length; i++) {
+          m[i].setAttribute("content", t === "dark" ? "#0e0e0d" : "#f4f3f0");
+        }
       })();
     </script>
     <script type="module" src="/src/theme.js"></script>
@@ -41,23 +38,22 @@
   <body>
     <main>
       <header class="head">
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">srujanyamali.com</a><span class="sep">/</span><span aria-current="page">404</span></nav>
-        <h1>Not found<span class="caret" aria-hidden="true"></span></h1>
-        <dl class="props">
-          <dt>theme</dt>
-          <dd class="theme" role="group" aria-label="Colour theme"><button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise"><span class="sw" aria-hidden="true"></span>auto</button><button type="button" data-theme-set="light" aria-pressed="false"><span class="sw" aria-hidden="true"></span>light</button><button type="button" data-theme-set="dark" aria-pressed="false"><span class="sw" aria-hidden="true"></span>dark</button><span class="gap" aria-hidden="true"></span><button type="button" data-theme-set="nord" aria-pressed="false"><span class="sw" aria-hidden="true"></span>nord</button><button type="button" data-theme-set="dracula" aria-pressed="false"><span class="sw" aria-hidden="true"></span>dracula</button><button type="button" data-theme-set="solarized" aria-pressed="false"><span class="sw" aria-hidden="true"></span>solarized</button><button type="button" data-theme-set="monokai" aria-pressed="false"><span class="sw" aria-hidden="true"></span>monokai</button><button type="button" data-theme-set="ocean" aria-pressed="false"><span class="sw" aria-hidden="true"></span>ocean</button><button type="button" data-theme-set="cyberpunk" aria-pressed="false"><span class="sw" aria-hidden="true"></span>cyberpunk</button></dd>
-        </dl>
+        <h1>SRUJAN YAMALI <span class="cursor" aria-hidden="true">█</span></h1>
+        <p class="back"><a href="/">← BACK TO HOME</a></p>
+        <p class="theme" role="group" aria-label="Colour theme">
+          <button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise">auto</button>
+          <button type="button" data-theme-set="light" aria-pressed="false">light</button>
+          <button type="button" data-theme-set="dark" aria-pressed="false">dark</button>
+        </p>
       </header>
 
-      <hr />
+      <h2 class="top" style="margin-top: calc(var(--line) * 2)">404 Not found</h2>
 
       <p>
         There is no page at this address. The site used to be spread over
         several pages that have since been folded into the home page, so
         whatever you were looking for is most likely there.
       </p>
-
-      <p class="back"><a href="/">← srujanyamali.com</a></p>
     </main>
   </body>
 </html>

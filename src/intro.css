@@ -23,7 +23,7 @@
   padding: 0;
   border: 0;
   background: none;
-  font-family: var(--mono);
+  font-family: var(--font);
   font-size: 12px;
   line-height: 20px;
   color: var(--fg2);

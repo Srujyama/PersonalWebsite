@@ -3,36 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Srujan Yamali- Measuring behaviour in Drosophila</title>
+    <title>Measuring behaviour in Drosophila :: Srujan Yamali</title>
     <meta
       name="description"
       content="The computer vision behind a high-throughput Drosophila courtship assay, and the second question the tracking made askable: whether mating changes how much a fly avoids the middle of an open arena."
     />
-    <meta name="theme-color" content="#fcf5e4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#262626" media="(prefers-color-scheme: dark)" />
-    <!-- Theme before first paint: a theme chosen in the properties is kept,
-         otherwise it follows the visitor's clock, light from 7am to 7pm.
-         src/theme.js applies the same rule after load; src/themes.js is the
-         list these ids and papers come from. -->
+    <meta name="theme-color" content="#f4f3f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)" />
+    <!-- Theme before first paint: a choice made with the switch in the header
+         is kept, otherwise it follows the visitor's clock, light from 7am to
+         7pm. src/theme.js applies the same rule after load. -->
     <script>
       (function () {
-        var bg = {
-          light: "#fcf5e4", dark: "#262626", nord: "#2e3440", dracula: "#282a36",
-          solarized: "#fdf6e3", monokai: "#272822", ocean: "#1b2838", cyberpunk: "#050508"
-        };
         var t = null;
         try {
           t = localStorage.getItem("theme");
         } catch (e) {}
-        if (!bg.hasOwnProperty(t)) {
+        if (t !== "light" && t !== "dark") {
           var h = new Date().getHours();
           t = h >= 7 && h < 19 ? "light" : "dark";
         }
         var r = document.documentElement;
         r.setAttribute("data-theme", t);
-        r.style.colorScheme = t === "light" || t === "solarized" ? "light" : "dark";
+        r.style.colorScheme = t;
         var m = document.querySelectorAll('meta[name="theme-color"]');
-        for (var i = 0; i < m.length; i++) m[i].setAttribute("content", bg[t]);
+        for (var i = 0; i < m.length; i++) {
+          m[i].setAttribute("content", t === "dark" ? "#0e0e0d" : "#f4f3f0");
+        }
       })();
     </script>
     <script type="module" src="/src/theme.js"></script>
@@ -42,24 +39,18 @@
   <body>
     <main class="wide">
       <header class="head">
-        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">srujanyamali.com</a><span class="sep">/</span><a href="/#research">research</a><span class="sep">/</span><span aria-current="page">drosophila</span></nav>
-        <h1>Measuring behaviour in <em>Drosophila</em><span class="caret" aria-hidden="true"></span></h1>
-        <dl class="props">
-          <dt>field</dt>
-          <dd>Behavioural genetics</dd>
-          <dt>lab</dt>
-          <dd>Shao lab, University of Delaware</dd>
-          <dt>years</dt>
-          <dd><time>2023–2024</time></dd>
-          <dt>theme</dt>
-          <dd class="theme" role="group" aria-label="Colour theme"><button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise"><span class="sw" aria-hidden="true"></span>auto</button><button type="button" data-theme-set="light" aria-pressed="false"><span class="sw" aria-hidden="true"></span>light</button><button type="button" data-theme-set="dark" aria-pressed="false"><span class="sw" aria-hidden="true"></span>dark</button><span class="gap" aria-hidden="true"></span><button type="button" data-theme-set="nord" aria-pressed="false"><span class="sw" aria-hidden="true"></span>nord</button><button type="button" data-theme-set="dracula" aria-pressed="false"><span class="sw" aria-hidden="true"></span>dracula</button><button type="button" data-theme-set="solarized" aria-pressed="false"><span class="sw" aria-hidden="true"></span>solarized</button><button type="button" data-theme-set="monokai" aria-pressed="false"><span class="sw" aria-hidden="true"></span>monokai</button><button type="button" data-theme-set="ocean" aria-pressed="false"><span class="sw" aria-hidden="true"></span>ocean</button><button type="button" data-theme-set="cyberpunk" aria-pressed="false"><span class="sw" aria-hidden="true"></span>cyberpunk</button></dd>
-        </dl>
+        <h1>SRUJAN YAMALI <span class="cursor" aria-hidden="true">█</span></h1>
+        <p><a href="/">← BACK TO HOME</a></p>
+        <p class="theme" role="group" aria-label="Colour theme">
+          <button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise">auto</button>
+          <button type="button" data-theme-set="light" aria-pressed="false">light</button>
+          <button type="button" data-theme-set="dark" aria-pressed="false">dark</button>
+        </p>
       </header>
 
-      <hr />
-
       <article>
-
+        <h2 class="top">Measuring behaviour in <em>Drosophila</em></h2>
+        <p class="byline">Behavioural genetics · Shao lab, University of Delaware · 2023–2024</p>
 
         <p>
           Courtship in <em>Drosophila</em> is a fixed sequence. The male
@@ -87,7 +78,8 @@
           entering it.
         </p>
 
-        <hr />
+        <p class="rule" aria-hidden="true">---</p>
+
 
         <h2>Presentations</h2>
 
@@ -106,21 +98,23 @@
           </li>
         </ul>
 
-        <hr />
+        <p class="rule" aria-hidden="true">---</p>
+
 
         <h2>Files</h2>
 
         <ul>
           <li>
-            <a class="int" href="/work/centrophobism-poster.pdf">Poster</a>,
+            [Poster](<a href="/work/centrophobism-poster.pdf">/work/<wbr>centrophobism-poster.pdf</a>),
             <span class="gloss muted">PDF&nbsp;·&nbsp;1&nbsp;page&nbsp;·&nbsp;2.3&nbsp;MB</span>
             <span class="note">The poster version of the study, with the full
             design, the statistics and the conclusions on one sheet.</span>
           </li>
-          <li><a class="ext" href="https://github.com/Srujyama/FlyFlirt" target="_blank" rel="noopener">Code</a></li>
+          <li>[Code](<a href="https://github.com/Srujyama/FlyFlirt" target="_blank" rel="noopener">https://<wbr>github.com/<wbr>Srujyama/<wbr>FlyFlirt</a>)</li>
         </ul>
 
-        <hr />
+        <p class="rule" aria-hidden="true">---</p>
+
 
         <h2>Figures</h2>
 
@@ -160,10 +154,9 @@
             pairs and falls for the Corazonin mutants (CRZ).
           </figcaption>
         </figure>
-        <p class="tags" aria-label="Tags"><span>#research</span><span>#drosophila</span><span>#computer-vision</span><span>#behaviour</span></p>
       </article>
 
-      <p class="back"><a href="/">← srujanyamali.com</a></p>
+      <p class="back"><a href="/">← BACK TO HOME</a></p>
     </main>
   </body>
 </html>

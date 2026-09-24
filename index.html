@@ -3,38 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Srujan Yamali- software and research</title>
+    <title>Srujan Yamali</title>
     <meta name="description" content="Srujan Yamali studies computer science at UC Berkeley and has built industry software at SpaceX, Visa and Mercor and research tools at the University of Delaware, the Children's Hospital of Philadelphia and Cornell." />
     <link rel="canonical" href="https://www.srujanyamali.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Srujan Yamali" />
     <meta property="og:url" content="https://www.srujanyamali.com/" />
     <meta property="og:description" content="Srujan Yamali studies computer science at UC Berkeley and has built industry software at SpaceX, Visa and Mercor and research tools at the University of Delaware, the Children's Hospital of Philadelphia and Cornell." />
-    <meta name="theme-color" content="#fcf5e4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#262626" media="(prefers-color-scheme: dark)" />
-    <!-- Theme before first paint: a theme chosen in the properties is kept,
-         otherwise it follows the visitor's clock, light from 7am to 7pm.
-         src/theme.js applies the same rule after load; src/themes.js is the
-         list these ids and papers come from. -->
+    <meta name="theme-color" content="#f4f3f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)" />
+    <!-- Theme before first paint: a choice made with the switch in the header
+         is kept, otherwise it follows the visitor's clock, light from 7am to
+         7pm. src/theme.js applies the same rule after load. -->
     <script>
       (function () {
-        var bg = {
-          light: "#fcf5e4", dark: "#262626", nord: "#2e3440", dracula: "#282a36",
-          solarized: "#fdf6e3", monokai: "#272822", ocean: "#1b2838", cyberpunk: "#050508"
-        };
         var t = null;
         try {
           t = localStorage.getItem("theme");
         } catch (e) {}
-        if (!bg.hasOwnProperty(t)) {
+        if (t !== "light" && t !== "dark") {
           var h = new Date().getHours();
           t = h >= 7 && h < 19 ? "light" : "dark";
         }
         var r = document.documentElement;
         r.setAttribute("data-theme", t);
-        r.style.colorScheme = t === "light" || t === "solarized" ? "light" : "dark";
+        r.style.colorScheme = t;
         var m = document.querySelectorAll('meta[name="theme-color"]');
-        for (var i = 0; i < m.length; i++) m[i].setAttribute("content", bg[t]);
+        for (var i = 0; i < m.length; i++) {
+          m[i].setAttribute("content", t === "dark" ? "#0e0e0d" : "#f4f3f0");
+        }
       })();
     </script>
     <script type="module" src="/src/theme.js"></script>
@@ -118,18 +115,14 @@
   <body>
     <main class="home">
       <header class="head">
-        <nav class="crumbs" aria-label="Breadcrumb"><span>srujanyamali.com</span><span class="sep">/</span><span aria-current="page">home</span></nav>
-        <h1>Srujan Yamali<span class="caret" aria-hidden="true"></span></h1>
-        <dl class="props">
-          <dt>studies</dt>
-          <dd>Computer science, UC Berkeley</dd>
-          <dt>now</dt>
-          <dd>Contract engineering for SpaceX</dd>
-          <dt>works on</dt>
-          <dd>Software and research</dd>
-          <dt>theme</dt>
-          <dd class="theme" role="group" aria-label="Colour theme"><button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise"><span class="sw" aria-hidden="true"></span>auto</button><button type="button" data-theme-set="light" aria-pressed="false"><span class="sw" aria-hidden="true"></span>light</button><button type="button" data-theme-set="dark" aria-pressed="false"><span class="sw" aria-hidden="true"></span>dark</button><span class="gap" aria-hidden="true"></span><button type="button" data-theme-set="nord" aria-pressed="false"><span class="sw" aria-hidden="true"></span>nord</button><button type="button" data-theme-set="dracula" aria-pressed="false"><span class="sw" aria-hidden="true"></span>dracula</button><button type="button" data-theme-set="solarized" aria-pressed="false"><span class="sw" aria-hidden="true"></span>solarized</button><button type="button" data-theme-set="monokai" aria-pressed="false"><span class="sw" aria-hidden="true"></span>monokai</button><button type="button" data-theme-set="ocean" aria-pressed="false"><span class="sw" aria-hidden="true"></span>ocean</button><button type="button" data-theme-set="cyberpunk" aria-pressed="false"><span class="sw" aria-hidden="true"></span>cyberpunk</button></dd>
-        </dl>
+        <h1>SRUJAN YAMALI <span class="cursor" aria-hidden="true">█</span></h1>
+        <p>SOFTWARE AND RESEARCH</p>
+        <p>2026</p>
+        <p class="theme" role="group" aria-label="Colour theme">
+          <button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise">auto</button>
+          <button type="button" data-theme-set="light" aria-pressed="false">light</button>
+          <button type="button" data-theme-set="dark" aria-pressed="false">dark</button>
+        </p>
       </header>
 
       <aside class="side" aria-label="Contact">
@@ -165,14 +158,17 @@
           <figcaption>
             A simulated fly in an open arena. It keeps to the wall the way real
             flies do, and the share of time it spends in the middle is the
-            number the <a class="int" href="/research/drosophila"><em>Drosophila</em>
+            number the <a href="/research/drosophila"><em>Drosophila</em>
             study</a> was built on.
           </figcaption>
         </figure>
       </aside>
 
       <div class="body">
-      <hr />
+
+      <p class="colophon quote">B.S. Computer Science, UC Berkeley</p>
+
+      <h2 class="top" id="about">About Srujan Yamali</h2>
 
       <p>
         I study computer science at UC Berkeley, and the work splits about
@@ -189,56 +185,59 @@
         bacterial genomes have taken DNA from each other.
       </p>
 
-      <hr />
+      <p class="rule" aria-hidden="true">---</p>
 
       <h2 id="experience">Experience</h2>
 
-      <table class="table">
-        <thead>
-          <tr><th scope="col">when</th><th scope="col">where</th><th scope="col">role</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="when">2026–now</td><td><b>SpaceX</b></td><td>Contract Engineer (via subcontractor)</td></tr>
-          <tr><td class="when">2026</td><td><b>Visa</b></td><td>Software Engineer Intern</td></tr>
-          <tr><td class="when">2025–26</td><td><b>Mercor</b></td><td>Software Engineer</td></tr>
-          <tr><td class="when">2024–25</td><td><b>Children's Hospital of Philadelphia</b></td><td>Data Science Intern</td></tr>
-          <tr><td class="when">2023–24</td><td><b>Cornell University</b></td><td>Machine Learning Engineer Intern</td></tr>
-          <tr><td class="when">2023</td><td><b>University of Delaware</b></td><td>Software Development Intern</td></tr>
-        </tbody>
-      </table>
+      <dl class="rows">
+        <dt>2026–now</dt>
+        <dd><b>SpaceX</b>, Contract Engineer (via subcontractor)</dd>
+        <dt>2026</dt>
+        <dd><b>Visa</b>, Software Engineer Intern</dd>
+        <dt>2025–26</dt>
+        <dd><b>Mercor</b>, Software Engineer</dd>
+        <dt>2024–25</dt>
+        <dd><b>Children's Hospital of Philadelphia</b>, Data Science Intern</dd>
+        <dt>2023–24</dt>
+        <dd><b>Cornell University</b>, Machine Learning Engineer Intern</dd>
+        <dt>2023</dt>
+        <dd><b>University of Delaware</b>, Software Development Intern</dd>
+      </dl>
 
-      <hr />
+      <p class="rule" aria-hidden="true">---</p>
 
       <h2 id="research">Research</h2>
 
       <ul>
-        <li class="item"><a class="int" href="/research/drosophila">Measuring behaviour in <em>Drosophila</em></a><span class="muted">Presented at IBANGS and HHMI Janelia in 2024</span></li>
-        <li class="item"><a class="int" href="/research/redcarpet">Finding recombination in bacterial genomes</a><span class="muted">Presented at ISSSI in Perth in 2024</span></li>
+        <li><a class="wiki" href="/research/drosophila">Measuring behaviour in <em>Drosophila</em></a>, <span class="gloss">presented at IBANGS and HHMI Janelia in 2024</span></li>
+        <li><a class="wiki" href="/research/redcarpet">Finding recombination in bacterial genomes</a>, <span class="gloss">presented at ISSSI in Perth in 2024</span></li>
       </ul>
 
-      <hr />
+      <p class="rule" aria-hidden="true">---</p>
 
       <h2 id="ventures">Ventures</h2>
 
       <ul>
-        <li class="item"><a class="ext" href="https://www.stryda.ai" target="_blank" rel="noopener">Stryda</a><span class="muted">An AI commissioner for golf</span></li>
-        <li class="item"><a class="ext" href="https://sylor.us" target="_blank" rel="noopener">Sylor</a><span class="muted">AI agents that stress-test decisions</span></li>
-        <li class="item"><a class="ext" href="https://tipsyy.vercel.app/" target="_blank" rel="noopener">Tipsy</a><span class="muted">A drink tracker for iPhone</span></li>
+        <li>[Stryda](<a href="https://www.stryda.ai" target="_blank" rel="noopener">https://<wbr>www.stryda.ai</a>), <span class="gloss">an AI commissioner for golf</span></li>
+        <li>[Sylor](<a href="https://sylor.us" target="_blank" rel="noopener">https://<wbr>sylor.us</a>), <span class="gloss">AI agents that stress-test decisions</span></li>
+        <li>[Tipsy](<a href="https://tipsyy.vercel.app/" target="_blank" rel="noopener">https://<wbr>tipsyy.vercel.app</a>), <span class="gloss">a drink tracker for iPhone</span></li>
       </ul>
 
-      <hr />
+      <p class="rule" aria-hidden="true">---</p>
 
       <h2 id="open-source">Open source</h2>
 
       <ul>
-        <li><a class="ext" href="https://github.com/Srujyama/FlyFlirt" target="_blank" rel="noopener">FlyFlirt</a> <span class="muted">· the courtship tracker</span></li>
-        <li><a class="ext" href="https://github.com/microbialARC/Redcarpet" target="_blank" rel="noopener">RedCarpet</a> <span class="muted">· the recombination detector</span></li>
-        <li><a class="ext" href="https://github.com/Srujyama/mna-toolkit" target="_blank" rel="noopener">M&amp;A Toolkit</a></li>
-        <li><a class="ext" href="https://github.com/Srujyama/Stryier" target="_blank" rel="noopener">Stryier</a></li>
-        <li><a class="ext" href="https://github.com/Srujyama/Fintech-Tipping" target="_blank" rel="noopener">Tap to Tip</a></li>
+        <li>[FlyFlirt](<a href="https://github.com/Srujyama/FlyFlirt" target="_blank" rel="noopener">https://<wbr>github.com/<wbr>Srujyama/<wbr>FlyFlirt</a>)</li>
+        <li>[RedCarpet](<a href="https://github.com/microbialARC/Redcarpet" target="_blank" rel="noopener">https://<wbr>github.com/<wbr>microbialARC/<wbr>Redcarpet</a>)</li>
+        <li>[M&amp;A Toolkit](<a href="https://github.com/Srujyama/mna-toolkit" target="_blank" rel="noopener">https://<wbr>github.com/<wbr>Srujyama/<wbr>mna-toolkit</a>)</li>
+        <li>[Stryier](<a href="https://github.com/Srujyama/Stryier" target="_blank" rel="noopener">https://<wbr>github.com/<wbr>Srujyama/<wbr>Stryier</a>)</li>
+        <li>[Tap to Tip](<a href="https://github.com/Srujyama/Fintech-Tipping" target="_blank" rel="noopener">https://<wbr>github.com/<wbr>Srujyama/<wbr>Fintech-Tipping</a>)</li>
       </ul>
 
-      <p class="tags" aria-label="Tags"><span>#berkeley</span><span>#software</span><span>#research</span><span>#drosophila</span><span>#genomics</span><span>#computer-vision</span></p>
+      <p class="rule" aria-hidden="true">---</p>
+
+      <p class="tags">#berkeley #software #research #drosophila #genomics</p>
       </div>
     </main>
   </body>

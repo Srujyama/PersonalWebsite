@@ -12,7 +12,6 @@
 // dot fetch before this module has even loaded, so the glyph rects the dots
 // aim for are the real ones and the page underneath is already final.
 import "./intro.css";
-import { byId } from "./themes.js";
 
 const ASSEMBLE = 2.2;
 const HOLD = 0.9;
@@ -52,13 +51,14 @@ const CHUNK = 1024; // dots per path, see paint()
 const TAU = Math.PI * 2;
 
 // The theme is settled before this runs (the <head> script sets data-theme
-// from the visitor's clock or their saved choice), so the dots are drawn in
-// that theme's ink from the first frame. Without it, the OS setting picks
-// between the plain light and dark ones.
-const THEME =
-  byId(document.documentElement.dataset.theme) ||
-  byId(matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-const INK = (THEME.fg.match(/[0-9a-f]{2}/gi) || []).map((x) => parseInt(x, 16));
+// from the visitor's clock or their saved choice); the OS setting is only the
+// fallback for a page without it.
+const DARK = document.documentElement.dataset.theme
+  ? document.documentElement.dataset.theme === "dark"
+  : matchMedia("(prefers-color-scheme: dark)").matches;
+const INK = DARK
+  ? [242, 241, 237] // #f2f1ed
+  : [18, 18, 17]; // #121211
 
 const root = document.documentElement;
 const main = document.querySelector("main");
