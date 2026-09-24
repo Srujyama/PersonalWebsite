@@ -3,33 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Finding recombination in bacterial genomes :: Srujan Yamali</title>
+    <title>Srujan Yamali- Finding recombination in bacterial genomes</title>
     <meta
       name="description"
       content="A changepoint detector that finds recombination in bacterial genomes. It reads the similarity between proteins as a signal running along the chromosome and marks the places where that signal shifts, because a shift is where a block of DNA arrived from somewhere else."
     />
-    <meta name="theme-color" content="#f4f3f0" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0e0e0d" media="(prefers-color-scheme: dark)" />
-    <!-- Theme before first paint: a choice made with the switch in the header
-         is kept, otherwise it follows the visitor's clock, light from 7am to
-         7pm. src/theme.js applies the same rule after load. -->
+    <meta name="theme-color" content="#fcf5e4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#262626" media="(prefers-color-scheme: dark)" />
+    <!-- Theme before first paint: a theme chosen in the properties is kept,
+         otherwise it follows the visitor's clock, light from 7am to 7pm.
+         src/theme.js applies the same rule after load; src/themes.js is the
+         list these ids and papers come from. -->
     <script>
       (function () {
+        var bg = {
+          light: "#fcf5e4", dark: "#262626", nord: "#2e3440", dracula: "#282a36",
+          solarized: "#fdf6e3", monokai: "#272822", ocean: "#1b2838", cyberpunk: "#050508"
+        };
         var t = null;
         try {
           t = localStorage.getItem("theme");
         } catch (e) {}
-        if (t !== "light" && t !== "dark") {
+        if (!bg.hasOwnProperty(t)) {
           var h = new Date().getHours();
           t = h >= 7 && h < 19 ? "light" : "dark";
         }
         var r = document.documentElement;
         r.setAttribute("data-theme", t);
-        r.style.colorScheme = t;
+        r.style.colorScheme = t === "light" || t === "solarized" ? "light" : "dark";
         var m = document.querySelectorAll('meta[name="theme-color"]');
-        for (var i = 0; i < m.length; i++) {
-          m[i].setAttribute("content", t === "dark" ? "#0e0e0d" : "#f4f3f0");
-        }
+        for (var i = 0; i < m.length; i++) m[i].setAttribute("content", bg[t]);
       })();
     </script>
     <script type="module" src="/src/theme.js"></script>
@@ -39,21 +42,24 @@
   <body>
     <main class="wide">
       <header class="head">
-        <h1>SRUJAN YAMALI <span class="cursor" aria-hidden="true">█</span></h1>
-        <p><a href="/">← BACK TO HOME</a></p>
-        <p class="theme" role="group" aria-label="Colour theme">
-          <button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise">auto</button>
-          <button type="button" data-theme-set="light" aria-pressed="false">light</button>
-          <button type="button" data-theme-set="dark" aria-pressed="false">dark</button>
-        </p>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">srujanyamali.com</a><span class="sep">/</span><a href="/#research">research</a><span class="sep">/</span><span aria-current="page">redcarpet</span></nav>
+        <h1>Finding recombination in bacterial genomes<span class="caret" aria-hidden="true"></span></h1>
+        <dl class="props">
+          <dt>field</dt>
+          <dd>Bacterial genomics</dd>
+          <dt>lab</dt>
+          <dd>Moustafa &amp; Planet labs, Children's Hospital of Philadelphia</dd>
+          <dt>years</dt>
+          <dd><time>2024–2025</time></dd>
+          <dt>theme</dt>
+          <dd class="theme" role="group" aria-label="Colour theme"><button type="button" data-theme-set="auto" aria-pressed="true" title="Follows your clock: light from 7am to 7pm, dark otherwise"><span class="sw" aria-hidden="true"></span>auto</button><button type="button" data-theme-set="light" aria-pressed="false"><span class="sw" aria-hidden="true"></span>light</button><button type="button" data-theme-set="dark" aria-pressed="false"><span class="sw" aria-hidden="true"></span>dark</button><span class="gap" aria-hidden="true"></span><button type="button" data-theme-set="nord" aria-pressed="false"><span class="sw" aria-hidden="true"></span>nord</button><button type="button" data-theme-set="dracula" aria-pressed="false"><span class="sw" aria-hidden="true"></span>dracula</button><button type="button" data-theme-set="solarized" aria-pressed="false"><span class="sw" aria-hidden="true"></span>solarized</button><button type="button" data-theme-set="monokai" aria-pressed="false"><span class="sw" aria-hidden="true"></span>monokai</button><button type="button" data-theme-set="ocean" aria-pressed="false"><span class="sw" aria-hidden="true"></span>ocean</button><button type="button" data-theme-set="cyberpunk" aria-pressed="false"><span class="sw" aria-hidden="true"></span>cyberpunk</button></dd>
+        </dl>
       </header>
 
+      <hr />
+
       <article>
-        <h2 class="top">Finding recombination in bacterial genomes</h2>
-        <p class="byline">
-          Children's Hospital of Philadelphia · Moustafa &amp; Planet labs ·
-          2024–2025
-        </p>
+
 
         <p>
           Bacteria do not only inherit their genomes down the family tree. They
@@ -75,6 +81,8 @@
           on <em>S.&nbsp;aureus</em> NCTC8325.
         </p>
 
+        <hr />
+
         <h2>Presentations</h2>
 
         <ul>
@@ -87,11 +95,13 @@
           </li>
         </ul>
 
+        <hr />
+
         <h2>Files</h2>
 
         <ul>
           <li>
-            [Slides](<a href="/work/carpet-change-catcher-methods.pdf">/work/<wbr>carpet-change-catcher-methods.pdf</a>),
+            <a class="int" href="/work/carpet-change-catcher-methods.pdf">Slides</a>,
             <span class="gloss muted">PDF&nbsp;·&nbsp;21&nbsp;pages&nbsp;·&nbsp;13&nbsp;MB</span>
             <span class="note">Carpet Change Catcher, the deck from the end of
             the project, which covers how the changepoint penalty was scaled to
@@ -99,8 +109,10 @@
             five genomes, and the check that merges neighbouring regions that
             are not statistically different.</span>
           </li>
-          <li>[Code](<a href="https://github.com/microbialARC/Redcarpet" target="_blank" rel="noopener">https://<wbr>github.com/<wbr>microbialARC/<wbr>Redcarpet</a>)</li>
+          <li><a class="ext" href="https://github.com/microbialARC/Redcarpet" target="_blank" rel="noopener">Code</a></li>
         </ul>
+
+        <hr />
 
         <h2>Figures</h2>
 
@@ -212,9 +224,10 @@
             safe to swap in.
           </figcaption>
         </figure>
+        <p class="tags" aria-label="Tags"><span>#research</span><span>#genomics</span><span>#changepoint-detection</span><span>#bacteria</span></p>
       </article>
 
-      <p class="back"><a href="/">← BACK TO HOME</a></p>
+      <p class="back"><a href="/">← srujanyamali.com</a></p>
     </main>
   </body>
 </html>

@@ -10,7 +10,7 @@
 
 const COLS = 35;
 const ROWS = 20; // 20 rows at 12px is 240px, twelve of the page's 20px lines
-const CW = 7.2; // a JetBrains Mono cell at 12px is 0.6em wide
+const CW = 7.2; // an iA Writer Mono cell at 12px is 0.6em wide
 const CH = 12;
 const CX = ((COLS - 1) / 2) * CW;
 const CY = ((ROWS - 1) / 2) * CH;
