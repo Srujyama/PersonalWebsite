@@ -13,6 +13,6 @@
     { "source": "/archive", "destination": "/#research", "permanent": false },
     { "source": "/explore", "destination": "/", "permanent": false },
     { "source": "/elsewhere", "destination": "/", "permanent": false },
-    { "source": "/resume", "destination": "/Srujan_Yamali_SWE_Resume_June_2026.pdf", "permanent": false }
+    { "source": "/resume", "destination": "/Srujan_Yamali_SWE_Resume_Sept_2026.pdf", "permanent": false }
   ]
 }
