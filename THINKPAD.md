@@ -1,4 +1,4 @@
-# Thinkpad — Simplify personalweb to a pierre.computer-style plain-text site, keep the stipple load-in
+# Thinkpad — Personalweb: centered coastal text studies and Srujan's own identity
 <!-- pad:v1 -->
 
 <!-- Edit this file by hand freely. `pad` reads and writes it; it never reformats
@@ -6,13 +6,13 @@
 
 ## Goal
 
-srujanyamali.com becomes a static, framework-free multi-page site that looks and reads like https://pierre.computer: one plain-text column (JetBrains Mono 12px/20px, 40px padding, 480px measure), a three-line header with a blinking block cursor, `#`/`##` markdown-style headings, `- ` lists, `[label](url)` links where only the URL is underlined, no nav, no sidebar, no theme toggle (OS colour scheme only), monochrome except a Berkeley-gold selection. The home page (`index.html`) carries everything a recruiter needs (about, experience with dates, research, publications, ventures, open source, writing, email/GitHub/LinkedIn/résumé). The two research write-ups become article pages (`research/drosophila.html`, `research/redcarpet.html`) in pierre's article style with the real figures. The Cal stipple loading screen is kept on `/` and now ends by flying its dots onto the glyphs of the page text and dissolving into it, so the last frame of the intro is the first frame of the page. React, react-router, three.js/R3F, motion, the terrain, the 3D world, tailwind and postcss are gone. Old routes redirect. `npm run build` passes, and every page is verified by screenshot at desktop, phone and dark.
+October 2026: refine the approved restrained portfolio into Srujan's own composition. Center the Delaware/Berkeley ASCII sculpture, make better use of the viewport, introduce readable typographic hierarchy and ordinary links instead of the inherited markdown shell, and integrate the fly simulation with its research. Keep the paper/ink palette, JetBrains Mono, the Cal stipple intro and its text handoff, current resume, factual content, and static Vite architecture. The September decisions below are historical; the current request supersedes their Pierre-specific layout and syntax.
 
 ## Constraints
 
 - Copy is in Srujan's voice: long flowing declaratives, claim then mechanism, no em dashes as punchline separators, never Moreover/Furthermore/Additionally. Reuse his existing sentences from src/data.js where possible; do not invent facts.
 - Italic is reserved for species names (Drosophila, Staphylococcus aureus, S. aureus) and venue titles. Headings are roman.
-- No framework, no runtime dependencies. Pages must render fully with JavaScript disabled (the intro is the only script, and only on /).
+- No framework or new runtime dependencies. Content must remain readable without JavaScript; the text sculptures, intro, theme controls and research simulation are progressive enhancements.
 - Keep every PDF in public/ (old résumé links may be circulating). Never touch public/situationalawareness.pdf (user's untracked file).
 - Never hardcode /Users/... paths in project files.
 
@@ -24,6 +24,7 @@ srujanyamali.com becomes a static, framework-free multi-page site that looks and
 - 2026-09-22 · Warm paper tones kept (#f4f3f0 / #0e0e0d, ink #121211 / #f2f1ed); selection is Berkeley gold #FDB515 — because his identity and the tuned stipple ink; gold selection is the one hidden accent, like pierre's yellow
 - 2026-09-22 · Dates follow the linked June 2026 résumé (Visa Jan–May 2026, Mercor Aug 2025–Jan 2026), not the old data.js — because data.js was a year early on both; a recruiter compares the page to the PDF it links
 - 2026-09-22 · Publications fold into the Research entries on home; full citations live on the article pages — because pierre's home is an index of links; the three presentations stay counted and cited
+- 2026-10-18 · Center the sculpture within a bounded portfolio column; remove home-page markdown decoration; group the fly simulation with Research. — because The user finds the side animation forced and wants more personal identity and better use of space, while keeping the restrained design and Cal intro.
 
 
 ## Open questions
@@ -60,6 +61,10 @@ srujanyamali.com becomes a static, framework-free multi-page site that looks and
       files: index.html, src/IntroAnimation.jsx, src/data.js
       accept: cd /Users/srujanyamali/Downloads/Coding/Websites/personalweb && npm run build && ! test -e src/data.js && ! test -e src/IntroAnimation.jsx
       deps: T1, T2, T3, T4
+- [x] T6 · Refine the home composition and coastal interaction, then verify desktop, mobile, themes, and intro handoff
+      files: index.html, src/home.css, src/coasts.js
+      accept: npm run build && git diff --check
+      notes: Direct implementation. Preserve October resume updates and factual content; inspect rendered desktop and mobile; verify controls, keyboard, reduced motion and intro.
 ## Log
 
 - 2026-09-22 · thinkpad created
@@ -72,3 +77,5 @@ srujanyamali.com becomes a static, framework-free multi-page site that looks and
 - 2026-09-22 · done T4 (attempt 1) · verified: three critics (fidelity, recruiter, voice) returned ranked lists
 - 2026-09-22 · done T5 · Integrate: apply critique, remove IntroAnimation.jsx/data.js, build, full visual verify
 - 2026-09-22 · review wf_90ad380a-50f: 11 confirmed / 15 refuted; fixed WebKit overlay race (0/20 broken after), Tab/Enter focus, Stryda→www, Thoughts removed, 4 research caption/claim corrections, <wbr> in URLs; slides PDF page 1 left for user
+- 2026-10-18 · done T6 · Refine the home composition and coastal interaction, then verify desktop, mobile, themes, and intro handoff
+- 2026-10-18 · T6 verified: centered stage; drag and keyboard rotation; pause/play; both coasts; offscreen stop; research disclosure and fly; no overflow at 320/390/560/768/960/1280/1440; reduced motion; Cal intro handoff; PDF and research routes; no-JS reading. Desktop/mobile/light/dark screenshots inspected. Reviewer SVG disclosure correction applied.
