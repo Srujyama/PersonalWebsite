@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-19T01:45:41.019250+00:00",
+  "title": "Design System: Srujan Yamali",
+  "extensions": {
+    "motion": [
+      {
+        "name": "home-link-transition",
+        "value": "text-decoration-color 150ms ease",
+        "purpose": "Home link hover; disabled for reduced motion."
+      },
+      {
+        "name": "coast-frame-interval",
+        "value": "100ms",
+        "purpose": "Rotating character sculpture; paused for reduced motion and when hidden."
+      },
+      {
+        "name": "intro-assemble",
+        "value": "2.2s",
+        "purpose": "Cal particle assembly."
+      },
+      {
+        "name": "intro-hold",
+        "value": "0.9s",
+        "purpose": "Minimum Cal particle hold."
+      },
+      {
+        "name": "intro-settle",
+        "value": "2.6s",
+        "purpose": "Particles settle onto page text."
+      },
+      {
+        "name": "intro-skip",
+        "value": "450ms",
+        "purpose": "Skip fade."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "home-tablet-max",
+        "value": "760px"
+      },
+      {
+        "name": "home-mobile-max",
+        "value": "560px"
+      },
+      {
+        "name": "article-mobile-max",
+        "value": "520px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Home link",
+      "kind": "custom",
+      "refersTo": "home-link",
+      "description": "Underlined project and research links.",
+      "html": "<a class=\"ds-link\" href=\"#research\">Research</a>",
+      "css": ".ds-link{font-family:var(--font,monospace);font-size:12px;line-height:1.8;color:var(--fg);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:color-mix(in srgb,var(--fg) 35%,transparent);text-underline-offset:4px;transition:text-decoration-color 150ms ease}.ds-link:hover{text-decoration-color:var(--fg)}.ds-link:focus-visible{outline:2px solid var(--fg);outline-offset:2px;text-decoration:none}@media(prefers-reduced-motion:reduce){.ds-link{transition:none}}"
+    },
+    {
+      "name": "Contact navigation",
+      "kind": "nav",
+      "description": "Plain contact and profile links in the masthead.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Contact and profiles\"><a href=\"mailto:srujanyamali@berkeley.edu\">Email</a><a href=\"https://github.com/srujyama\">GitHub</a><a href=\"https://linkedin.com/in/srujanyamali\">LinkedIn</a></nav>",
+      "css": ".ds-nav{font-family:var(--font,monospace);font-size:12px;line-height:1.8;display:flex;flex-wrap:wrap;column-gap:24px;align-items:center}.ds-nav a{display:inline-flex;align-items:center;min-height:36px;color:var(--fg);text-decoration:none}.ds-nav a:hover{text-decoration:underline;text-underline-offset:4px}.ds-nav a:focus-visible{outline:2px solid var(--fg);outline-offset:2px}"
+    },
+    {
+      "name": "Coast control",
+      "kind": "button",
+      "refersTo": "coast-control",
+      "description": "Coast selection; pressed state underlines the current place.",
+      "html": "<div class=\"ds-coasts\"><button aria-pressed=\"true\">Berkeley</button><button aria-pressed=\"false\">Delaware</button></div>",
+      "css": ".ds-coasts{display:flex;gap:8px;align-items:center}.ds-coasts button{font-family:var(--font,monospace);font-size:12px;line-height:1.8;min-height:40px;padding:4px 3px;border:0;background:none;color:var(--fg2);cursor:pointer}.ds-coasts button:hover{color:var(--fg)}.ds-coasts button:focus-visible{outline:1px solid var(--fg);outline-offset:2px;}.ds-coasts button[aria-pressed=\"true\"]{color:var(--fg);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:7px}@media(max-width:560px){.ds-coasts button{min-height:44px}}"
+    },
+    {
+      "name": "Coast playback",
+      "kind": "button",
+      "refersTo": "coast-motion",
+      "description": "Pause/play control for the text sculpture.",
+      "html": "<button class=\"ds-motion\" aria-label=\"Pause text animation\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M5 3v10M11 3v10\"/></svg><span>Pause</span></button>",
+      "css": ".ds-motion{font-family:var(--font,monospace);font-size:12px;line-height:1.8;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:4px;border:0;background:none;color:var(--fg2);cursor:pointer}.ds-motion svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-motion:hover{color:var(--fg)}.ds-motion:focus-visible{outline:1px solid var(--fg);outline-offset:2px;}@media(max-width:560px){.ds-motion{min-width:44px;min-height:44px;justify-content:center}.ds-motion span{display:none}}"
+    },
+    {
+      "name": "Research disclosure",
+      "kind": "custom",
+      "refersTo": "research-disclosure",
+      "description": "Native disclosure containing the fly assay demo; chevron indicates open state.",
+      "html": "<details class=\"ds-demo\"><summary>The fly assay, in motion<svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"m4 6 4 4 4-4\"/></svg></summary></details>",
+      "css": ".ds-demo{font-family:var(--font,monospace);font-size:12px;line-height:1.8;color:var(--fg);margin-top:24px;border-block:1px solid var(--divider,color-mix(in srgb,var(--fg) 15%,var(--bg)))}.ds-demo summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;list-style:none;cursor:pointer}.ds-demo summary::-webkit-details-marker{display:none}.ds-demo summary:focus-visible{outline:1px solid var(--fg);outline-offset:2px;}.ds-demo svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.ds-demo[open] svg{transform:rotate(180deg)}"
+    },
+    {
+      "name": "Theme control",
+      "kind": "button",
+      "refersTo": "theme-button",
+      "description": "Home footer theme selection; active option is underlined.",
+      "html": "<div class=\"ds-theme\" role=\"group\" aria-label=\"Colour theme\"><button aria-pressed=\"true\">Auto</button><button aria-pressed=\"false\">Light</button><button aria-pressed=\"false\">Dark</button></div>",
+      "css": ".ds-theme{display:flex;gap:16px}.ds-theme button{font-family:var(--font,monospace);font-size:12px;line-height:1.8;min-height:32px;padding:0;border:0;background:none;color:var(--fg2);cursor:pointer}.ds-theme button[aria-pressed=\"true\"]{color:var(--fg);text-decoration:underline}.ds-theme button:hover{color:var(--fg);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}.ds-theme button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Restrained personal portfolio",
+    "overview": "The home keeps the paper-and-ink palette and JetBrains Mono while using a centered composition, distinct type sizes, and normal headings and links. Its personal element is a centered, draggable character sculpture of Sather Tower or the Delaware lighthouse, with the Cal particle intro retained.\n\nScope matters: `src/home.css` applies to the `.portfolio` home only. `src/site.css` still supplies the older research articles' smaller type, Markdown markers, and article figures. Those routes have not received the home redesign.",
+    "keyCharacteristics": [
+      "Monospaced type, restrained neutral colors, and gold text selection.",
+      "Centered home with open spacing and an unframed sculpture.",
+      "Text controls, underlined states, and visible keyboard focus."
+    ],
+    "rules": [],
+    "dos": [
+      "Do use the existing paper/ink variables in both themes.",
+      "Do apply the home type hierarchy and spacing only within the home scope.",
+      "Do retain the sculpture's drag, keyboard, pause, and reduced-motion behavior.",
+      "Don't reintroduce Markdown heading or link wrappers on the refined home.",
+      "Don't describe the older research articles as redesigned.",
+      "Don't replace the existing inline SVG marks with text glyph icons."
+    ],
+    "donts": [
+      "Don't reintroduce Markdown heading or link wrappers on the refined home.",
+      "Don't describe the older research articles as redesigned.",
+      "Don't replace the existing inline SVG marks with text glyph icons."
+    ]
+  }
+}
