@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visitors :: Srujan Yamali</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script>
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem("theme");
+        } catch (e) {}
+        if (t !== "light" && t !== "dark") {
+          var h = new Date().getHours();
+          t = h >= 7 && h < 19 ? "light" : "dark";
+        }
+        document.documentElement.setAttribute("data-theme", t);
+        document.documentElement.style.colorScheme = t;
+      })();
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" href="/src/site.css" />
+    <style>
+      body > main {
+        max-width: 1040px;
+      }
+      h1,
+      h2 {
+        font-size: inherit;
+        font-weight: 700;
+      }
+      h2 {
+        margin: calc(var(--line) * 2) 0 var(--line);
+      }
+      .bar {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: calc(var(--line) * 2);
+      }
+      button {
+        font: inherit;
+        color: var(--fg2);
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      button:hover {
+        color: var(--fg);
+      }
+      form {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      input {
+        font: inherit;
+        color: var(--fg);
+        background: var(--wash);
+        border: 1px solid var(--fg3);
+        padding: 4px 8px;
+        width: 220px;
+      }
+      input:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--fg);
+        outline-offset: 2px;
+      }
+      .submit {
+        color: var(--fg);
+      }
+      .error {
+        color: #c4402f;
+        margin-top: var(--line);
+        min-height: var(--line);
+      }
+      .muted {
+        color: var(--fg2);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--line) 24px;
+      }
+      .stats b {
+        display: block;
+        font-size: 20px;
+        line-height: 28px;
+      }
+      .tops {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 0 32px;
+      }
+      .tops ol {
+        list-style: none;
+      }
+      .tops li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--wash);
+      }
+      .tops li span:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        white-space: nowrap;
+      }
+      th {
+        text-align: left;
+        font-weight: 700;
+        color: var(--fg2);
+      }
+      th,
+      td {
+        padding: 2px 16px 2px 0;
+        border-bottom: 1px solid var(--wash);
+        vertical-align: top;
+      }
+      td.wrap {
+        white-space: normal;
+        min-width: 160px;
+      }
+      .tag {
+        color: var(--fg2);
+      }
+      [hidden] {
+        display: none !important;
+      }
+      @media (max-width: 600px) {
+        body {
+          padding: 24px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="bar">
+        <h1>Visitors</h1>
+        <a href="/">Back to site</a>
+      </div>
+
+      <section id="login" hidden>
+        <form id="login-form">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required autofocus />
+          <button class="submit" type="submit">Sign in</button>
+        </form>
+        <p class="error" id="login-error" role="alert"></p>
+      </section>
+
+      <section id="dash" hidden>
+        <div class="bar">
+          <span class="muted" id="updated"></span>
+          <span><button type="button" id="refresh">Refresh</button> &nbsp; <button type="button" id="logout">Sign out</button></span>
+        </div>
+        <div class="stats" id="stats"></div>
+        <div class="tops">
+          <section><h2>Came from</h2><ol id="top-ref"></ol></section>
+          <section><h2>Where</h2><ol id="top-place"></ol></section>
+          <section><h2>Pages</h2><ol id="top-page"></ol></section>
+        </div>
+        <h2>Recent visits</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>When</th><th>Where</th><th>Came from</th><th>Page</th><th>Device</th><th>Visitor</th><th>IP</th></tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <p class="muted" id="more"></p>
+      </section>
+      <p class="error" id="dash-error" role="alert"></p>
+    </main>
+
+    <script type="module">
+      const $ = (id) => document.getElementById(id);
+      const SHOW = 300;
+
+      const REFERRERS = {
+        "linkedin.com": "LinkedIn", "lnkd.in": "LinkedIn", "google.": "Google", "github.com": "GitHub",
+        "t.co": "X / Twitter", "x.com": "X / Twitter", "twitter.com": "X / Twitter", "bing.com": "Bing",
+        "duckduckgo.com": "DuckDuckGo", "facebook.com": "Facebook", "instagram.com": "Instagram",
+        "reddit.com": "Reddit", "news.ycombinator.com": "Hacker News", "mail.google.com": "Gmail",
+        "outlook.": "Outlook", "handshake": "Handshake", "chatgpt.com": "ChatGPT", "perplexity.ai": "Perplexity",
+      };
+
+      function source(ref) {
+        if (!ref) return "Direct / typed";
+        let host;
+        try {
+          host = new URL(ref).hostname.replace(/^www\./, "");
+        } catch {
+          return ref;
+        }
+        if (host === location.hostname.replace(/^www\./, "")) return "Within the site";
+        const hit = Object.keys(REFERRERS).find((k) => host === k || host.endsWith("." + k) || (k.endsWith(".") && host.includes(k)) || (!k.includes(".") && host.includes(k)));
+        return hit ? REFERRERS[hit] : host;
+      }
+
+      function device(ua) {
+        const os = /iPhone/.test(ua) ? "iPhone" : /iPad/.test(ua) ? "iPad" : /Android/.test(ua) ? "Android"
+          : /Mac OS X/.test(ua) ? "Mac" : /Windows/.test(ua) ? "Windows" : /CrOS/.test(ua) ? "ChromeOS" : /Linux/.test(ua) ? "Linux" : "Other";
+        const br = /Edg\//.test(ua) ? "Edge" : /OPR\//.test(ua) ? "Opera" : /Firefox\//.test(ua) ? "Firefox"
+          : /Chrome\//.test(ua) ? "Chrome" : /Safari\//.test(ua) ? "Safari" : "Other";
+        return `${br} · ${os}`;
+      }
+
+      let regionNames;
+      try {
+        regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+      } catch {}
+      function place(v) {
+        const country = v.country ? (regionNames?.of(v.country) ?? v.country) : "";
+        if (v.country === "US") return [v.city, v.region].filter(Boolean).join(", ") || "United States";
+        return [v.city, country].filter(Boolean).join(", ") || "Unknown";
+      }
+
+      const when = (t) => new Date(t).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+
+      function top(list, key, n = 8) {
+        const counts = new Map();
+        for (const v of list) counts.set(key(v), (counts.get(key(v)) || 0) + 1);
+        return [...counts].sort((a, b) => b[1] - a[1]).slice(0, n);
+      }
+
+      function fill(ol, entries) {
+        ol.replaceChildren(...entries.map(([label, n]) => {
+          const li = document.createElement("li");
+          const a = document.createElement("span");
+          a.textContent = label;
+          a.title = label;
+          const b = document.createElement("span");
+          b.className = "muted";
+          b.textContent = n;
+          li.append(a, b);
+          return li;
+        }));
+        if (!entries.length) ol.innerHTML = '<li class="muted">Nothing yet</li>';
+      }
+
+      function render(visits) {
+        const now = Date.now();
+        const day = 864e5;
+        const unique = (list) => new Set(list.map((v) => v.vid || v.ip)).size;
+        const today = visits.filter((v) => now - v.t < day);
+        const week = visits.filter((v) => now - v.t < 7 * day);
+        const stats = [
+          ["Views", visits.length], ["Visitors", unique(visits)],
+          ["Visitors, 24 hours", unique(today)], ["Visitors, 7 days", unique(week)],
+        ];
+        $("stats").innerHTML = stats.map(([k, n]) => `<div><b>${n}</b><span class="muted">${k}</span></div>`).join("");
+
+        const firstViews = visits.filter((v) => source(v.ref) !== "Within the site");
+        fill($("top-ref"), top(firstViews, (v) => source(v.ref)));
+        fill($("top-place"), top(visits, place));
+        fill($("top-page"), top(visits, (v) => v.path));
+
+        // Number visitors by first appearance, so "#3" is the same person on every row.
+        const seen = new Map();
+        const views = new Map();
+        for (let i = visits.length - 1; i >= 0; i--) {
+          const id = visits[i].vid || visits[i].ip;
+          if (!seen.has(id)) seen.set(id, seen.size + 1);
+          views.set(id, (views.get(id) || 0) + 1);
+        }
+
+        const rows = visits.slice(0, SHOW).map((v) => {
+          const id = v.vid || v.ip;
+          const tr = document.createElement("tr");
+          const cells = [
+            when(v.t), place(v), source(v.ref), v.path, device(v.ua),
+            `#${seen.get(id)}${views.get(id) > 1 ? ` (${views.get(id)} views)` : ""}`, v.ip,
+          ];
+          for (const [i, text] of cells.entries()) {
+            const td = document.createElement("td");
+            td.textContent = text;
+            if (i === 2 && v.ref) td.title = v.ref;
+            if (i === 4) td.title = v.ua;
+            if (i === 5 || i === 6) td.className = "tag";
+            tr.append(td);
+          }
+          return tr;
+        });
+        $("rows").replaceChildren(...rows);
+        if (!visits.length) $("rows").innerHTML = '<tr><td colspan="7" class="muted">No visits recorded yet.</td></tr>';
+        $("more").textContent = visits.length > SHOW ? `Showing the latest ${SHOW} of ${visits.length} views.` : "";
+        $("updated").textContent = `Updated ${new Date().toLocaleTimeString()}`;
+      }
+
+      function show(which) {
+        $("login").hidden = which !== "login";
+        $("dash").hidden = which !== "dash";
+        if (which === "login") $("password").focus();
+      }
+
+      async function load() {
+        $("dash-error").textContent = "";
+        const res = await fetch("/api/admin", { credentials: "same-origin" }).catch(() => null);
+        if (!res) {
+          $("dash-error").textContent = "Couldn't reach the server.";
+          return show("login");
+        }
+        if (res.status === 401) return show("login");
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          show("dash");
+          $("dash-error").textContent = data.error || `Error ${res.status}`;
+          return;
+        }
+        // This browser belongs to the site's owner; keep its visits out of the log.
+        try {
+          localStorage.setItem("notrack", "1");
+        } catch {}
+        show("dash");
+        render(data.visits);
+      }
+
+      $("login-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        $("login-error").textContent = "";
+        const res = await fetch("/api/admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: $("password").value }),
+        }).catch(() => null);
+        const data = res ? await res.json().catch(() => ({})) : {};
+        if (!res || !res.ok) {
+          $("login-error").textContent = data.error || "Couldn't reach the server.";
+          return;
+        }
+        $("password").value = "";
+        load();
+      });
+
+      $("refresh").addEventListener("click", load);
+      $("logout").addEventListener("click", async () => {
+        await fetch("/api/admin", { method: "DELETE" }).catch(() => null);
+        show("login");
+      });
+
+      load();
+    </script>
+  </body>
+</html>

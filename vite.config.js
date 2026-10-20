@@ -15,6 +15,7 @@ export default defineConfig({
                 drosophila: resolve(root, "research/drosophila.html"),
                 redcarpet: resolve(root, "research/redcarpet.html"),
                 notfound: resolve(root, "404.html"),
+                admin: resolve(root, "admin.html"),
             },
         },
     },
